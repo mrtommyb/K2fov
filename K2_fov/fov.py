@@ -1,6 +1,8 @@
-
-import matplotlib.pyplot as mp
-import matplotlib
+try:
+    import matplotlib.pyplot as mp
+    import matplotlib
+except ImportError:
+    pass
 import projection as proj
 import numpy as np
 import rotate as r

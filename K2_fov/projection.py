@@ -1,5 +1,7 @@
-
-import matplotlib.pyplot as mp
+try:
+    import matplotlib.pyplot as mp
+except ImportError:
+    pass
 import numpy as np
 import rotate
 
