@@ -102,6 +102,12 @@ class Projection():
 
     def plot(self, ra_deg, dec_deg, *args, **kwargs):
         x,y = self.skyToPix(ra_deg, dec_deg)
+        try:
+            plot_degrees = kwargs.pop('plot_degrees')
+        except KeyError:
+            plot_degrees=False
+        if plot_degrees:
+            x,y = np.degrees(x), np.degrees(y)
         self._plot(x, y, *args, **kwargs)
 
     def scatter(self,  ra_deg, dec_deg, *args, **kwargs):

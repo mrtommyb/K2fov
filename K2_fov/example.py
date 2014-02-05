@@ -8,7 +8,7 @@ import  fov
 
 def main():
     wantPlot = True
-    zoom = True
+    zoom = False
 
     ra_deg = 98.15766666666666
     dec_deg = 21.594944444444444

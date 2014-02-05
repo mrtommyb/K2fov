@@ -227,7 +227,6 @@ class KeplerFov():
         x,y = self.defaultMap.skyToPix(ra_deg, dec_deg)
         for ch in np.unique(self.currentRaDec[:,2]):
             poly = self.getChannelAsPolygon(ch)
-            print 'tom'
             if poly.isPointInside(x,y):
                 return ch
 
@@ -280,7 +279,7 @@ class KeplerFov():
 
         Ranges taken from Fig 25 or Instrument Handbook (p50)
         """
-        padding  = 0
+        padding  = 00
 
         #if col < 12. or col > 1111:
         if col < 12.-padding or col > 1111+padding:
@@ -353,8 +352,10 @@ class KeplerFov():
 
         #Convert col row to colFrac, rowFrac
         #See notes in getColRowWithinChannel
-        colFrac = (col-17.) / (1106.-17.)
-        rowFrac = (row-25.) / (1038.-25.)
+        padding = 00
+        colFrac = (col-(17.-padding)) / ((1106.+padding)-(17.-padding))
+        rowFrac = (row-(25.-padding)) / ((1038.+padding)-(25.-padding))
+
 
         #Get basis vectors for channel. vZero is vector close
         #to readout of chip (c,r) = (0,0)
@@ -430,6 +431,7 @@ class KeplerFov():
             c = colour
             if ch in [5,6,7,8]:
                 c = mod3
+
             maptype.plot(radec[idx, 3], radec[idx, 4], '-', color=c, **kwargs)
             #Show the origin of the col and row coords for this ch
             if showOuts:
