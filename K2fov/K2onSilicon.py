@@ -160,8 +160,9 @@ def getRaDecRollFromFieldnum(fieldnum):
 #         fig.show()
 
 
-def K2_fov(infile,fieldnum):
-        ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
+def K2onSilicon(infile,fieldnum):
+    ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
+
     if np.shape(ra_sources_deg)[0] > 500:
         print('There are {} sources in your target list, this could take some time'.format(np.size(ra_sources_deg)[0]))
 
@@ -239,7 +240,7 @@ if __name__ == '__main__':
     fieldnum = int(sys.argv[2])
     infile = str(sys.argv[1])
 
-    K2_fov(infile, fieldnum)
+    K2OnSilicon(infile, fieldnum)
 
 
 
