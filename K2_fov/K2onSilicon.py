@@ -160,22 +160,8 @@ def getRaDecRollFromFieldnum(fieldnum):
 #         fig.show()
 
 
-
-if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        print('')
-        print('python K2onSilicon.py filename fieldnum')
-        print('')
-        sys.exit(2)
-    elif len(sys.argv) != 3:
-        print('use the command')
-        print('python K2onSilicon.py filename fieldnum')
-        sys.exit(2)
-
-    fieldnum = int(sys.argv[2])
-    infile = str(sys.argv[1])
-
-    ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
+def K2_fov(infile,fieldnum):
+        ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
     if np.shape(ra_sources_deg)[0] > 500:
         print('There are {} sources in your target list, this could take some time'.format(np.size(ra_sources_deg)[0]))
 
@@ -235,6 +221,25 @@ if __name__ == '__main__':
     else:
         print('I made one file: targets_siliconFlag.csv')
 
+
+
+
+
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        print('')
+        print('python K2onSilicon.py filename fieldnum')
+        print('')
+        sys.exit(2)
+    elif len(sys.argv) != 3:
+        print('use the command')
+        print('python K2onSilicon.py filename fieldnum')
+        sys.exit(2)
+
+    fieldnum = int(sys.argv[2])
+    infile = str(sys.argv[1])
+
+    K2_fov(infile, fieldnum)
 
 
 
