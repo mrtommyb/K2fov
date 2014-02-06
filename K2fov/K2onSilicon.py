@@ -71,10 +71,10 @@ def angSepVincenty(ra1,dec1,ra2,dec2):
 
 def parse_file(infile):
     try:
-        a,b, mag = np.atleast_2d(np.genfromtxt(infile, usecols=[0,1,2])).T
+        a,b, mag = np.atleast_2d(np.genfromtxt(infile, usecols=[0,1,2]),delimiter=',').T
     except IOError:
         print('There seems to be a problem with the input file, the format should be: RA_degrees (J2000), \
-            Dec_degrees (J2000), Magnitude. There should be no header')
+            Dec_degrees (J2000), Magnitude. There should be no header, columns should be seperated by a comma')
         sys.exit(1)
     return a,b, mag
 
