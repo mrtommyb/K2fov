@@ -29,3 +29,13 @@ Running the code wil output a file with the three input columns and an additiona
 2 = Target is in the K2 field of view
 
 The code will also make an image showing where the targets fall.
+
+If you love running simple script then you can run
+```bash
+python runK2onSilicon.py mtargetlist.csv campaignNumber
+```
+replace campaignNumber with 0 or 1. You can also make the code executable and then just
+```bash
+./runK2onSilicon.py mtargetlist.csv campaignNumber
+```
+
