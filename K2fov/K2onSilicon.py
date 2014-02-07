@@ -207,7 +207,7 @@ def K2onSilicon(infile,fieldnum):
 
 
 
-        fig.savefig('targets_fov.png')
+        fig.savefig('targets_fov.png',dpi=300)
         plt.close('all')
 
     siliconFlag = np.zeros_like(ra_sources_deg)
