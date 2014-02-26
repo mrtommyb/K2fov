@@ -7,6 +7,8 @@ install with
 pip install K2fov
 ```
 
+You'll need a modern version of Python (I've only tested this on 2.7.5) and a relatively new version of numpy (I've tested this on 1.8).
+
 The simplist thing to do is to have a CSV file with
 RA_degrees, Dec_degrees, Kepmag
 Do not use a header. For example
