@@ -416,6 +416,7 @@ class KeplerFov():
 
     def plotPointing(self, maptype=None, colour='b', mod3='r', showOuts=True, **kwargs):
         """Plot the FOV
+        mod3 is for mod 3 and mod 7
         """
 
         if maptype is None:
@@ -431,7 +432,8 @@ class KeplerFov():
             idx = np.append(idx, idx[0])  #% points to draw a box
 
             c = colour
-            if ch in [5,6,7,8]:
+            #mod3 variable now include mod 3 and mod 7
+            if ch in [5,6,7,8,17,18,19,20]:
                 c = mod3
 
             maptype.plot(radec[idx, 3], radec[idx, 4], '-', color=c, **kwargs)

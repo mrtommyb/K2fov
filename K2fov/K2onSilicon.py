@@ -29,7 +29,7 @@ import  fov
 
 __version__ = '0.0.1'
 
-params = {'backend': 'png',
+params = {#'backend': 'png',
                         'axes.linewidth': 1.5,
                         'axes.labelsize': 24,
                         'axes.font': 'sans-serif',
@@ -39,9 +39,14 @@ params = {'backend': 'png',
                         'xtick.labelsize': 16,
                         'ytick.labelsize': 16,
                         'text.usetex': False,
-                        #'font.family': 'times'
+                        #'font.family': 'Palatino'
                         }
 plt.rcParams.update(params)
+
+#try:
+#    plt.rcParams.update({'font.family': 'Palatino'})
+#except:
+#    pass
 
 
 def angSepVincenty(ra1,dec1,ra2,dec2):
@@ -82,7 +87,8 @@ def onSiliconCheck(ra_deg,dec_deg,FovObj):
     try:
         ch = FovObj.pickAChannel(ra_deg, dec_deg)
         ch, col, row = FovObj.getChannelColRow(ra_deg, dec_deg)
-        if ch in [5,6,7,8]:
+        #exclude modules 3 and 7
+        if ch in [5,6,7,8,17,18,19,20]:
             return False
         #return (ch,col,row)
         return True
@@ -98,8 +104,8 @@ def nearSiliconCheck(ra_deg,dec_deg,FovObj,max_sep=8.2):
 
 
 def getRaDecRollFromFieldnum(fieldnum):
-    if fieldnum not in [0,1]:
-        raise ValueError('Only Fields 0 and 1 are defined in this version of the code')
+    if fieldnum not in [0,1,4]:
+        raise ValueError('Only Fields 0, 1 and 4 are defined in this version of the code')
     elif fieldnum == 0:
         #ra_deg = 98.15766666666666
         #dec_deg = 21.594944444444444
@@ -111,6 +117,11 @@ def getRaDecRollFromFieldnum(fieldnum):
         ra_deg = 173.939610
         dec_deg = 1.4172989
         scRoll_deg = 157.641206
+    elif fieldnum == 4:
+        print('Warning, Field 4 position will change')
+        ra_deg = 56.496
+        dec_deg = 18.130472222222224
+        scRoll_deg = 177.4810830
     else:
         raise NotImplementedError
 
@@ -189,6 +200,8 @@ def K2onSilicon(infile,fieldnum):
     nearSilicon = np.array(nearSilicon, dtype=bool)
 
     if got_mpl:
+        almost_black = '#262626'
+        light_grey = np.array([float(248)/float(255)]*3)
         ph = proj.Cylindrical()
         k.plotPointing(ph,showOuts=False,plot_degrees=True)
         targets = ph.skyToPix(ra_sources_deg, dec_sources_deg)
@@ -196,17 +209,24 @@ def K2onSilicon(infile,fieldnum):
         fig = plt.gcf()
         ax = fig.gca()
         ax = fig.add_subplot(111)
-        ax.scatter(*targets,s=2)
+        ax.scatter(*targets,s=2,label='not on silicon')
         ax.scatter(targets[0][nearSilicon],
-            targets[1][nearSilicon],color='b',s=8)
+            targets[1][nearSilicon],color='#fc8d62',s=8,label='near silicon')
         ax.scatter(targets[0][onSilicon],
-            targets[1][onSilicon],color='r',s=8)
+            targets[1][onSilicon],color='#66c2a5',s=8,label='on silicon')
         ax.set_xlabel('R.A. [degrees]',fontsize=16)
         ax.set_ylabel('Declination [degrees]',fontsize=16)
-
-
-
-
+        ax.invert_xaxis()
+        ax.minorticks_on()
+        legend = ax.legend(loc=0,
+            frameon=True, scatterpoints=1)
+        rect = legend.get_frame()
+        rect.set_alpha(0.3)
+        rect.set_facecolor(light_grey)
+        rect.set_linewidth(0.0)
+        texts = legend.texts
+        for t in texts:
+            t.set_color(almost_black)
         fig.savefig('targets_fov.png',dpi=300)
         plt.close('all')
 
@@ -215,7 +235,8 @@ def K2onSilicon(infile,fieldnum):
     siliconFlag = np.where(onSilicon,2,siliconFlag)
 
     outarr = np.array([ra_sources_deg, dec_sources_deg, mag, siliconFlag])
-    np.savetxt('targets_siliconFlag.csv', outarr.T, delimiter=', ')
+    np.savetxt('targets_siliconFlag.csv', outarr.T, delimiter=', ',
+        fmt=['%10.10f','%10.10f','%10.2f','%i'])
 
     if got_mpl:
         print('I made two files: targets_siliconFlag.csv and targets_fov.png')
