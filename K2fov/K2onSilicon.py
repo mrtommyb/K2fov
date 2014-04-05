@@ -104,7 +104,7 @@ def nearSiliconCheck(ra_deg,dec_deg,FovObj,max_sep=8.2):
 
 
 def getRaDecRollFromFieldnum(fieldnum):
-    if fieldnum not in [0,1,4]:
+    if fieldnum not in [0,1,2,3,4]:
         raise ValueError('Only Fields 0-4 are defined in this version of the code')
     elif fieldnum == 0:
         #ra_deg = 98.15766666666666
