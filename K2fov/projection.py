@@ -13,7 +13,7 @@ class Projection():
     """Base Projection class. Used for mapping ra and dec into
     Euclidean space based on a given projection.
 
-    The primary reference for projections is Calabretta and Greinstein
+    The primary reference for projections is Calabretta and Greisen
     (2002), A&A 395, 1077
 
     The base class implements the Plate Carree projection (\S 5.2.3)

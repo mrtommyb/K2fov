@@ -210,10 +210,11 @@ def K2onSilicon(infile,fieldnum):
     if got_mpl:
         almost_black = '#262626'
         light_grey = np.array([float(248)/float(255)]*3)
-        ph = proj.Cylindrical()
-        k.plotPointing(ph,showOuts=False,plot_degrees=True)
+        #ph = proj.Gnomic(ra_deg, dec_deg)
+        ph = proj.PlateCaree()
+        k.plotPointing(ph,showOuts=False,plot_degrees=False)
         targets = ph.skyToPix(ra_sources_deg, dec_sources_deg)
-        targets = np.array(targets ) * 180 / np.pi
+        targets = np.array(targets ) #* 180 / np.pi
         fig = plt.gcf()
         ax = fig.gca()
         ax = fig.add_subplot(111)
