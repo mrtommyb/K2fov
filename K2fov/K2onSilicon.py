@@ -27,7 +27,7 @@ except ImportError:
 import projection as proj
 import  fov
 
-__version__ = '0.0.1'
+#__version__ = '0.0.1'
 
 params = {#'backend': 'png',
                         'axes.linewidth': 1.5,
@@ -85,6 +85,9 @@ def parse_file(infile):
 
 def onSiliconCheck(ra_deg,dec_deg,FovObj):
     try:
+        dist = angSepVincenty(FovObj.ra0_deg,FovObj.dec0_deg,ra_deg,dec_deg)
+        if dist >= 90.:
+            return False
         ch = FovObj.pickAChannel(ra_deg, dec_deg)
         ch, col, row = FovObj.getChannelColRow(ra_deg, dec_deg)
         #exclude modules 3 and 7

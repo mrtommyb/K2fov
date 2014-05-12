@@ -9,7 +9,7 @@ except ImportError:
     setup
 
 setup(name='K2fov',
-      version='1.2.5',
+      version='1.2.6',
       description='Find which targets are in the field of view of K2',
       author='Tom Barclay',
       author_email='tom@tombarclay.com',
