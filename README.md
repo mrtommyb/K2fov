@@ -6,6 +6,11 @@ install with
 ```bash
 pip install K2fov
 ```
+if you have a previous version you will need to use
+```bash
+pip install K2fov --upgrade
+```
+if you
 
 You'll need a modern version of Python (I've only tested this on 2.7.5) and a relatively new version of numpy (I've tested this on 1.8).
 
