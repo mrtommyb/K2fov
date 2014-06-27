@@ -134,7 +134,7 @@ def getRaDecRollFromFieldnum(fieldnum):
         scRoll_deg = -167.6992793
     elif fieldnum == 5:
         ra_deg = 130.1576478
-        dec_deg = 18.130472222222224
+        dec_deg = 16.8296140
         scRoll_deg = 166.0591297
     else:
         raise NotImplementedError
