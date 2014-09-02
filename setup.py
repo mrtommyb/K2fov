@@ -1,5 +1,10 @@
 #!/usr/bin/env python
+import sys
+import os
 
+if "publish" in sys.argv[-1]:
+    os.system("python setup.py sdist upload")
+    sys.exit()
 
 try:
     from setuptools import setup
@@ -9,7 +14,7 @@ except ImportError:
     setup
 
 setup(name='K2fov',
-      version='1.3.1',
+      version='1.4.0',
       description='Find which targets are in the field of view of K2',
       author='Tom Barclay',
       author_email='tom@tombarclay.com',
