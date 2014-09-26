@@ -41,7 +41,8 @@ params = {#'backend': 'png',
                         'text.usetex': False,
                         #'font.family': 'Palatino'
                         }
-plt.rcParams.update(params)
+if got_mpl:
+    plt.rcParams.update(params)
 
 #try:
 #    plt.rcParams.update({'font.family': 'Palatino'})
