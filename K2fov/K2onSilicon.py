@@ -107,8 +107,13 @@ def nearSiliconCheck(ra_deg,dec_deg,FovObj,max_sep=8.2):
 
 
 def getRaDecRollFromFieldnum(fieldnum):
-    if fieldnum not in [0,1,2,3,4,5,6,7]:
+    if fieldnum not in [100,0,1,2,3,4,5,6,7]:
         raise ValueError('Only Fields 0-7 are defined in this version of the code')
+    elif fieldnum == 100:
+        print('Danger! Using K2 field light field, you almost certainly do not want this')
+        ra_deg = 290.6820
+        dec_deg = -22.6664
+        scRoll_deg = -171.8067
     elif fieldnum == 0:
         #ra_deg = 98.15766666666666
         #dec_deg = 21.594944444444444
@@ -127,7 +132,7 @@ def getRaDecRollFromFieldnum(fieldnum):
     elif fieldnum == 3:
         ra_deg = 336.665346414
         dec_deg = -11.096663792
-        scRoll_deg = -153.494818181
+        scRoll_deg = -158.49481806598479
     elif fieldnum == 4:
         ra_deg = 59.0759116
         dec_deg = 18.6605794
