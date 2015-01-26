@@ -108,8 +108,11 @@ def nearSiliconCheck(ra_deg,dec_deg,FovObj,max_sep=8.2):
 
 
 def getRaDecRollFromFieldnum(fieldnum):
-    if fieldnum not in [100,0,1,2,3,4,5,6,7]:
-        raise ValueError('Only Fields 0-7 are defined in this version of the code')
+    if fieldnum in [10,11,12,13]:
+        print('''Danger! The field you are searching is not yet fixed and is only the proposed position
+            please don't use this position for target selection''')
+    if fieldnum not in [100,0,1,2,3,4,5,6,7,8,9,10,11,12,13]:
+        raise ValueError('Only Fields 0-9 are set in this version of the code')
     elif fieldnum == 100:
         print('Danger! Using K2 field light field, you almost certainly do not want this')
         ra_deg = 290.6820
@@ -150,7 +153,30 @@ def getRaDecRollFromFieldnum(fieldnum):
         ra_deg = 287.82850661398538
         dec_deg = -23.360018153291808
         scRoll_deg = -172.78037532313485
-
+    elif fieldnum == 8:
+        ra_deg = 16.3379975
+        dec_deg = 5.2623459
+        scRoll_deg = -157.3538761
+    elif fieldnum == 9:
+        ra_deg = 270.3544823
+        dec_deg = -21.7798098
+        scRoll_deg = 0.4673417
+    elif fieldnum == 10: #not final
+        ra_deg = 188.5280079
+        dec_deg = -4.7619004
+        scRoll_deg = 157.7205199
+    elif fieldnum == 11: #not final
+        ra_deg = 259.9713133
+        dec_deg = -23.9491867
+        scRoll_deg = 176.4228490
+    elif fieldnum == 12: # not final
+        ra_deg = 349.8034749
+        dec_deg = -5.8755768
+        scRoll_deg = -156.8551298
+    elif fieldnum == 13: #not final
+        ra_deg = 73.0469956
+        dec_deg = 20.8139062
+        scRoll_deg = -172.7323925
     else:
         raise NotImplementedError
 
