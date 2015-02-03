@@ -114,7 +114,7 @@ def getRaDecRollFromFieldnum(fieldnum):
     if fieldnum not in [100,0,1,2,3,4,5,6,7,8,9,10,11,12,13]:
         raise ValueError('Only Fields 0-9 are set in this version of the code')
     elif fieldnum == 100:
-        print('Danger! Using K2 field light field, you almost certainly do not want this')
+        print('Danger! You are using the K2 first light field, you almost certainly do not want to do this')
         ra_deg = 290.6820
         dec_deg = -22.6664
         scRoll_deg = -171.8067
