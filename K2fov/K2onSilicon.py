@@ -265,9 +265,8 @@ def K2onSilicon(infile,fieldnum):
         fig = plt.gcf()
         ax = fig.gca()
         ax = fig.add_subplot(111)
-        ax.scatter(*targets,s=2,label='not on silicon')
-        ax.scatter(targets[0][nearSilicon],
-            targets[1][nearSilicon],color='#fc8d62',s=8,label='near silicon')
+        #ax.scatter(*targets,s=2,label='not on silicon')
+        ax.scatter(*targets,color='#fc8d62',s=7,label='not on silicon')
         ax.scatter(targets[0][onSilicon],
             targets[1][onSilicon],color='#66c2a5',s=8,label='on silicon')
         ax.set_xlabel('R.A. [degrees]',fontsize=16)
@@ -287,7 +286,11 @@ def K2onSilicon(infile,fieldnum):
         plt.close('all')
 
     siliconFlag = np.zeros_like(ra_sources_deg)
-    siliconFlag = np.where(nearSilicon,1,siliconFlag)
+
+    #prints zero if target is not on silicon
+    siliconFlag = np.where(nearSilicon,0,siliconFlag)
+
+    #prints a 2 if target is on silicon
     siliconFlag = np.where(onSilicon,2,siliconFlag)
 
     outarr = np.array([ra_sources_deg, dec_sources_deg, mag, siliconFlag])
