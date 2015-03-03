@@ -27,11 +27,10 @@ then you can do
 python -c 'import K2fov; K2fov.K2onSilicon("mytargetlist.csv",1)'
 ```
 Where mytargetlist.csv is your CSV file and 1 is the K2 Campaign number.
-Campaign number must be 0 thru 7. Once we decide on Campaign 8+ pointing I'll update the code.
+Campaign number must be 0 thru 9. Once we decide on Campaign 10+ pointing I'll update the code.
 
-Running the code wil output a file with the three input columns and an additional column with either [0,1,2].<br>
+Running the code wil output a file with the three input columns and an additional column with either [0,2].<br>
 0 = Not observable<br>
-1 = Close to focal plane, worth including in a proposal<br>
 2 = Target is in the K2 field of view<br>
 
 The code will also make an image showing where the targets fall.
