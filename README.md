@@ -13,7 +13,7 @@ pip install K2fov --upgrade
 
 You'll need a modern version of Python (I've only tested this on 2.7.5) and a relatively new version of numpy (I've tested this on 1.8).
 
-The simplist thing to do is to have a CSV file with
+The simplest thing to do is to have a CSV file with
 RA_degrees, Dec_degrees, Kepmag
 Do not use a header. For example
 
@@ -27,9 +27,9 @@ then you can do
 python -c 'import K2fov; K2fov.K2onSilicon("mytargetlist.csv",1)'
 ```
 Where mytargetlist.csv is your CSV file and 1 is the K2 Campaign number.
-Campaign number must be 0 thru 9. Once we decide on Campaign 10+ pointing I'll update the code.
+Campaign number must be 0 thru 10. Once we decide on Campaign 11+ pointing I'll update the code.
 
-Running the code wil output a file with the three input columns and an additional column with either [0,2].<br>
+Running the code will output a file with the three input columns and an additional column with either [0,2].<br>
 0 = Not observable<br>
 2 = Target is in the K2 field of view<br>
 
