@@ -24,8 +24,8 @@ except ImportError:
     print('You need matplotlib installed to get a plot')
     got_mpl = False
 
-import projection as proj
-import  fov
+from . import projection as proj
+from . import fov
 
 #__version__ = '0.0.1'
 

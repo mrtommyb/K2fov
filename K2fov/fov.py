@@ -1,13 +1,15 @@
+from __future__ import print_function
+
 try:
     import matplotlib.pyplot as mp
     import matplotlib
 except ImportError:
     pass
-import projection as proj
+from . import projection as proj
 import numpy as np
-import rotate as r
-import greatcircle as gcircle
-import definefov
+from . import rotate as r
+from . import greatcircle as gcircle
+from . import definefov
 
 
 __version__ = "$Id: fov.py 35 2013-12-19 22:27:34Z fergalm $"
@@ -92,7 +94,7 @@ class KeplerFov():
 
         self.plateScale_arcsecPerPix = 3.98
 
-        self.mods = range(1, 25)
+        self.mods = list(range(1, 25))
         #Remove the 4 FGS mods
         self.mods.pop(0)
         self.mods.pop(3)
@@ -216,7 +218,7 @@ class KeplerFov():
         try:
             ch = self.pickAChannel(ra, dec)
         except ValueError:
-            print "WARN: %.7f %.7f not on any channel" %(ra, dec)
+            print("WARN: %.7f %.7f not on any channel" %(ra, dec))
             return (0,0,0)
 
         col, row = self.getColRowWithinChannel(ra, dec, ch, \
