@@ -3,7 +3,7 @@ try:
 except ImportError:
     pass
 import numpy as np
-import rotate
+from . import rotate
 
 __version__ = "$Id: projection.py 36 2014-01-23 22:19:15Z fergalm $"
 __URL__ = "$URL: http://svn.code.sf.net/p/keplertwowheel/code/py/projection.py $"
