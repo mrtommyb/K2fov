@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 import numpy as np
 
@@ -47,13 +48,13 @@ def generateVectors():
 
     #Print out the results
     #import pdb; pdb.set_trace()
-    print "["
+    print("[")
     for i in range(len(inFile)):
         ch = channelFromModOut(inFile[i,0], inFile[i,1])
-        print "[%3i., %3i., %3i., %13.7f, %13.7f, %13.7f], \\" %( \
+        print("[%3i., %3i., %3i., %13.7f, %13.7f, %13.7f], \\" %( \
             inFile[i, 0], inFile[i, 1], ch, \
-            origin[i, 0], origin[i, 1], origin[i,2])
-    print "]"
+            origin[i, 0], origin[i, 1], origin[i,2]))
+    print("]")
 
 
 
