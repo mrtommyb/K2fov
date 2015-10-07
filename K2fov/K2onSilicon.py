@@ -165,10 +165,10 @@ def getRaDecRollFromFieldnum(fieldnum):
         ra_deg = 186.7794430 
         dec_deg = -4.0271572 
         scRoll_deg = 157.6280500 
-    elif fieldnum == 11: #not final
-        ra_deg = 259.9713133
-        dec_deg = -23.9491867
-        scRoll_deg = 176.4228490
+    elif fieldnum == 11:
+        ra_deg = 260.3880071
+        dec_deg = -23.9759578
+        scRoll_deg = 176.5837078
     elif fieldnum == 12: # not final
         ra_deg = 349.8034749
         dec_deg = -5.8755768
