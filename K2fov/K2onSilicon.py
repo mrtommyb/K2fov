@@ -108,10 +108,11 @@ def nearSiliconCheck(ra_deg,dec_deg,FovObj,max_sep=8.2):
 
 
 def getRaDecRollFromFieldnum(fieldnum):
-    if fieldnum in [14,15,16,17]:
+    if fieldnum in [14, 15, 16, 17]:
         print('''Danger! The field you are searching is not yet fixed and is only the proposed position
             please don't use this position for target selection''')
-    if fieldnum not in [100,0,1,2,3,4,5,6,7,8,9,10,11,12,13]:
+    if fieldnum not in [100, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                        11, 12, 13, 14, 15, 16, 17]:
         raise ValueError('Only Fields 0-13 are set in this version of the code')
     elif fieldnum == 100:
         print('Danger! You are using the K2 first light field, you almost certainly do not want to do this')
@@ -119,9 +120,6 @@ def getRaDecRollFromFieldnum(fieldnum):
         dec_deg = -22.6664
         scRoll_deg = -171.8067
     elif fieldnum == 0:
-        #ra_deg = 98.15766666666666
-        #dec_deg = 21.594944444444444
-        #scRoll_deg = 177.535
         ra_deg = 98.2964079
         dec_deg = 21.5878901
         scRoll_deg = 177.4810830
@@ -161,10 +159,10 @@ def getRaDecRollFromFieldnum(fieldnum):
         ra_deg = 270.3544823
         dec_deg = -21.7798098
         scRoll_deg = 0.4673417
-    elif fieldnum == 10: 
-        ra_deg = 186.7794430 
-        dec_deg = -4.0271572 
-        scRoll_deg = 157.6280500 
+    elif fieldnum == 10:
+        ra_deg = 186.7794430
+        dec_deg = -4.0271572
+        scRoll_deg = 157.6280500
     elif fieldnum == 11:
         ra_deg = 260.3880071
         dec_deg = -23.9759578
@@ -177,6 +175,22 @@ def getRaDecRollFromFieldnum(fieldnum):
         ra_deg = 72.7968465
         dec_deg = 20.7863018
         scRoll_deg = -172.6384788
+    elif fieldnum == 14:
+        ra_deg = 159.9670000
+        dec_deg = 7.1323713
+        scRoll_deg = 159.022
+    elif fieldnum == 15:
+        ra_deg = 231.6012920
+        dec_deg = -19.6081960
+        scRoll_deg = 166.296
+    elif fieldnum == 16:
+        ra_deg = 320.9966284
+        dec_deg = -16.4559528
+        scRoll_deg = -161.897
+   elif fieldnum == 17:
+        ra_deg = 188.3497679
+        dec_deg = -1.9586535
+        scRoll_deg = -22.290
     else:
         raise NotImplementedError
 
