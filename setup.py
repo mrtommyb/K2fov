@@ -14,7 +14,7 @@ except ImportError:
     setup
 
 setup(name='K2fov',
-      version='1.9.1',
+      version='1.9.2',
       description='Find which targets are in the field of view of K2',
       author='Tom Barclay',
       author_email='tom@tombarclay.com',
