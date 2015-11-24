@@ -27,7 +27,8 @@ then you can do
 python -c 'import K2fov; K2fov.K2onSilicon("mytargetlist.csv",1)'
 ```
 Where mytargetlist.csv is your CSV file and 1 is the K2 Campaign number.
-Campaign number must be 0 thru 10. Once we decide on Campaign 11+ pointing I'll update the code.
+Campaign number must be 0 thru 13. The function can also be called for Campaign 14 and onwards,
+but keep in mind that the positions of those campaigns are preliminary and will very likely change.
 
 Running the code will output a file with the three input columns and an additional column with either [0,2].<br>
 0 = Not observable<br>
