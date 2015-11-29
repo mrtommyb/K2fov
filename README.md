@@ -1,6 +1,9 @@
-K2fov
-======
-Check whether targets are in the field of view of K2
+# K2fov
+***Check whether targets are in the field of view of NASA's K2 mission.***
+
+[![PyPI](http://img.shields.io/pypi/v/K2fov.svg)](https://pypi.python.org/pypi/K2fov/)  [![Travis status](https://travis-ci.org/KeplerGO/K2fov.svg)](https://travis-ci.org/KeplerGO/K2fov)
+
+### Installation
 
 install with
 ```bash
@@ -12,6 +15,8 @@ pip install K2fov --upgrade
 ```
 
 You'll need a modern version of Python (I've only tested this on 2.7.5) and a relatively new version of numpy (I've tested this on 1.8).
+
+### Usage
 
 The simplest thing to do is to have a CSV file with
 RA_degrees, Dec_degrees, Kepmag
@@ -35,7 +40,7 @@ Running the code will output a file with the three input columns and an addition
 
 The code will also make an image showing where the targets fall.
 
-If you want to run simple script then you can run
+If you want to run a simple script then you can run
 ```bash
 python runK2onSilicon.py mytargetlist.csv campaignNumber
 ```
