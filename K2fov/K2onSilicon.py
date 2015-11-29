@@ -151,6 +151,27 @@ def getRaDecRollFromFieldnum(fieldnum):
     return (info["ra"], info["dec"], info["roll"])
 
 
+def getKeplerFov(fieldnum):
+    """Returns a `fov.KeplerFov` object for a given campaign.
+
+    Parameters
+    ----------
+    fieldnum : int
+        K2 Campaign number.
+
+    Returns
+    -------
+    fovobj : `fov.KeplerFov` object
+        Details the footprint of the requested K2 campaign.
+    """
+    ra, dec, scRoll = getRaDecRollFromFieldnum(fieldnum)
+    # convert from SC roll to FOV coordinates
+    # do not use the fovRoll coords anywhere else
+    # they are internal to this script only
+    fovRoll = fov.getFovAngleFromSpacecraftRoll(scRoll)
+    return fov.KeplerFov(ra, dec, fovRoll)
+
+
 def K2onSilicon(infile, fieldnum):
     ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
 
