@@ -20,6 +20,6 @@ setup(name='K2fov',
       author_email='tom@tombarclay.com',
       url='https://github.com/mrtommyb/K2fov',
       packages=['K2fov'],
-      data_files=[('K2fov', ['K2fov/data/k2-campaigns.json'])],
+      data_files=[('K2fov/data', ['K2fov/data/k2-campaigns.json'])],
       install_requires=["numpy"],
       )
