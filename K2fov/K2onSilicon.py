@@ -1,16 +1,12 @@
 """
-Created on Wed Jan 29 10:40:14 2014
-
-@author: tom_barclay
-
-
-The code will accept a file containing a minimum of two columns
-RA Dec.
+The code will accept a file containing a minimum of two columns RA Dec.
 where RA and Dec are in decimal degrees
-
 """
 from __future__ import division, print_function
 import sys
+import json
+import logging
+
 try:
     import numpy as np
 except ImportError:
@@ -26,8 +22,12 @@ except ImportError:
 
 from . import projection as proj
 from . import fov
+from . import CAMPAIGN_DICT_FILE
 
-#__version__ = '0.0.1'
+
+# Print a warning message when data is returned for these campaigns:
+PRELIM_CAMPAIGNS = [14, 15, 16, 17, 18]
+
 
 params = {#'backend': 'png',
                         'axes.linewidth': 1.5,
@@ -107,140 +107,51 @@ def nearSiliconCheck(ra_deg,dec_deg,FovObj,max_sep=8.2):
         return False
 
 
+def getFieldInfo(fieldnum):
+    """Returns a dictionary containing the metadata of a K2 Campaign field.
+
+    Raises a ValueError if the field number is unknown.
+
+    Parameters
+    ----------
+    fieldnum : int
+        Campaign field number (e.g. 0, 1, 2, ...)
+
+    Returns
+    -------
+    field : dict
+        The dictionary contains the keys
+        'ra', 'dec', 'roll' (floats in decimal degrees),
+        'start', 'stop', (strings in YYYY-MM-DD format)
+        and 'comments' (free text).
+    """
+    try:
+        CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
+        return CAMPAIGN_DICT["c{}".format(fieldnum)]
+    except KeyError:
+        raise ValueError("Field {} not set in this version "
+                         "of the code".format(fieldnum))
+
+
 def getRaDecRollFromFieldnum(fieldnum):
-    if fieldnum in [14, 15, 16, 17]:
-        print('''Danger! The field you are searching is not yet fixed and is only the proposed position
-            please don't use this position for target selection''')
-    if fieldnum not in [100, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                        11, 12, 13, 14, 15, 16, 17]:
-        raise ValueError('Only Fields 0-13 are set in this version of the code')
-    elif fieldnum == 100:
-        print('Danger! You are using the K2 first light field, you almost certainly do not want to do this')
-        ra_deg = 290.6820
-        dec_deg = -22.6664
-        scRoll_deg = -171.8067
-    elif fieldnum == 0:
-        ra_deg = 98.2964079
-        dec_deg = 21.5878901
-        scRoll_deg = 177.4810830
-    elif fieldnum == 1:
-        ra_deg = 173.939610
-        dec_deg = 1.4172989
-        scRoll_deg = 157.641206
-    elif fieldnum == 2:
-        ra_deg = 246.1264
-        dec_deg = -22.4473
-        scRoll_deg = 171.2284
-    elif fieldnum == 3:
-        ra_deg = 336.66534641438909
-        dec_deg = -11.096663792177043
-        scRoll_deg = -158.49481806598479
-    elif fieldnum == 4:
-        ra_deg = 59.0759116
-        dec_deg = 18.6605794
-        scRoll_deg = -167.6992793
-    elif fieldnum == 5:
-        ra_deg = 130.1576478
-        dec_deg = 16.8296140
-        scRoll_deg = 166.0591297
-    elif fieldnum == 6:
-        ra_deg = 204.8650344
-        dec_deg = -11.2953585
-        scRoll_deg = 159.6356000
-    elif fieldnum == 7:
-        ra_deg = 287.82850661398538
-        dec_deg = -23.360018153291808
-        scRoll_deg = -172.78037532313485
-    elif fieldnum == 8:
-        ra_deg = 16.3379975
-        dec_deg = 5.2623459
-        scRoll_deg = -157.3538761
-    elif fieldnum == 9:
-        ra_deg = 270.3544823
-        dec_deg = -21.7798098
-        scRoll_deg = 0.4673417
-    elif fieldnum == 10:
-        ra_deg = 186.7794430
-        dec_deg = -4.0271572
-        scRoll_deg = 157.6280500
-    elif fieldnum == 11:
-        ra_deg = 260.3880071
-        dec_deg = -23.9759578
-        scRoll_deg = 176.5837078
-    elif fieldnum == 12:
-        ra_deg = 351.6775368
-        dec_deg = -5.095648
-        scRoll_deg = -156.7203394
-    elif fieldnum == 13:
-        ra_deg = 72.7968465
-        dec_deg = 20.7863018
-        scRoll_deg = -172.6384788
-    elif fieldnum == 14:
-        ra_deg = 159.9670000
-        dec_deg = 7.1323713
-        scRoll_deg = 159.022
-    elif fieldnum == 15:
-        ra_deg = 231.6012920
-        dec_deg = -19.6081960
-        scRoll_deg = 166.296
-    elif fieldnum == 16:
-        ra_deg = 320.9966284
-        dec_deg = -16.4559528
-        scRoll_deg = -161.897
-    elif fieldnum == 17:
-        ra_deg = 188.3497679
-        dec_deg = -1.9586535
-        scRoll_deg = -22.290
-    else:
-        raise NotImplementedError
+    """Returns ra, dec, and roll for a campaign.
 
-    return (ra_deg, dec_deg, scRoll_deg)
+    All values returned are in decimal degrees.
+    """
+    # Print warning messages if necessary
+    if fieldnum == 100:
+        logging.warning("Danger! You are using the K2 first light field, "
+                        "you almost certainly do not want to do this")
+    elif fieldnum in PRELIM_CAMPAIGNS:
+        logging.warning("Danger! The field you are searching is not yet fixed "
+                        "and is only the proposed position. "
+                        "Please don't use this position for target selection.")
+
+    info = getFieldInfo(fieldnum)
+    return (info["ra"], info["dec"], info["roll"])
 
 
-# def run_test():
-#     infile = 'KeplerCampaignMDwarfsTargetList.txt'
-#     fieldnum = 0
-
-#     ra_sources_deg, dec_sources_deg = parse_file(infile)
-#     ra_deg, dec_deg, scRoll_deg = getRaDecRollFromFieldnum(fieldnum)
-#     fovRoll_deg = fov.getFovAngleFromSpacecraftRoll(scRoll_deg)
-
-#     k = fov.KeplerFov(ra_deg, dec_deg, fovRoll_deg)
-
-#     raDec = k.getCoordsOfChannelCorners()
-
-
-#     onSilicon = map(onSiliconCheck,
-#         ra_sources_deg,dec_sources_deg,np.repeat(k,len(ra_sources_deg)))
-
-#     nearSilicon = map(nearSiliconCheck,
-#         ra_sources_deg,dec_sources_deg,np.repeat(k,len(ra_sources_deg)))
-
-#     onSilicon = np.array(onSilicon,dtype=bool)
-#     nearSilicon = np.array(nearSilicon, dtype=bool)
-
-#     if got_mpl:
-#         ph = proj.Cylindrical()
-#         k.plotPointing(ph,showOuts=False)
-#         targets = ph.skyToPix(ra_sources_deg, dec_sources_deg)
-#         fig = plt.gcf()
-#         ax = fig.gca()
-#         ax = fig.add_subplot(111)
-#         ax.scatter(*targets,s=0.5)
-#         ax.scatter(targets[0][nearSilicon],
-#             targets[1][nearSilicon],color='b')
-#         ax.scatter(targets[0][onSilicon],
-#             targets[1][onSilicon],color='r')
-#         ax.set_xlabel('R.A. [radians]',fontsize=16)
-#         ax.set_ylabel('Declination [radians]',fontsize=16)
-
-
-
-
-#         fig.show()
-
-
-def K2onSilicon(infile,fieldnum):
+def K2onSilicon(infile, fieldnum):
     ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
 
     if np.shape(ra_sources_deg)[0] > 500:
@@ -317,9 +228,6 @@ def K2onSilicon(infile,fieldnum):
         print('I made one file: targets_siliconFlag.csv')
 
 
-
-
-
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         print('')
@@ -335,11 +243,3 @@ if __name__ == '__main__':
     infile = str(sys.argv[1])
 
     K2OnSilicon(infile, fieldnum)
-
-
-
-
-
-
-
-
