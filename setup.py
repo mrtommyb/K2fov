@@ -13,6 +13,12 @@ except ImportError:
     from distutils.core import setup
     setup
 
+
+# Command-line tools
+entry_points = {'console_scripts': [
+    'K2onSilicon = K2fov.K2onSilicon:K2onSilicon_main'
+]}
+
 setup(name='K2fov',
       version='2.0.0',
       description='Find which targets are in the field of view of K2',
@@ -20,6 +26,7 @@ setup(name='K2fov',
       author_email='tom@tombarclay.com',
       url='https://github.com/mrtommyb/K2fov',
       packages=['K2fov'],
-      data_files=[('K2fov/data', ['K2fov/data/k2-campaigns.json'])],
+      package_data={'K2fov': ['data/*.json']},
       install_requires=["numpy"],
+      entry_points=entry_points,
       )
