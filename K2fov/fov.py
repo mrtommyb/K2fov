@@ -624,7 +624,7 @@ class KeplerModOut(Polygon):
         return self.channel
 
 
-    def identifyModule(self, maptype=mp, modout=False):
+    def identifyModule(self, modout=False):
         x,y = np.mean(self.polygon, 0)
 
         if modout:

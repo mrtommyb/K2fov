@@ -1,16 +1,12 @@
 """
-Created on Wed Jan 29 10:40:14 2014
-
-@author: tom_barclay
-
-
-The code will accept a file containing a minimum of two columns
-RA Dec.
+The code will accept a file containing a minimum of two columns RA Dec.
 where RA and Dec are in decimal degrees
-
 """
 from __future__ import division, print_function
 import sys
+import json
+import logging
+
 try:
     import numpy as np
 except ImportError:
@@ -27,30 +23,22 @@ except ImportError:
 from . import projection as proj
 from . import fov
 
-#__version__ = '0.0.1'
 
-params = {#'backend': 'png',
-                        'axes.linewidth': 1.5,
-                        'axes.labelsize': 24,
-                        'font.family': 'sans-serif',
-                        #'axes.fontweight' : 'bold',
-                        'font.size': 22,
-                        'legend.fontsize': 14,
-                        'xtick.labelsize': 16,
-                        'ytick.labelsize': 16,
-                        'text.usetex': False,
-                        #'font.family': 'Palatino'
-                        }
+params = {
+            'axes.linewidth': 1.5,
+            'axes.labelsize': 24,
+            'font.family': 'sans-serif',
+            'font.size': 22,
+            'legend.fontsize': 14,
+            'xtick.labelsize': 16,
+            'ytick.labelsize': 16,
+            'text.usetex': False,
+         }
 if got_mpl:
     plt.rcParams.update(params)
 
-#try:
-#    plt.rcParams.update({'font.family': 'Palatino'})
-#except:
-#    pass
 
-
-def angSepVincenty(ra1,dec1,ra2,dec2):
+def angSepVincenty(ra1, dec1, ra2, dec2):
     """
     Vincenty formula for distances on a sphere
     """
@@ -58,9 +46,6 @@ def angSepVincenty(ra1,dec1,ra2,dec2):
     dec1_rad = np.radians(dec1)
     ra2_rad = np.radians(ra2)
     dec2_rad = np.radians(dec2)
-    #diffpos = np.arccos(
-    #    np.sin(dec1_rad)*np.sin(dec2_rad) +
-    #    np.cos(dec1_rad)*np.cos(dec2_rad)*np.cos(np.abs(ra1_rad - ra2_rad)))
 
     sin_dec1, cos_dec1 = np.sin(dec1_rad), np.cos(dec1_rad)
     sin_dec2, cos_dec2 = np.sin(dec2_rad), np.cos(dec2_rad)
@@ -68,227 +53,177 @@ def angSepVincenty(ra1,dec1,ra2,dec2):
     cos_delta_ra, sin_delta_ra = np.cos(delta_ra), np.sin(delta_ra)
 
     diffpos = np.arctan2(np.sqrt((cos_dec2 * sin_delta_ra) ** 2 +
-                       (cos_dec1 * sin_dec2 -
-                        sin_dec1 * cos_dec2 * cos_delta_ra) ** 2),
-                  sin_dec1 * sin_dec2 + cos_dec1 * cos_dec2 * cos_delta_ra)
+                         (cos_dec1 * sin_dec2 -
+                          sin_dec1 * cos_dec2 * cos_delta_ra) ** 2),
+                         sin_dec1 * sin_dec2 + cos_dec1 * cos_dec2 * cos_delta_ra)
 
     return np.degrees(diffpos)
 
 
 def parse_file(infile):
     try:
-        a,b, mag = np.atleast_2d(np.genfromtxt(infile, usecols=[0,1,2],delimiter=',')).T
+        a, b, mag = np.atleast_2d(
+                            np.genfromtxt(
+                                        infile,
+                                        usecols=[0, 1, 2],
+                                        delimiter=','
+                                        )
+                    ).T
     except IOError:
         print('There seems to be a problem with the input file, the format should be: RA_degrees (J2000), \
             Dec_degrees (J2000), Magnitude. There should be no header, columns should be seperated by a comma')
         sys.exit(1)
-    return a,b, mag
+    return a, b, mag
 
-def onSiliconCheck(ra_deg,dec_deg,FovObj):
+
+def onSiliconCheck(ra_deg, dec_deg, FovObj):
     try:
-        dist = angSepVincenty(FovObj.ra0_deg,FovObj.dec0_deg,ra_deg,dec_deg)
+        dist = angSepVincenty(FovObj.ra0_deg, FovObj.dec0_deg, ra_deg, dec_deg)
         if dist >= 90.:
             return False
         ch = FovObj.pickAChannel(ra_deg, dec_deg)
         ch, col, row = FovObj.getChannelColRow(ra_deg, dec_deg)
-        #exclude modules 3 and 7
-        if ch in [5,6,7,8,17,18,19,20]:
+        # exclude modules 3 and 7
+        if ch in [5, 6, 7, 8, 17, 18, 19, 20]:
             return False
-        #return (ch,col,row)
+        # return (ch,col,row)
         return True
     except ValueError:
         return False
 
-def nearSiliconCheck(ra_deg,dec_deg,FovObj,max_sep=8.2):
-    dist = angSepVincenty(FovObj.ra0_deg,FovObj.dec0_deg,ra_deg,dec_deg)
+
+def nearSiliconCheck(ra_deg, dec_deg, FovObj, max_sep=8.2):
+    dist = angSepVincenty(FovObj.ra0_deg, FovObj.dec0_deg, ra_deg, dec_deg)
     if dist <= max_sep:
         return True
     else:
         return False
 
 
+def getFieldInfo(fieldnum):
+    """Returns a dictionary containing the metadata of a K2 Campaign field.
+
+    Raises a ValueError if the field number is unknown.
+
+    Parameters
+    ----------
+    fieldnum : int
+        Campaign field number (e.g. 0, 1, 2, ...)
+
+    Returns
+    -------
+    field : dict
+        The dictionary contains the keys
+        'ra', 'dec', 'roll' (floats in decimal degrees),
+        'start', 'stop', (strings in YYYY-MM-DD format)
+        and 'comments' (free text).
+    """
+    try:
+        from . import CAMPAIGN_DICT_FILE
+        CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
+        info = CAMPAIGN_DICT["c{}".format(fieldnum)]
+        # Print warning messages if necessary
+        if fieldnum == 100:
+            logging.warning("You are using the K2 first light field, "
+                            "you almost certainly do not want to do this")
+        elif "preliminary" in info and info["preliminary"] == "True":
+            logging.warning("The field you are searching is not yet fixed "
+                            "and is only the proposed position. "
+                            "Do not use this position for target selection.")
+        return info
+    except KeyError:
+        raise ValueError("Field {} not set in this version "
+                         "of the code".format(fieldnum))
+
+
 def getRaDecRollFromFieldnum(fieldnum):
-    if fieldnum in [14, 15, 16, 17]:
-        print('''Danger! The field you are searching is not yet fixed and is only the proposed position
-            please don't use this position for target selection''')
-    if fieldnum not in [100, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                        11, 12, 13, 14, 15, 16, 17]:
-        raise ValueError('Only Fields 0-13 are set in this version of the code')
-    elif fieldnum == 100:
-        print('Danger! You are using the K2 first light field, you almost certainly do not want to do this')
-        ra_deg = 290.6820
-        dec_deg = -22.6664
-        scRoll_deg = -171.8067
-    elif fieldnum == 0:
-        ra_deg = 98.2964079
-        dec_deg = 21.5878901
-        scRoll_deg = 177.4810830
-    elif fieldnum == 1:
-        ra_deg = 173.939610
-        dec_deg = 1.4172989
-        scRoll_deg = 157.641206
-    elif fieldnum == 2:
-        ra_deg = 246.1264
-        dec_deg = -22.4473
-        scRoll_deg = 171.2284
-    elif fieldnum == 3:
-        ra_deg = 336.66534641438909
-        dec_deg = -11.096663792177043
-        scRoll_deg = -158.49481806598479
-    elif fieldnum == 4:
-        ra_deg = 59.0759116
-        dec_deg = 18.6605794
-        scRoll_deg = -167.6992793
-    elif fieldnum == 5:
-        ra_deg = 130.1576478
-        dec_deg = 16.8296140
-        scRoll_deg = 166.0591297
-    elif fieldnum == 6:
-        ra_deg = 204.8650344
-        dec_deg = -11.2953585
-        scRoll_deg = 159.6356000
-    elif fieldnum == 7:
-        ra_deg = 287.82850661398538
-        dec_deg = -23.360018153291808
-        scRoll_deg = -172.78037532313485
-    elif fieldnum == 8:
-        ra_deg = 16.3379975
-        dec_deg = 5.2623459
-        scRoll_deg = -157.3538761
-    elif fieldnum == 9:
-        ra_deg = 270.3544823
-        dec_deg = -21.7798098
-        scRoll_deg = 0.4673417
-    elif fieldnum == 10:
-        ra_deg = 186.7794430
-        dec_deg = -4.0271572
-        scRoll_deg = 157.6280500
-    elif fieldnum == 11:
-        ra_deg = 260.3880071
-        dec_deg = -23.9759578
-        scRoll_deg = 176.5837078
-    elif fieldnum == 12:
-        ra_deg = 351.6775368
-        dec_deg = -5.095648
-        scRoll_deg = -156.7203394
-    elif fieldnum == 13:
-        ra_deg = 72.7968465
-        dec_deg = 20.7863018
-        scRoll_deg = -172.6384788
-    elif fieldnum == 14:
-        ra_deg = 159.9670000
-        dec_deg = 7.1323713
-        scRoll_deg = 159.022
-    elif fieldnum == 15:
-        ra_deg = 231.6012920
-        dec_deg = -19.6081960
-        scRoll_deg = 166.296
-    elif fieldnum == 16:
-        ra_deg = 320.9966284
-        dec_deg = -16.4559528
-        scRoll_deg = -161.897
-    elif fieldnum == 17:
-        ra_deg = 188.3497679
-        dec_deg = -1.9586535
-        scRoll_deg = -22.290
-    else:
-        raise NotImplementedError
+    """Returns ra, dec, and roll for a campaign.
 
-    return (ra_deg, dec_deg, scRoll_deg)
+    All values returned are in decimal degrees.
+    """
+    info = getFieldInfo(fieldnum)
+    return (info["ra"], info["dec"], info["roll"])
 
 
-# def run_test():
-#     infile = 'KeplerCampaignMDwarfsTargetList.txt'
-#     fieldnum = 0
+def getKeplerFov(fieldnum):
+    """Returns a `fov.KeplerFov` object for a given campaign.
 
-#     ra_sources_deg, dec_sources_deg = parse_file(infile)
-#     ra_deg, dec_deg, scRoll_deg = getRaDecRollFromFieldnum(fieldnum)
-#     fovRoll_deg = fov.getFovAngleFromSpacecraftRoll(scRoll_deg)
+    Parameters
+    ----------
+    fieldnum : int
+        K2 Campaign number.
 
-#     k = fov.KeplerFov(ra_deg, dec_deg, fovRoll_deg)
-
-#     raDec = k.getCoordsOfChannelCorners()
-
-
-#     onSilicon = map(onSiliconCheck,
-#         ra_sources_deg,dec_sources_deg,np.repeat(k,len(ra_sources_deg)))
-
-#     nearSilicon = map(nearSiliconCheck,
-#         ra_sources_deg,dec_sources_deg,np.repeat(k,len(ra_sources_deg)))
-
-#     onSilicon = np.array(onSilicon,dtype=bool)
-#     nearSilicon = np.array(nearSilicon, dtype=bool)
-
-#     if got_mpl:
-#         ph = proj.Cylindrical()
-#         k.plotPointing(ph,showOuts=False)
-#         targets = ph.skyToPix(ra_sources_deg, dec_sources_deg)
-#         fig = plt.gcf()
-#         ax = fig.gca()
-#         ax = fig.add_subplot(111)
-#         ax.scatter(*targets,s=0.5)
-#         ax.scatter(targets[0][nearSilicon],
-#             targets[1][nearSilicon],color='b')
-#         ax.scatter(targets[0][onSilicon],
-#             targets[1][onSilicon],color='r')
-#         ax.set_xlabel('R.A. [radians]',fontsize=16)
-#         ax.set_ylabel('Declination [radians]',fontsize=16)
+    Returns
+    -------
+    fovobj : `fov.KeplerFov` object
+        Details the footprint of the requested K2 campaign.
+    """
+    ra, dec, scRoll = getRaDecRollFromFieldnum(fieldnum)
+    # convert from SC roll to FOV coordinates
+    # do not use the fovRoll coords anywhere else
+    # they are internal to this script only
+    fovRoll = fov.getFovAngleFromSpacecraftRoll(scRoll)
+    return fov.KeplerFov(ra, dec, fovRoll)
 
 
-
-
-#         fig.show()
-
-
-def K2onSilicon(infile,fieldnum):
+def K2onSilicon(infile, fieldnum):
     ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
 
     if np.shape(ra_sources_deg)[0] > 500:
-        print('There are {} sources in your target list, this could take some time'.format(np.shape(ra_sources_deg)[0]))
+        logging.warning("There are {} sources in your target list, "
+                        "this could take some time".format(np.shape(ra_sources_deg)[0]))
 
     ra_deg, dec_deg, scRoll_deg = getRaDecRollFromFieldnum(fieldnum)
 
-    ## convert from SC roll to FOV coordinates
-    ## do not use the fovRoll coords anywhere else
-    ## they are internal to this script only
+    # convert from SC roll to FOV coordinates
+    # do not use the fovRoll coords anywhere else
+    # they are internal to this script only
     fovRoll_deg = fov.getFovAngleFromSpacecraftRoll(scRoll_deg)
 
-    ## initialize class
+    # initialize class
     k = fov.KeplerFov(ra_deg, dec_deg, fovRoll_deg)
 
     raDec = k.getCoordsOfChannelCorners()
 
+    onSilicon = list(
+                    map(
+                        onSiliconCheck,
+                        ra_sources_deg,
+                        dec_sources_deg,
+                        np.repeat(k, len(ra_sources_deg))
+                        )
+                    )
 
-    onSilicon = map(onSiliconCheck,
-        ra_sources_deg,dec_sources_deg,np.repeat(k,len(ra_sources_deg)))
+    nearSilicon = list(
+                    map(
+                        nearSiliconCheck,
+                        ra_sources_deg,
+                        dec_sources_deg,
+                        np.repeat(k, len(ra_sources_deg))
+                        )
+                    )
 
-    nearSilicon = map(nearSiliconCheck,
-        ra_sources_deg,dec_sources_deg,np.repeat(k,len(ra_sources_deg)))
-
-    onSilicon = np.array(onSilicon,dtype=bool)
+    onSilicon = np.array(onSilicon, dtype=bool)
     nearSilicon = np.array(nearSilicon, dtype=bool)
 
     if got_mpl:
         almost_black = '#262626'
         light_grey = np.array([float(248)/float(255)]*3)
-        #ph = proj.Gnomic(ra_deg, dec_deg)
         ph = proj.PlateCaree()
-        k.plotPointing(ph,showOuts=False,plot_degrees=False)
+        k.plotPointing(ph, showOuts=False, plot_degrees=False)
         targets = ph.skyToPix(ra_sources_deg, dec_sources_deg)
-        targets = np.array(targets ) #* 180 / np.pi
+        targets = np.array(targets)
         fig = plt.gcf()
         ax = fig.gca()
         ax = fig.add_subplot(111)
-        #ax.scatter(*targets,s=2,label='not on silicon')
-        ax.scatter(*targets,color='#fc8d62',s=7,label='not on silicon')
-        ax.scatter(targets[0][onSilicon],
-            targets[1][onSilicon],color='#66c2a5',s=8,label='on silicon')
-        ax.set_xlabel('R.A. [degrees]',fontsize=16)
-        ax.set_ylabel('Declination [degrees]',fontsize=16)
+        ax.scatter(*targets, color='#fc8d62', s=7, label='not on silicon')
+        ax.scatter(targets[0][onSilicon], targets[1][onSilicon],
+                   color='#66c2a5', s=8, label='on silicon')
+        ax.set_xlabel('R.A. [degrees]', fontsize=16)
+        ax.set_ylabel('Declination [degrees]', fontsize=16)
         ax.invert_xaxis()
         ax.minorticks_on()
-        legend = ax.legend(loc=0,
-            frameon=True, scatterpoints=1)
+        legend = ax.legend(loc=0, frameon=True, scatterpoints=1)
         rect = legend.get_frame()
         rect.set_alpha(0.3)
         rect.set_facecolor(light_grey)
@@ -296,20 +231,20 @@ def K2onSilicon(infile,fieldnum):
         texts = legend.texts
         for t in texts:
             t.set_color(almost_black)
-        fig.savefig('targets_fov.png',dpi=300)
+        fig.savefig('targets_fov.png', dpi=300)
         plt.close('all')
 
     siliconFlag = np.zeros_like(ra_sources_deg)
 
-    #prints zero if target is not on silicon
-    siliconFlag = np.where(nearSilicon,0,siliconFlag)
+    # prints zero if target is not on silicon
+    siliconFlag = np.where(nearSilicon, 0, siliconFlag)
 
-    #prints a 2 if target is on silicon
-    siliconFlag = np.where(onSilicon,2,siliconFlag)
+    # prints a 2 if target is on silicon
+    siliconFlag = np.where(onSilicon, 2, siliconFlag)
 
     outarr = np.array([ra_sources_deg, dec_sources_deg, mag, siliconFlag])
     np.savetxt('targets_siliconFlag.csv', outarr.T, delimiter=', ',
-        fmt=['%10.10f','%10.10f','%10.2f','%i'])
+               fmt=['%10.10f', '%10.10f', '%10.2f', '%i'])
 
     if got_mpl:
         print('I made two files: targets_siliconFlag.csv and targets_fov.png')
@@ -317,29 +252,19 @@ def K2onSilicon(infile,fieldnum):
         print('I made one file: targets_siliconFlag.csv')
 
 
-
+def K2onSilicon_main(args=None):
+    """Function called when `K2onSilicon` is executed on the command line."""
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="Run K2onSilicon to find which targets in a "
+                    "list call on active silicon for a given K2 campaign.")
+    parser.add_argument('csv_file', type=str,
+                        help="Name of input csv file with targets, column are "
+                             "Ra_degrees, Dec_degrees, Kepmag")
+    parser.add_argument('campaign', type=int, help='K2 Campaign number')
+    args = parser.parse_args(args)
+    K2onSilicon(args.csv_file, args.campaign)
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        print('')
-        print('python K2onSilicon.py filename fieldnum')
-        print('')
-        sys.exit(2)
-    elif len(sys.argv) != 3:
-        print('use the command')
-        print('python K2onSilicon.py filename fieldnum')
-        sys.exit(2)
-
-    fieldnum = int(sys.argv[2])
-    infile = str(sys.argv[1])
-
-    K2OnSilicon(infile, fieldnum)
-
-
-
-
-
-
-
-
+    K2onSilicon_main()
