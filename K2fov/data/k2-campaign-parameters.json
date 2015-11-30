@@ -1,0 +1,185 @@
+ {
+  "c100": {
+    "campaign": 100,
+    "ra": 290.6820,
+    "dec": -22.6664,
+    "roll": -171.8067,
+    "comments": "First light field."
+  },
+  "c0": {
+    "campaign": 0,
+    "ra": 98.2964079,
+    "dec": 21.5878901,
+    "roll": 177.4810830,
+    "start": "2014-03-08",
+    "stop": "2014-05-27",
+    "comments": "Near Galactic Anti-center, M35, NGC 2158"
+  },
+  "c1": {
+    "campaign": 1,
+    "ra": 173.939610,
+    "dec": 1.4172989,
+    "roll": 157.641206,
+    "start": "2014-05-30",
+    "stop": "2014-08-21",
+    "comments": "North Galactic Cap"
+  },
+  "c2": {
+    "campaign": 2,
+    "ra": 246.1264,
+    "dec": -22.4473,
+    "roll": 171.2284,
+    "start": "2014-08-23",
+    "stop": "2014-11-13",
+    "comments": "Near Galactic Center, M4, M80, M19, Upr Sco, rho Oph"
+  },
+  "c3": {
+    "campaign": 3,
+    "ra": 336.66534641438909,
+    "dec": -11.096663792177043,
+    "roll": -158.49481806598479,
+    "start": "2014-11-14",
+    "stop": "2015-02-03",
+    "comments": "South Galactic Cap, Neptune"
+  },
+  "c4": {
+    "campaign": 4,
+    "ra": 59.0759116,
+    "dec": 18.6605794,
+    "roll": -167.6992793,
+    "start": "2015-02-07",
+    "stop": "2015-04-23",
+    "comments": "M45 (Pleiades), NGC1647, Hyades"
+  },
+  "c5": {
+    "campaign": 5,
+    "ra": 130.1576478,
+    "dec": 16.8296140,
+    "roll": 166.0591297,
+    "start": "2015-04-27",
+    "stop": "2015-07-10",
+    "comments": "M44 (Beehive), M67"
+  },
+  "c6": {
+    "campaign": 6,
+    "ra": 204.8650344,
+    "dec": -11.2953585,
+    "roll": 159.6356000,
+    "start": "2015-07-14",
+    "stop": "2015-09-30",
+    "comments": "North Galactic Cap"
+  },
+  "c7": {
+    "campaign": 7,
+    "ra": 287.82850661398538,
+    "dec": -23.360018153291808,
+    "roll": -172.78037532313485,
+    "start": "2015-10-03",
+    "stop": "2015-12-26",
+    "comments": "Near Galactic Center, NGC 6717, Pluto"
+  },
+  "c8": {
+    "campaign": 8,
+    "ra": 16.3379975,
+    "dec": 5.2623459,
+    "roll": -157.3538761,
+    "start": "2016-01-03",
+    "stop": "2016-03-23",
+    "comments": "Uranus, IC1613"
+  },
+  "c9": {
+    "campaign": 9,
+    "ra": 270.3544823,
+    "dec": -21.7798098,
+    "roll": 0.4673417,
+    "start": "2016-04-07",
+    "stop": "2016-07-02",
+    "comments": "Galactic Center, Baades Window, M21, M18, M25, M8, Earth, Mars"
+  },
+  "c10": {
+    "campaign": 10,
+    "ra": 186.7794430,
+    "dec": -4.0271572,
+    "roll": 157.6280500,
+    "start": "2016-07-06",
+    "stop": "2016-09-20",
+    "comments": "North Galactic cap"
+  },
+  "c11": {
+    "campaign": 11,
+    "ra": 260.3880071,
+    "dec": -23.9759578,
+    "roll": 176.5837078,
+    "start": "2016-09-24",
+    "stop": "2016-12-08",
+    "comments": "Galactic Center"
+  },
+  "c12": {
+    "campaign": 12,
+    "ra": 351.6775368,
+    "dec": -5.095648,
+    "roll": -156.7203394,
+    "start": "2016-12-15",
+    "stop": "2017-03-04",
+    "comments": "South Galactic Cap, Chiron, Mars"
+  },
+  "c13": {
+    "campaign": 13,
+    "ra": 72.7968465,
+    "dec": 20.7863018,
+    "roll": -172.6384788,
+    "start": "2017-03-08",
+    "stop": "2017-05-27",
+    "comments": "Hyades, Taurus"
+  },
+  "c14": {
+    "campaign": 14,
+    "ra": 159.9670000,
+    "dec": 7.1323713,
+    "roll": 159.022,
+    "start": "2017-05-30",
+    "stop": "2017-08-28",
+    "comments": "Proposed - position not final",
+    "preliminary": "True"
+  },
+  "c15": {
+    "campaign": 15,
+    "ra": 231.6012920,
+    "dec": -19.6081960,
+    "roll": 166.296,
+    "start": "2017-08-21",
+    "stop": "2017-11-18",
+    "comments": "Proposed - position not final",
+    "preliminary": "True"
+  },
+  "c16": {
+    "campaign": 16,
+    "ra": 320.9966284,
+    "dec": -16.4559528,
+    "roll": -161.897,
+    "start": "2017-11-20",
+    "stop": "2018-02-09",
+    "comments": "Proposed - position not final",
+    "preliminary": "True"
+  },
+  "c17": {
+    "campaign": 17,
+    "ra": 188.3497679,
+    "dec": -1.9586535,
+    "roll": -22.290,
+    "start": "2018-02-01",
+    "stop": "2018-04-22",
+    "comments": "Proposed - position not final, forward-facing",
+    "preliminary": "True"
+  },
+  "c18": {
+    "campaign": 18,
+    "ra": 112.6389009,
+    "dec": 20.2271914,
+    "roll": 172.044,
+    "start": "2018-04-22",
+    "stop": "2018-07-12",
+    "comments": "Proposed - position not final",
+    "preliminary": "True"
+  }
+}
