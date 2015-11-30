@@ -139,7 +139,8 @@
     "roll": 159.022,
     "start": "2017-05-30",
     "stop": "2017-08-28",
-    "comments": "Proposed - position not final"
+    "comments": "Proposed - position not final",
+    "preliminary": "True"
   },
   "c15": {
     "campaign": 15,
@@ -148,7 +149,8 @@
     "roll": 166.296,
     "start": "2017-08-21",
     "stop": "2017-11-18",
-    "comments": "Proposed - position not final"
+    "comments": "Proposed - position not final",
+    "preliminary": "True"
   },
   "c16": {
     "campaign": 16,
@@ -157,7 +159,8 @@
     "roll": -161.897,
     "start": "2017-11-20",
     "stop": "2018-02-09",
-    "comments": "Proposed - position not final"
+    "comments": "Proposed - position not final",
+    "preliminary": "True"
   },
   "c17": {
     "campaign": 17,
@@ -166,7 +169,8 @@
     "roll": -22.290,
     "start": "2018-02-01",
     "stop": "2018-04-22",
-    "comments": "Proposed - position not final, forward-facing"
+    "comments": "Proposed - position not final, forward-facing",
+    "preliminary": "True"
   },
   "c18": {
     "campaign": 18,
@@ -175,6 +179,7 @@
     "roll": 172.044,
     "start": "2018-04-22",
     "stop": "2018-07-12",
-    "comments": "Proposed - position not final"
+    "comments": "Proposed - position not final",
+    "preliminary": "True"
   }
 }

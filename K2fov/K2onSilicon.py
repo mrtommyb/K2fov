@@ -22,35 +22,23 @@ except ImportError:
 
 from . import projection as proj
 from . import fov
-from . import CAMPAIGN_DICT_FILE
 
 
-# Print a warning message when data is returned for these campaigns:
-PRELIM_CAMPAIGNS = [14, 15, 16, 17, 18]
-
-
-params = {#'backend': 'png',
-                        'axes.linewidth': 1.5,
-                        'axes.labelsize': 24,
-                        'font.family': 'sans-serif',
-                        #'axes.fontweight' : 'bold',
-                        'font.size': 22,
-                        'legend.fontsize': 14,
-                        'xtick.labelsize': 16,
-                        'ytick.labelsize': 16,
-                        'text.usetex': False,
-                        #'font.family': 'Palatino'
-                        }
+params = {
+            'axes.linewidth': 1.5,
+            'axes.labelsize': 24,
+            'font.family': 'sans-serif',
+            'font.size': 22,
+            'legend.fontsize': 14,
+            'xtick.labelsize': 16,
+            'ytick.labelsize': 16,
+            'text.usetex': False,
+         }
 if got_mpl:
     plt.rcParams.update(params)
 
-#try:
-#    plt.rcParams.update({'font.family': 'Palatino'})
-#except:
-#    pass
 
-
-def angSepVincenty(ra1,dec1,ra2,dec2):
+def angSepVincenty(ra1, dec1, ra2, dec2):
     """
     Vincenty formula for distances on a sphere
     """
@@ -58,9 +46,6 @@ def angSepVincenty(ra1,dec1,ra2,dec2):
     dec1_rad = np.radians(dec1)
     ra2_rad = np.radians(ra2)
     dec2_rad = np.radians(dec2)
-    #diffpos = np.arccos(
-    #    np.sin(dec1_rad)*np.sin(dec2_rad) +
-    #    np.cos(dec1_rad)*np.cos(dec2_rad)*np.cos(np.abs(ra1_rad - ra2_rad)))
 
     sin_dec1, cos_dec1 = np.sin(dec1_rad), np.cos(dec1_rad)
     sin_dec2, cos_dec2 = np.sin(dec2_rad), np.cos(dec2_rad)
@@ -68,39 +53,47 @@ def angSepVincenty(ra1,dec1,ra2,dec2):
     cos_delta_ra, sin_delta_ra = np.cos(delta_ra), np.sin(delta_ra)
 
     diffpos = np.arctan2(np.sqrt((cos_dec2 * sin_delta_ra) ** 2 +
-                       (cos_dec1 * sin_dec2 -
-                        sin_dec1 * cos_dec2 * cos_delta_ra) ** 2),
-                  sin_dec1 * sin_dec2 + cos_dec1 * cos_dec2 * cos_delta_ra)
+                         (cos_dec1 * sin_dec2 -
+                          sin_dec1 * cos_dec2 * cos_delta_ra) ** 2),
+                         sin_dec1 * sin_dec2 + cos_dec1 * cos_dec2 * cos_delta_ra)
 
     return np.degrees(diffpos)
 
 
 def parse_file(infile):
     try:
-        a,b, mag = np.atleast_2d(np.genfromtxt(infile, usecols=[0,1,2],delimiter=',')).T
+        a, b, mag = np.atleast_2d(
+                            np.genfromtxt(
+                                        infile,
+                                        usecols=[0, 1, 2],
+                                        delimiter=','
+                                        )
+                    ).T
     except IOError:
         print('There seems to be a problem with the input file, the format should be: RA_degrees (J2000), \
             Dec_degrees (J2000), Magnitude. There should be no header, columns should be seperated by a comma')
         sys.exit(1)
-    return a,b, mag
+    return a, b, mag
 
-def onSiliconCheck(ra_deg,dec_deg,FovObj):
+
+def onSiliconCheck(ra_deg, dec_deg, FovObj):
     try:
-        dist = angSepVincenty(FovObj.ra0_deg,FovObj.dec0_deg,ra_deg,dec_deg)
+        dist = angSepVincenty(FovObj.ra0_deg, FovObj.dec0_deg, ra_deg, dec_deg)
         if dist >= 90.:
             return False
         ch = FovObj.pickAChannel(ra_deg, dec_deg)
         ch, col, row = FovObj.getChannelColRow(ra_deg, dec_deg)
-        #exclude modules 3 and 7
-        if ch in [5,6,7,8,17,18,19,20]:
+        # exclude modules 3 and 7
+        if ch in [5, 6, 7, 8, 17, 18, 19, 20]:
             return False
-        #return (ch,col,row)
+        # return (ch,col,row)
         return True
     except ValueError:
         return False
 
-def nearSiliconCheck(ra_deg,dec_deg,FovObj,max_sep=8.2):
-    dist = angSepVincenty(FovObj.ra0_deg,FovObj.dec0_deg,ra_deg,dec_deg)
+
+def nearSiliconCheck(ra_deg, dec_deg, FovObj, max_sep=8.2):
+    dist = angSepVincenty(FovObj.ra0_deg, FovObj.dec0_deg, ra_deg, dec_deg)
     if dist <= max_sep:
         return True
     else:
@@ -126,8 +119,18 @@ def getFieldInfo(fieldnum):
         and 'comments' (free text).
     """
     try:
+        from . import CAMPAIGN_DICT_FILE
         CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
-        return CAMPAIGN_DICT["c{}".format(fieldnum)]
+        info = CAMPAIGN_DICT["c{}".format(fieldnum)]
+        # Print warning messages if necessary
+        if fieldnum == 100:
+            logging.warning("You are using the K2 first light field, "
+                            "you almost certainly do not want to do this")
+        elif "preliminary" in info and info["preliminary"] == "True":
+            logging.warning("The field you are searching is not yet fixed "
+                            "and is only the proposed position. "
+                            "Do not use this position for target selection.")
+        return info
     except KeyError:
         raise ValueError("Field {} not set in this version "
                          "of the code".format(fieldnum))
@@ -138,15 +141,6 @@ def getRaDecRollFromFieldnum(fieldnum):
 
     All values returned are in decimal degrees.
     """
-    # Print warning messages if necessary
-    if fieldnum == 100:
-        logging.warning("Danger! You are using the K2 first light field, "
-                        "you almost certainly do not want to do this")
-    elif fieldnum in PRELIM_CAMPAIGNS:
-        logging.warning("Danger! The field you are searching is not yet fixed "
-                        "and is only the proposed position. "
-                        "Please don't use this position for target selection.")
-
     info = getFieldInfo(fieldnum)
     return (info["ra"], info["dec"], info["roll"])
 
@@ -191,14 +185,25 @@ def K2onSilicon(infile, fieldnum):
 
     raDec = k.getCoordsOfChannelCorners()
 
+    onSilicon = list(
+                    map(
+                        onSiliconCheck,
+                        ra_sources_deg,
+                        dec_sources_deg,
+                        np.repeat(k, len(ra_sources_deg))
+                        )
+                    )
 
-    onSilicon = list(map(onSiliconCheck,
-        ra_sources_deg, dec_sources_deg, np.repeat(k, len(ra_sources_deg))))
+    nearSilicon = list(
+                    map(
+                        nearSiliconCheck,
+                        ra_sources_deg,
+                        dec_sources_deg,
+                        np.repeat(k, len(ra_sources_deg))
+                        )
+                    )
 
-    nearSilicon = list(map(nearSiliconCheck,
-        ra_sources_deg, dec_sources_deg, np.repeat(k, len(ra_sources_deg))))
-
-    onSilicon = np.array(onSilicon,dtype=bool)
+    onSilicon = np.array(onSilicon, dtype=bool)
     nearSilicon = np.array(nearSilicon, dtype=bool)
 
     if got_mpl:
@@ -262,17 +267,4 @@ def K2onSilicon_main(args=None):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        print('')
-        print('python K2onSilicon.py filename fieldnum')
-        print('')
-        sys.exit(2)
-    elif len(sys.argv) != 3:
-        print('use the command')
-        print('python K2onSilicon.py filename fieldnum')
-        sys.exit(2)
-
-    fieldnum = int(sys.argv[2])
-    infile = str(sys.argv[1])
-
-    K2OnSilicon(infile, fieldnum)
+    K2onSilicon_main()
