@@ -27,6 +27,6 @@ setup(name='K2fov',
       url='https://github.com/mrtommyb/K2fov',
       packages=['K2fov'],
       package_data={'K2fov': ['data/*.json']},
-      install_requires=["numpy"],
+      install_requires=["numpy>=1.8"],
       entry_points=entry_points,
       )

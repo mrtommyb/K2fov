@@ -176,26 +176,27 @@ def K2onSilicon(infile, fieldnum):
     ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
 
     if np.shape(ra_sources_deg)[0] > 500:
-        print('There are {} sources in your target list, this could take some time'.format(np.shape(ra_sources_deg)[0]))
+        logging.warning("There are {} sources in your target list, "
+                        "this could take some time".format(np.shape(ra_sources_deg)[0]))
 
     ra_deg, dec_deg, scRoll_deg = getRaDecRollFromFieldnum(fieldnum)
 
-    ## convert from SC roll to FOV coordinates
-    ## do not use the fovRoll coords anywhere else
-    ## they are internal to this script only
+    # convert from SC roll to FOV coordinates
+    # do not use the fovRoll coords anywhere else
+    # they are internal to this script only
     fovRoll_deg = fov.getFovAngleFromSpacecraftRoll(scRoll_deg)
 
-    ## initialize class
+    # initialize class
     k = fov.KeplerFov(ra_deg, dec_deg, fovRoll_deg)
 
     raDec = k.getCoordsOfChannelCorners()
 
 
-    onSilicon = map(onSiliconCheck,
-        ra_sources_deg,dec_sources_deg,np.repeat(k,len(ra_sources_deg)))
+    onSilicon = list(map(onSiliconCheck,
+        ra_sources_deg, dec_sources_deg, np.repeat(k, len(ra_sources_deg))))
 
-    nearSilicon = map(nearSiliconCheck,
-        ra_sources_deg,dec_sources_deg,np.repeat(k,len(ra_sources_deg)))
+    nearSilicon = list(map(nearSiliconCheck,
+        ra_sources_deg, dec_sources_deg, np.repeat(k, len(ra_sources_deg))))
 
     onSilicon = np.array(onSilicon,dtype=bool)
     nearSilicon = np.array(nearSilicon, dtype=bool)
@@ -203,24 +204,21 @@ def K2onSilicon(infile, fieldnum):
     if got_mpl:
         almost_black = '#262626'
         light_grey = np.array([float(248)/float(255)]*3)
-        #ph = proj.Gnomic(ra_deg, dec_deg)
         ph = proj.PlateCaree()
-        k.plotPointing(ph,showOuts=False,plot_degrees=False)
+        k.plotPointing(ph, showOuts=False, plot_degrees=False)
         targets = ph.skyToPix(ra_sources_deg, dec_sources_deg)
-        targets = np.array(targets ) #* 180 / np.pi
+        targets = np.array(targets)
         fig = plt.gcf()
         ax = fig.gca()
         ax = fig.add_subplot(111)
-        #ax.scatter(*targets,s=2,label='not on silicon')
-        ax.scatter(*targets,color='#fc8d62',s=7,label='not on silicon')
-        ax.scatter(targets[0][onSilicon],
-            targets[1][onSilicon],color='#66c2a5',s=8,label='on silicon')
-        ax.set_xlabel('R.A. [degrees]',fontsize=16)
-        ax.set_ylabel('Declination [degrees]',fontsize=16)
+        ax.scatter(*targets, color='#fc8d62', s=7, label='not on silicon')
+        ax.scatter(targets[0][onSilicon], targets[1][onSilicon],
+                   color='#66c2a5', s=8, label='on silicon')
+        ax.set_xlabel('R.A. [degrees]', fontsize=16)
+        ax.set_ylabel('Declination [degrees]', fontsize=16)
         ax.invert_xaxis()
         ax.minorticks_on()
-        legend = ax.legend(loc=0,
-            frameon=True, scatterpoints=1)
+        legend = ax.legend(loc=0, frameon=True, scatterpoints=1)
         rect = legend.get_frame()
         rect.set_alpha(0.3)
         rect.set_facecolor(light_grey)
@@ -228,20 +226,20 @@ def K2onSilicon(infile, fieldnum):
         texts = legend.texts
         for t in texts:
             t.set_color(almost_black)
-        fig.savefig('targets_fov.png',dpi=300)
+        fig.savefig('targets_fov.png', dpi=300)
         plt.close('all')
 
     siliconFlag = np.zeros_like(ra_sources_deg)
 
-    #prints zero if target is not on silicon
-    siliconFlag = np.where(nearSilicon,0,siliconFlag)
+    # prints zero if target is not on silicon
+    siliconFlag = np.where(nearSilicon, 0, siliconFlag)
 
-    #prints a 2 if target is on silicon
-    siliconFlag = np.where(onSilicon,2,siliconFlag)
+    # prints a 2 if target is on silicon
+    siliconFlag = np.where(onSilicon, 2, siliconFlag)
 
     outarr = np.array([ra_sources_deg, dec_sources_deg, mag, siliconFlag])
     np.savetxt('targets_siliconFlag.csv', outarr.T, delimiter=', ',
-        fmt=['%10.10f','%10.10f','%10.2f','%i'])
+               fmt=['%10.10f', '%10.10f', '%10.2f', '%i'])
 
     if got_mpl:
         print('I made two files: targets_siliconFlag.csv and targets_fov.png')
