@@ -121,7 +121,7 @@ def getFieldInfo(fieldnum):
     try:
         from . import CAMPAIGN_DICT_FILE
         CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
-        info = CAMPAIGN_DICT["c{}".format(fieldnum)]
+        info = CAMPAIGN_DICT["c{0}".format(fieldnum)]
         # Print warning messages if necessary
         if fieldnum == 100:
             logging.warning("You are using the K2 first light field, "
@@ -132,7 +132,7 @@ def getFieldInfo(fieldnum):
                             "Do not use this position for target selection.")
         return info
     except KeyError:
-        raise ValueError("Field {} not set in this version "
+        raise ValueError("Field {0} not set in this version "
                          "of the code".format(fieldnum))
 
 
@@ -170,7 +170,7 @@ def K2onSilicon(infile, fieldnum):
     ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
 
     if np.shape(ra_sources_deg)[0] > 500:
-        logging.warning("There are {} sources in your target list, "
+        logging.warning("There are {0} sources in your target list, "
                         "this could take some time".format(np.shape(ra_sources_deg)[0]))
 
     ra_deg, dec_deg, scRoll_deg = getRaDecRollFromFieldnum(fieldnum)
