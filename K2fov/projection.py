@@ -408,7 +408,6 @@ class Gnomic(Projection):
         x = - r * np.cos(phi_rad)
         y = r * np.sin(phi_rad)
 
-        #print x, y
         return x, y
 
 
@@ -493,54 +492,6 @@ class Cylindrical2(Projection):
         #return ra, dec
 
 
-def main():
-    mp.clf()
-    p = HammerAitoff(45,23)
-    #p = Projection()
-
-    #import pdb; pdb.set_trace()
-    #print p.skyToPix(30,0)
-    #print p.skyToPix(30,30)
-    #print p.skyToPix(90, 30)
-    #print p.skyToPix(181,30)
-
-    #print p.skyToPix(270,0)
-
-    #ra = np.arange(-180, 180, 15)
-    #p.plot(ra, 0, 'r-')
-    #p.plot(ra, 30, 'g-')
-    #p.plot(ra, 45, 'b-')
-    #p.plot(ra, 75, 'c-')
-    #p.plot(ra, 90, 'k-')
-
-    #dec = np.arange(-90, 91, 5)
-    #p.plot(0, dec, 'r-')
-    #p.plot(45, dec, 'g-')
-    #p.plot(90, dec, 'b-')
-    #p.plot(135, dec, 'c-')
-    #p.plot(180, dec, 'k-')
-
-
-    #p.plot(225, dec, 'g-')
-    #p.plot(270, dec, 'b-')
-    #p.plot(315, dec, 'c-')
-    #p.plot(350, dec, 'k-')
-
-    #conv = {3: tools.toFloat}
-    #filename = "../twowheel/brighthd.txt"
-    #data = np.loadtxt(filename, delimiter=";", usecols=(0,1,2, 3), converters=conv)
-    #p.plot(data[:,0], data[:,1], 'k,')
-
-    p.plotGrid()
-    plotEcliptic(p)
-
-
-
-
-
-
-
-
 ##############################################################3
 
 ##############################################################3
@@ -550,30 +501,3 @@ def main():
 ##############################################################3
 
 
-
-
-
-
-
-
-
-
-
-
-
-def plotEcliptic(maptype=Projection()):
-    """Plot Ra and Dec of ecliptic
-
-    Taken from http://www.dur.ac.uk/john.lucey/users/solar_year.html
-    His lambda is equal to ra, according to
-    http://www.princeton.edu/~achaney/tmve/wiki100k/docs/Ecliptic_coordinate_system.html
-    """
-
-
-    ra = np.empty(360)
-    dec = np.empty(360)
-    for i in np.arange(360):
-        ra[i] = i + 2.45*np.sin (2 * i * np.pi/180.)
-        dec[i] =23.5*np.sin( i*np.pi/180.)
-
-    maptype.plotLine(ra, dec, 'r-', lw=4, label="Ecliptic")

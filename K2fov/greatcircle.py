@@ -123,8 +123,6 @@ def sphericalAngDestination(ra0_deg, dec0_deg, bearing_deg, dist_deg):
 
     a = sin(theta)*sin(d)*cos(phi1)
     b = cos(d) - sin(phi1)*sin(phi2)
-    #print "A=%.7f b=%.7f" %(a,b)
-    #import pdb; pdb.set_trace()
     lambda2 = lambda1 + atan2(a,b)
 
     ra2_deg = np.degrees(lambda2)
