@@ -1,7 +1,6 @@
 
 import unittest
-import numpy as np
-import K2fov.projection as proj
+from .. import projection as proj
 
 #$Id: test_projection.py 40 2014-02-18 20:59:31Z fergalm $
 #$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/test/test_projection.py $#

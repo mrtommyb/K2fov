@@ -1,7 +1,7 @@
 
 import numpy as np
 import unittest
-import K2fov.rotate2 as r
+from .. import rotate2 as r
 
 #$Id: test_rotate2.py 28 2013-12-02 04:34:57Z fergalm $
 #$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/test/test_rotate2.py $

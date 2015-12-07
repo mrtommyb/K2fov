@@ -3,7 +3,7 @@ import numpy as np
 import unittest
 import os
 
-import K2fov.fov as fov
+from .. import fov
 
 #$Id: test_fov.py 49 2014-02-26 17:52:04Z fergalm $
 #$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/test/test_fov.py $
