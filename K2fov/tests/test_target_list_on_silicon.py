@@ -15,7 +15,7 @@ def test_targetlists():
         fov = getKeplerFov(campaign)
         targetlist_fn = os.path.join(TESTDIR,
                                      "data",
-                                     "K2Campaign{}targets.csv".format(campaign))
+                                     "K2Campaign{0}targets.csv".format(campaign))
         targetlist = np.genfromtxt(targetlist_fn,
                                    delimiter=",", dtype=None, names=True)
         ra, dec = targetlist["RA_J2000_deg"], targetlist["Dec_J2000_deg"]

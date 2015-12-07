@@ -107,7 +107,7 @@ def test_coordinates_file():
     campaigns = [100] + list(range(0, 19))
     for c in campaigns:
         test_ra, test_dec, test_roll = old_getRaDecRollFromFieldnum(c)
-        jsoninfo = CAMPAIGN_DICT["c{}".format(c)]
+        jsoninfo = CAMPAIGN_DICT["c{0}".format(c)]
         assert(jsoninfo['ra'] == test_ra)
         assert(jsoninfo['dec'] == test_dec)
         assert(jsoninfo['roll'] == test_roll)

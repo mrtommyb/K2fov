@@ -20,7 +20,7 @@ entry_points = {'console_scripts': [
 ]}
 
 setup(name='K2fov',
-      version='2.0.0',
+      version='2.0.1',
       description='Find which targets are in the field of view of K2',
       author='Tom Barclay',
       author_email='tom@tombarclay.com',
