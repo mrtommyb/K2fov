@@ -9,7 +9,7 @@ Ported into Python from explanations at http://www.movable-type.co.uk/scripts/gi
 """
 
 __version__ = "$Id: greatcircle.py 33 2013-12-19 22:13:23Z fergalm $"
-__URL__ = "$URL: http://svn.code.sf.net/p/keplertwowheel/code/py/greatcircle.py $"
+__URL__ = "$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/greatcircle.py $"
 
 
 def sphericalAngSep(ra0, dec0, ra1, dec1, radians=False):
