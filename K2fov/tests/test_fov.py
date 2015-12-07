@@ -9,37 +9,6 @@ import K2fov.fov as fov
 #$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/test/test_fov.py $
 
 
-def play():
-    """Recreate orientation of first light image, as it appears
-    on my wall"""
-    a0, d0 = 290.66666667, 44.5
-    fovRoll = fov.getSpacecraftRollAngleFromFovAngle(33.)
-    f = fov.KeplerFov(a0, d0, 33+90)
-
-    import projection as pr
-    pc = f.defaultMap
-    xlabel = "Decreasing RA"
-    if False:
-        pc = pr.Cylindrical()
-        xlabel = "Increasing RA"
-
-    import matplotlib.pyplot as mp
-    mp.clf()
-
-    f.plotPointing(pc)
-    f.plotChIds(pc, modout=True)
-    pc.plot(294.110, 50.221, 'ro') #Theta Cyg
-    print "Theta Cyg", f.getChannelColRow(294.110, 50.221)
-
-    pc.plot(294.321, 46.388, 'mo')  #NGC6811, near best focus ring.
-    pc.plot(295.325, 40.187, 'go')   #NGC6819, near bottom
-    pc.plot(279.23333333,+38.7836111, 'yo', ms=10)  #Vega
-    pc.plot(a0, d0, 'ks')
-    pc.plotGrid( raRange=[270, 310], decRange=[35, 55], stepInDegrees=3)
-
-    mp.xlabel(xlabel)
-    mp.axis([-.169, .171, -.185, .189])
-
 
 
 class TestFov(unittest.TestCase):
@@ -82,20 +51,17 @@ class TestFov(unittest.TestCase):
         #Check that mod 3's ra less than mod 8
         a3, d3 = f.getRaDecForChannelColRow(5,0,0)
         a8, d8 = f.getRaDecForChannelColRow(21,0,0)
-        #print a3, d3, a8, d8
         self.assertTrue(a3 > 350)
         self.assertTrue(a3 < a8)
 
         #Check that mod 11 is north of mod 13
         a13, d13 = f.getRaDecForChannelColRow(43,0,0)
         a11, d11 = f.getRaDecForChannelColRow(33,0,0)
-        #print a11, d11, a13, d13
         self.assertTrue( d11 >  d13)
 
         #Check that mod 20's dec is less than mod 13
         a13, d13 = f.getRaDecForChannelColRow(43,0,0)
         a20, d20 = f.getRaDecForChannelColRow(69,0,0)
-        #print a20, d20, a13, d13
         self.assertTrue( d20 < d13)
 
 
