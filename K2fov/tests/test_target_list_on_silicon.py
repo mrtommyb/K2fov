@@ -23,7 +23,6 @@ def test_targetlists():
         for idx in np.where(mask)[0][::500]:  # Speed-up: check every 500th
             # All the sources in the target list should be on silicon
             assert(onSiliconCheck(ra[idx], dec[idx], fov))
-            # A source +20 deg away should not be on silicon
             assert(not onSiliconCheck(ra[idx] + 20, dec[idx], fov))
 
     # We chose three random campaigns to test:
