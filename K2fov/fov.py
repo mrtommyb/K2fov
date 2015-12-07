@@ -1,9 +1,11 @@
+from __future__ import print_function
 
 try:
     import matplotlib.pyplot as mp
     import matplotlib
 except ImportError:
     pass
+
 
 from . import projection as proj
 import numpy as np
@@ -253,7 +255,7 @@ class KeplerFov():
         try:
             ch = self.pickAChannel(ra, dec)
         except ValueError:
-            print "WARN: %.7f %.7f not on any channel" %(ra, dec)
+            print("WARN: %.7f %.7f not on any channel" %(ra, dec))
             return (0,0,0)
 
         col, row = self.getColRowWithinChannel(ra, dec, ch, \
@@ -288,8 +290,6 @@ class KeplerFov():
         kepModule = self.getChannelAsPolygon(ch)
         r = np.array([x[0],y[0]]) - kepModule.polygon[0,:]
 
-        #print kepModule.polygon
-        #print r
         v1 = kepModule.polygon[1,:] - kepModule.polygon[0,:]
         v3 = kepModule.polygon[3,:] - kepModule.polygon[0,:]
 
