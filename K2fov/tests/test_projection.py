@@ -17,38 +17,38 @@ class TestGnomic(unittest.TestCase):
 
         x, y = p.skyToPix(0,0)
         msg = "Expected 0,0, got %.3f %.3f" %(x, y)
-        self.assertAlmostEqual(0, x, 10, msg)
-        self.assertAlmostEqual(0, y, 10, msg)
+        self.assertAlmostEqual(0, x[0], 10, msg)
+        self.assertAlmostEqual(0, y[0], 10, msg)
 
         x, y = p.skyToPix(arcsec,0)
         msg = "Expected -,0, got %.6f %.6f" %(x, y)
-        self.assertTrue(x<0, msg)
-        self.assertAlmostEqual(0, y, 10, msg)
+        self.assertTrue(x[0]<0, msg)
+        self.assertAlmostEqual(0, y[0], 10, msg)
 
         x, y = p.skyToPix(-arcsec,0)
         msg = "Expected +,0, got %.6f %.6f" %(x, y)
-        self.assertTrue(x>0, msg)
-        self.assertAlmostEqual(0, y, 10, msg)
+        self.assertTrue(x[0]>0, msg)
+        self.assertAlmostEqual(0, y[0], 10, msg)
 
         x, y = p.skyToPix(0, arcsec)
         msg = "Expected 0,+, got %.6f %.6f" %(x, y)
-        self.assertAlmostEqual(0, x, 10, msg)
-        self.assertTrue(y>0, msg)
+        self.assertAlmostEqual(0, x[0], 10, msg)
+        self.assertTrue(y[0]>0, msg)
 
         x, y = p.skyToPix(0, -arcsec)
         msg = "Expected 0,-, got %.6f %.6f" %(x, y)
-        self.assertAlmostEqual(0, x, 10, msg)
-        self.assertTrue(y<0, msg)
+        self.assertAlmostEqual(0, x[0], 10, msg)
+        self.assertTrue(y[0]<0, msg)
 
         x, y = p.skyToPix(arcsec, arcsec)
         msg = "Expected -,+, got %.6f %.6f" %(x, y)
-        self.assertTrue(x<0, msg)
-        self.assertTrue(y>0, msg)
+        self.assertTrue(x[0]<0, msg)
+        self.assertTrue(y[0]>0, msg)
 
         x, y = p.skyToPix(arcsec, -arcsec)
         msg = "Expected -,-, got %.3e %.3e" %(x, y)
-        self.assertTrue(x<0, msg)
-        self.assertTrue(y<0, msg)
+        self.assertTrue(x[0]<0, msg)
+        self.assertTrue(y[0]<0, msg)
 
 
     def testSkyToPixAtPosition(self):
@@ -59,18 +59,18 @@ class TestGnomic(unittest.TestCase):
 
         x, y = p.skyToPix(a,d)
         msg = "Expected 0,0, got %.3f %.3f" %(x, y)
-        self.assertAlmostEqual(0, x, 10, msg)
-        self.assertAlmostEqual(0, y, 10, msg)
+        self.assertAlmostEqual(0, x[0], 10, msg)
+        self.assertAlmostEqual(0, y[0], 10, msg)
 
         x, y = p.skyToPix(a+arcsec,d)
         msg = "Expected +,0, got %.3f %.3f" %(x, y)
-        self.assertTrue(x<0, msg)
-        self.assertAlmostEqual(0, y, 10, msg)
+        self.assertTrue(x[0]<0, msg)
+        self.assertAlmostEqual(0, y[0], 10, msg)
 
         x, y = p.skyToPix(a+arcsec,d+arcsec)
         msg = "Expected +,0, got %.3f %.3f" %(x, y)
-        self.assertTrue(x<0, msg)
-        self.assertTrue(y>0, msg)
+        self.assertTrue(x[0]<0, msg)
+        self.assertTrue(y[0]>0, msg)
 
 
     def testPixToSkyAtOrigin(self):
@@ -79,28 +79,28 @@ class TestGnomic(unittest.TestCase):
 
         a, d = p.pixToSky(0,0)
         msg = "Expected 0,0, got %.3f %.3f" %(a, d)
-        self.assertAlmostEqual(0, a, 10, msg)
-        self.assertAlmostEqual(0, d, 10, msg)
+        self.assertAlmostEqual(0, a[0], 10, msg)
+        self.assertAlmostEqual(0, d[0], 10, msg)
 
         a, d = p.pixToSky(arcsec,0)
         msg = "Expected +,0, got %.6f %.6f" %(a, d)
-        self.assertTrue(a>359, msg)
-        self.assertAlmostEqual(0, d, 10, msg)
+        self.assertTrue(a[0]>359, msg)
+        self.assertAlmostEqual(0, d[0], 10, msg)
 
         a, d = p.pixToSky(-arcsec,0)
         msg = "Expected -,0, got %.6f %.6f" %(a, d)
-        self.assertTrue(a<1, msg)
-        self.assertAlmostEqual(0, d, 10, msg)
+        self.assertTrue(a[0]<1, msg)
+        self.assertAlmostEqual(0, d[0], 10, msg)
 
         a, d = p.pixToSky(0, arcsec)
         msg = "Expected 0,+, got %.6f %.6f" %(a, d)
-        self.assertAlmostEqual(0, a, 10, msg)
-        self.assertTrue(d>0, msg)
+        self.assertAlmostEqual(0, a[0], 10, msg)
+        self.assertTrue(d[0]>0, msg)
 
         a, d = p.pixToSky(0, -arcsec)
         msg = "Expected 0,-, got %.6f %.6f" %(a, d)
-        self.assertAlmostEqual(0, a, 10, msg)
-        self.assertTrue(d<360, msg)
+        self.assertAlmostEqual(0, a[0], 10, msg)
+        self.assertTrue(d[0]<360, msg)
 
 
 
@@ -113,26 +113,26 @@ class TestGnomic(unittest.TestCase):
 
         a, d = p.pixToSky(0,0)
         msg = "Expected 0,0, got %.3f %.3f" %(a, d)
-        self.assertAlmostEqual(a, a0, 10, msg)
-        self.assertAlmostEqual(d, d0, 10, msg)
+        self.assertAlmostEqual(a[0], a0, 10, msg)
+        self.assertAlmostEqual(d[0], d0, 10, msg)
 
         a, d = p.pixToSky(arcsec,0)
         msg = "Expected -,0, got %.9f %.9f" %(a, d)
-        self.assertTrue(a<a0, msg)
+        self.assertTrue(a[0]<a0, msg)
 
         a, d = p.pixToSky(-arcsec,0)
         msg = "Expected +,0, got %.9f %.9f" %(a, d)
-        self.assertTrue(a>a0, msg)
+        self.assertTrue(a[0]>a0, msg)
 
         a, d = p.pixToSky(0, arcsec)
         msg = "Expected 0,+, got %.9f %.9f" %(a, d)
-        self.assertAlmostEqual(a, a0, tol, msg)
-        self.assertTrue(d>d0, msg)
+        self.assertAlmostEqual(a[0], a0, tol, msg)
+        self.assertTrue(d[0]>d0, msg)
 
         a, d = p.pixToSky(0, -arcsec)
         msg = "Expected 0,-, got %.9f %.9f" %(a, d)
-        self.assertAlmostEqual(a, a0, tol, msg)
-        self.assertTrue(d<d0, msg)
+        self.assertAlmostEqual(a[0], a0, tol, msg)
+        self.assertTrue(d[0]<d0, msg)
 
 
     def testUnprojectable(self):
