@@ -1,12 +1,14 @@
+
 try:
     import matplotlib.pyplot as mp
 except ImportError:
     pass
+
 import numpy as np
 from . import rotate
 
-__version__ = "$Id: projection.py 36 2014-01-23 22:19:15Z fergalm $"
-__URL__ = "$URL: http://svn.code.sf.net/p/keplertwowheel/code/py/projection.py $"
+__version__ = "$Id: projection.py 58 2014-07-30 18:52:27Z fergalm $"
+__URL__ = "$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/projection.py $"
 
 
 class Projection():
@@ -23,7 +25,8 @@ class Projection():
 
     """
     def __init__(self):
-        pass
+        self.ra0_deg = 0
+        self.dec0_deg = 0
 
     def skyToPix(self, ra_deg, dec_deg):
         return ra_deg, dec_deg
@@ -101,15 +104,19 @@ class Projection():
 
         return ra_deg, dec_deg
 
+    def isPositiveMap(self):
+        """Returns true if increasing ra increases pix in skyToPix()
+        """
+        x0, y0 = self.skyToPix(self.ra0_deg, self.dec0_deg)
+        x1, y1 = self.skyToPix(self.ra0_deg + 1/3600., self.dec0_deg)
+
+        if x1 > x0:
+            return True
+        return False
+
 
     def plot(self, ra_deg, dec_deg, *args, **kwargs):
         x,y = self.skyToPix(ra_deg, dec_deg)
-        try:
-            plot_degrees = kwargs.pop('plot_degrees')
-        except KeyError:
-            plot_degrees=False
-        if plot_degrees:
-            x,y = np.degrees(x), np.degrees(y)
         self._plot(x, y, *args, **kwargs)
 
     def scatter(self,  ra_deg, dec_deg, *args, **kwargs):
@@ -121,30 +128,123 @@ class Projection():
         x,y = self.skyToPix(ra_deg, dec_deg)
         mp.text(x, y, s, *args, **kwargs)
 
-    def plotGrid(self, lineWidth=1, stepInDegrees=15, colour="#777777", \
-        raRange=[0,360], decRange=[-90, 90]):
 
-        ra0, ra1 = raRange
-        dec0, dec1 = decRange
-        step=stepInDegrees
 
-        c = colour
-        ra_deg = np.arange(ra0-1*step, ra1+1.5*step, 1, dtype=np.float)
-        for dec in np.arange(dec0, dec1+ 1*step, step):
-            self.plotLine(ra_deg, dec, '-', color=c, linewidth=lineWidth)
+    def plotGrid(self, numLines=(5,5), lineWidth=1, colour="#777777"):
+        """Plot NUMLINES[0] vertical gridlines and NUMLINES[1] horizontal gridlines,
+        while keeping the initial axes bounds that were present upon its calling.
+        Will not work for certain cases.
+        """
+        x1, x2, y1, y2 = mp.axis()
+        ra1, dec0 = self.pixToSky(x1, y1)
+        ra0, dec1 = self.pixToSky(x2, y2)
 
-        dec = np.arange(dec0-step, dec1+1.5*step, 1, dtype=float)
-        for ra in np.arange(ra0, ra1+step, step):
-            self.plotLine(ra, dec, '-', color=c, linewidth=lineWidth)
+        xNum, yNum = numLines
+        self.raRange, self.decRange  = self.getRaDecRanges(numLines)
 
-        ##Useful for debugging
-        #self.plotLine(0, dec,'r-', linewidth=lineWidth)
-        #self.plotLine(180, dec,'c-', linewidth=lineWidth)
+        #import pdb; pdb.set_trace()
+        #Guard against Ra of zero within the plot
+        a1 = np.abs(ra1-ra0)
+        a2 = np.abs( min(ra0, ra1) - (max(ra0, ra1) - 360))
+        if a2 < a1:     #Then we straddle 360 degrees in RA
+            if ra0 < ra1:
+                ra1 -= 360
+            else:
+                ra0 -= 360
+
+
+        #Draw lines of constant dec
+        lwr = min(ra0, ra1)
+        upr = max(ra0, ra1)
+        stepX = round((upr-lwr) / float(xNum))
+        ra_deg = np.arange(lwr - 3*stepX, upr + 3.5*stepX, 1, dtype=np.float)
+        for dec in self.decRange:
+            self.plotLine(ra_deg, dec, '-', color = colour, linewidth = lineWidth)
+
+
+        #Draw lines of const ra
+        lwr = min(dec0, dec1)
+        upr = max(dec0, dec1)
+        stepY = round((upr-lwr) / float(yNum))
+        dec_deg = np.arange(dec0 - 3*stepY, dec1 + 3.5*stepY, 1, dtype=np.float)
+        for ra in self.raRange:
+            self.plotLine(ra, dec_deg, '-', color = colour, linewidth = lineWidth)
+
+        mp.axis([x1, x2, y1, y2])
+
+
+
+    def labelAxes(self, numLines=(5,5)):
+        """Put labels on axes
+
+        Note: I should do better than this by picking round numbers
+        as the places to put the labels.
+
+        Note: If I ever do rotated projections, this simple approach
+        will fail.
+        """
+
+        x1, x2, y1, y2 = mp.axis()
+        ra1, dec0 = self.pixToSky(x1, y1)
+        raRange, decRange = self.getRaDecRanges(numLines)
+        ax = mp.gca()
+
+        x_ticks = self.skyToPix(raRange, dec0)[0]
+        y_ticks = self.skyToPix(ra1, decRange)[1]
+
+        ax.xaxis.set_ticks(x_ticks)
+        ax.xaxis.set_ticklabels([str(int(i)) for i in raRange])
+        mp.xlabel("Right Ascension (deg)")
+
+        ax.yaxis.set_ticks(y_ticks)
+        ax.yaxis.set_ticklabels([str(int(i)) for i in decRange])
+        mp.ylabel("Declination (deg)")
+
+
+    def getRaDecRanges(self, numLines):
+        """Pick suitable values for ra and dec ticks
+
+        Used by plotGrid and labelAxes
+        """
+        x1, x2, y1, y2 = mp.axis()
+
+        ra0, dec0 = self.pixToSky(x1, y1)
+        ra1, dec1 = self.pixToSky(x2, y2)
+        raMid = .5*(ra0+ra1)
+        decMid = .5*(dec0+dec1)
+
+        #Deal with the case where ra range straddles 0.
+        #Different code for case where ra increases left to right, or decreases.
+        if self.isPositiveMap():
+            if ra1 < ra0:
+                ra1 += 360
+        else:
+            if ra0 < ra1:
+                ra0 += 360
+
+
+        xNum, yNum = numLines
+        stepX = round((ra1 - ra0) / xNum)
+        stepY = round((dec1 - dec0) / yNum)
+
+        rangeX = stepX * (xNum - 1)
+        rangeY = stepY * (yNum - 1)
+
+        raStart = np.round(raMid - rangeX/2.)
+        decStart = np.round(decMid - rangeY/2.)
+        #raStart = np.round(ra0)
+        #decStart = np.round(dec0)
+
+        raRange = np.arange(raStart, raStart + stepX*xNum, stepX)
+        decRange = np.arange(decStart, decStart + stepY*yNum, stepY)
+
+        raRange = np.fmod(raRange, 360.)
+        return raRange, decRange
 
 
     def plotLine(self, ra_deg, dec_deg, *args, **kwargs):
         ra_deg, dec_deg = self.parseInputs(ra_deg, dec_deg)
-        x,y = self.skyToPix(ra_deg, dec_deg)
+        x,y = self.skyToPix(ra_deg, dec_deg, catchInvalid=False)
 
         diffX = np.abs(np.diff(x))
         idx1 = diffX > 3*np.mean(diffX)
@@ -197,7 +297,7 @@ class HammerAitoff(Projection):
 
 
 
-    def skyToPix(self, ra_deg, dec_deg):
+    def skyToPix(self, ra_deg, dec_deg, **kwargs):
         sin = np.sin
         cos = np.cos
 
@@ -230,6 +330,11 @@ class HammerAitoff(Projection):
         raise NotImplementedError("pixToSky not defined!")
 
 
+    def labelAxes(self, nLabel=5):
+        """Put labels on axes"""
+        raise NotImplementedError("Axis labels not available in HA yet")
+
+
 
 
 class Gnomic(Projection):
@@ -252,7 +357,7 @@ class Gnomic(Projection):
         assert( np.fabs(origin[2]) < 1e-9)
 
 
-    def skyToPix(self, ra_deg, dec_deg):
+    def skyToPix(self, ra_deg, dec_deg, catchInvalid=True):
         ra_deg, dec_deg = self.parseInputs(ra_deg, dec_deg)
 
         #Transform ra dec into angle away from tangent point
@@ -274,6 +379,13 @@ class Gnomic(Projection):
             cost = np.hypot(aVec[1], aVec[2])
             theta = np.arctan2(sint, cost)
 
+            #Points more than 90 deg from tangent point need to be
+            #caught, or they'll be projected 180-i degrees from tangent
+            #point.
+            if catchInvalid and theta < 0:
+                raise ValueError("Point (%.7f %.7f) not projectable" \
+                    %(ra_deg[i], dec_deg[i]))
+
             cost = np.cos(theta)
             cosp = aVec[1] / cost
             sinp = aVec[2] / cost
@@ -290,13 +402,12 @@ class Gnomic(Projection):
             phi_rad[i] = phi
 
 
-        #Project onto tangent plane
-        #theta_rad = np.pi/2. - theta_rad
+        #Project onto tangent plane. Negative x because we are inside
+        #sphere looking out (matches astronomical convention
         r = 1/(np.tan(theta_rad) + 1e-10) #Prevent division by zero
-        x = r * np.cos(phi_rad)
+        x = - r * np.cos(phi_rad)
         y = r * np.sin(phi_rad)
 
-        #print x, y
         return x, y
 
 
@@ -309,7 +420,9 @@ class Gnomic(Projection):
         dec_deg = np.empty( (len(x),))
 
         for i in range(len(x)):
-            phi_rad = np.arctan2(y,x)
+            #-x because we are inside sphere looking out. This
+            #matches the astronomical convention.
+            phi_rad = np.arctan2(y,-x)
             r = np.hypot(x,y)
             theta_rad = np.arctan(r)
 
@@ -335,98 +448,56 @@ class Cylindrical(Projection):
         self.dec0_deg = 0
 
 
-    def skyToPix(self, ra_deg, dec_deg):
+    def skyToPix(self, ra_deg, dec_deg, **kwargs):
         x = np.radians(ra_deg)
         y = np.sin( np.radians(dec_deg))
         return x, y
 
-    def pixToSky(self, x, y):
+    def pixToSky(self, x, y, **kwargs):
         ra = np.degrees(x)
         dec = np.degrees(np.arcsin(y))
         return ra, dec
 
 
-def main():
-    mp.clf()
-    p = HammerAitoff(45,23)
-    #p = Projection()
 
-    #import pdb; pdb.set_trace()
-    #print p.skyToPix(30,0)
-    #print p.skyToPix(30,30)
-    #print p.skyToPix(90, 30)
-    #print p.skyToPix(181,30)
+class Cylindrical2(Projection):
+    """Stunted cyclindical projection that hacks at changing ra0
+    but insists in dec0 being fixed.
 
-    #print p.skyToPix(270,0)
-
-    #ra = np.arange(-180, 180, 15)
-    #p.plot(ra, 0, 'r-')
-    #p.plot(ra, 30, 'g-')
-    #p.plot(ra, 45, 'b-')
-    #p.plot(ra, 75, 'c-')
-    #p.plot(ra, 90, 'k-')
-
-    #dec = np.arange(-90, 91, 5)
-    #p.plot(0, dec, 'r-')
-    #p.plot(45, dec, 'g-')
-    #p.plot(90, dec, 'b-')
-    #p.plot(135, dec, 'c-')
-    #p.plot(180, dec, 'k-')
-
-
-    #p.plot(225, dec, 'g-')
-    #p.plot(270, dec, 'b-')
-    #p.plot(315, dec, 'c-')
-    #p.plot(350, dec, 'k-')
-
-    #conv = {3: tools.toFloat}
-    #filename = "../twowheel/brighthd.txt"
-    #data = np.loadtxt(filename, delimiter=";", usecols=(0,1,2, 3), converters=conv)
-    #p.plot(data[:,0], data[:,1], 'k,')
-
-    p.plotGrid()
-    plotEcliptic(p)
-
-
-
-
-
-
-
-
-##############################################################3
-
-##############################################################3
-
-##############################################################3
-
-##############################################################3
-
-
-
-
-
-
-
-
-
-
-
-
-
-def plotEcliptic(maptype=Projection()):
-    """Plot Ra and Dec of ecliptic
-
-    Taken from http://www.dur.ac.uk/john.lucey/users/solar_year.html
-    His lambda is equal to ra, according to
-    http://www.princeton.edu/~achaney/tmve/wiki100k/docs/Ecliptic_coordinate_system.html
+    Wikipedia calls this the Lambert cylindrical equal area projection
+    http://en.wikipedia.org/wiki/Lambert_cylindrical_equal-area_projection
     """
+    def __init__(self, ra0_deg):
+        self.ra0_deg = ra0_deg
+        self.dec0_deg = 0
 
 
-    ra = np.empty(360)
-    dec = np.empty(360)
-    for i in np.arange(360):
-        ra[i] = i + 2.45*np.sin (2 * i * np.pi/180.)
-        dec[i] =23.5*np.sin( i*np.pi/180.)
+    def skyToPix(self, ra_deg, dec_deg, **kwargs):
+        #Cast as nd array
+        ra_deg = np.atleast_1d(ra_deg)
 
-    maptype.plotLine(ra, dec, 'r-', lw=4, label="Ecliptic")
+        ra_deg -= self.ra0_deg
+        #Wrap around if necessary
+        if np.any(ra_deg < 0):
+            ra_deg[ ra_deg<0] += 360
+
+
+        x = np.radians(-ra_deg)
+        y = np.sin( np.radians(dec_deg))
+        return x, y
+
+    #def pixToSky(self, x, y, **kwargs):
+        #ra = np.degrees(x)
+        #dec = np.degrees(np.arcsin(y))
+        #return ra, dec
+
+
+##############################################################3
+
+##############################################################3
+
+##############################################################3
+
+##############################################################3
+
+
