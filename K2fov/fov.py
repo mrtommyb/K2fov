@@ -5,15 +5,17 @@ try:
     import matplotlib
 except ImportError:
     pass
+
+
 from . import projection as proj
 import numpy as np
-from . import rotate as r
+from . import rotate2 as r
 from . import greatcircle as gcircle
 from . import definefov
 
 
-__version__ = "$Id: fov.py 35 2013-12-19 22:27:34Z fergalm $"
-__URL__ = "$URL: http://svn.code.sf.net/p/keplertwowheel/code/py/fov.py $"
+__version__ = "$Id: fov.py 60 2014-08-15 20:56:20Z fergalm $"
+__URL__ = "$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/fov.py $"
 
 
 """
@@ -92,6 +94,7 @@ class KeplerFov():
         #the boresight
         self.defaultMap = None
 
+        self.brokenChannels = [5,6,7,8, 17,18,19,20]
         self.plateScale_arcsecPerPix = 3.98
 
         self.mods = list(range(1, 25))
@@ -143,7 +146,7 @@ class KeplerFov():
 
 
     def setPointing(self, ra_deg, dec_deg, roll_deg):
-        t = self.getPointing(ra_deg, dec_deg, roll_deg)
+        t = self.computePointing(ra_deg, dec_deg, roll_deg)
         self.currentRaDec = t
         self.defaultMap = proj.Gnomic(ra_deg, dec_deg)
 
@@ -152,13 +155,13 @@ class KeplerFov():
         self.roll0_deg = roll_deg
 
 
-    def getPointing(self, ra_deg, dec_deg, roll_deg, cartesian=False):
+    def computePointing(self, ra_deg, dec_deg, roll_deg, cartesian=False):
         """Compute a pointing model without changing the internal object pointing"""
 
         #Roll FOV
-        Rrotate = r.rotateAboutVectorMatrix([1,0,0], roll_deg)  #Roll
+        Rrotate = r.rotateInXMat(roll_deg)  #Roll
 
-        #Slew to ra/dec of zero
+        #Slew from  ra/dec of zero
         Ra = r.rightAscensionRotationMatrix(ra_deg)
         Rd = r.declinationRotationMatrix(dec_deg)
         Rslew = np.dot(Ra, Rd)
@@ -208,9 +211,43 @@ class KeplerFov():
         return self.currentRaDec
 
 
+    def getBoresight(self):
+        #Trap potential negative values for ra
+        alpha = self.ra0_deg
+        if alpha < 0:
+            alpha += 360.
+
+        return alpha, self.dec0_deg, self.roll0_deg
+
+
     ###
     # Sky -> pixel code
     ###
+
+    def isOnSilicon(self, ra_deg, dec_deg, padding_pix=10):
+        """Returns true if the specifed location is observable with
+        a science CCD
+
+        Inputs:
+        ra_deg  (float)
+        dec_deg (float)
+        padding (float) Objects <=  this many pixels off the edge
+                of a channel are counted as inside.
+        """
+
+        ch, col, row = self.getChannelColRow(ra_deg, dec_deg)
+
+        #Mod 3 and 7 are no longer operational
+        if ch in self.brokenChannels:
+            return False
+
+        #Is on FGS.
+        if ch > 84:
+            return False
+
+        return self.colRowIsOnSciencePixel(col, row, padding_pix)
+
+
 
     def getChannelColRow(self, ra, dec, \
         wantZeroOffset=False, allowIllegalReturnValues=True):
@@ -228,13 +265,19 @@ class KeplerFov():
 
 
     def pickAChannel(self, ra_deg, dec_deg):
-        x,y = self.defaultMap.skyToPix(ra_deg, dec_deg)
-        for ch in np.unique(self.currentRaDec[:,2]):
-            poly = self.getChannelAsPolygon(ch)
-            if poly.isPointInside(x,y):
-                return ch
 
-        raise ValueError("Requested coords %.7f %.7f are not on any channel" %(ra_deg, dec_deg))
+        #Could improve speed by doing this in the projection plane
+        #instead of sky coords
+
+        cRa  = self.currentRaDec[:,3]  #Ra of each channel corner
+        cDec = self.currentRaDec[:,4]  #dec of each channel corner
+
+        dist = cRa * 0
+        for i in range(len(dist)):
+            dist[i] = gcircle.sphericalAngSep(cRa[i], cDec[i], ra_deg, dec_deg)
+
+        i = np.argmin(dist)
+        return self.currentRaDec[i, 2]
 
 
     def getColRowWithinChannel(self, ra, dec, ch, \
@@ -247,8 +290,6 @@ class KeplerFov():
         kepModule = self.getChannelAsPolygon(ch)
         r = np.array([x[0],y[0]]) - kepModule.polygon[0,:]
 
-        #print kepModule.polygon
-        #print r
         v1 = kepModule.polygon[1,:] - kepModule.polygon[0,:]
         v3 = kepModule.polygon[3,:] - kepModule.polygon[0,:]
 
@@ -278,19 +319,22 @@ class KeplerFov():
 
         return (col, row)
 
-    def colRowIsOnSciencePixel(self, col, row):
+    def colRowIsOnSciencePixel(self, col, row, padding=10):
         """Is col row on a science pixel?
 
         Ranges taken from Fig 25 or Instrument Handbook (p50)
-        """
-        padding  = 00
 
-        #if col < 12. or col > 1111:
-        if col < 12.-padding or col > 1111+padding:
+        Padding allows for the fact that distortion means the
+        results from getColRowWithinChannel can be off by a bit.
+        Setting padding > 0 means that objects that are computed
+        to lie a small amount off silicon will return True.
+
+        To be conservative, set padding to negative
+        """
+        if col < 12. - padding or col > 1111 + padding:
             return False
 
-        #if row < 20 or row > 1043:
-        if row < 20-padding or row > 1043+padding:
+        if row < 20 - padding or row > 1043 + padding:
             return False
         return True
 
@@ -331,15 +375,23 @@ class KeplerFov():
         return (col, row)
 
 
-    def colRowIsOnFgsPixel(self, col, row):
+    def colRowIsOnFgsPixel(self, col, row, padding=-50):
         """Is col row on a science pixel?
 
-        Ranges taken from Fig 25 or Instrument Handbook (p50)
+        #See Kepler Flight Segment User's Manual (SP0039-702) \S 5.4 (p88)
+
+        Inputs:
+        col, row (floats or ints)
+        padding    If padding <0, pixel must be on silicon and this many
+                   pixels away from the edge of the CCD to return True
+
+        Returns:
+        boolean
         """
-        if col < 12. or col > 547:
+        if col < 12. - padding  or col > 547 + padding:
             return False
 
-        if row < 0 or row > 527:
+        if row < 0 - padding or row > 527 + padding :
             return False
         return True
 
@@ -350,16 +402,19 @@ class KeplerFov():
     ###
     def getRaDecForChannelColRow(self, ch, col, row, oneOffsetPixels=True):
 
+        #To FGS channels correctly
+        if ch > 84:
+            return self.getRaDecForFgsChannelColRow(ch, col, row,\
+                oneOffsetPixels)
+
         if oneOffsetPixels:
             col -= 1
             row -= 1
 
         #Convert col row to colFrac, rowFrac
         #See notes in getColRowWithinChannel
-        padding = 00
-        colFrac = (col-(17.-padding)) / ((1106.+padding)-(17.-padding))
-        rowFrac = (row-(25.-padding)) / ((1038.+padding)-(25.-padding))
-
+        colFrac = (col-17.) / (1106.-17.)
+        rowFrac = (row-25.) / (1038.-25.)
 
         #Get basis vectors for channel. vZero is vector close
         #to readout of chip (c,r) = (0,0)
@@ -377,6 +432,33 @@ class KeplerFov():
         a, d = self.defaultMap.pixToSky(x, y)
         return [a[0], d[0]]
 
+
+    def getRaDecForFgsChannelColRow(self, ch, col, row, oneOffsetPixels=True):
+
+        if oneOffsetPixels:
+            col -= 1
+            row -= 1
+
+        #Convert col row to colFrac, rowFrac
+        #Offsets here haven't been rigourously checked.
+        colFrac = (col-0.) / (547.)
+        rowFrac = (row-0.) / (527.)
+
+        #Get basis vectors for channel. vZero is vector close
+        #to readout of chip (c,r) = (0,0)
+        #vCol is a vector in increasing column direction
+        kepModule = self.getChannelAsPolygon(ch)
+        vZero = kepModule.polygon[0,:]
+        vCol = kepModule.polygon[1,:] - vZero
+        vRow = kepModule.polygon[3,:] - vZero
+
+        #Where on the projected plane does col,row lie?
+        projectionXy = vZero + (colFrac*vCol) + (rowFrac*vRow)
+
+        #Call pixToSky
+        x, y = projectionXy
+        a, d = self.defaultMap.pixToSky(x, y)
+        return [a[0], d[0]]
 
     ###
     #  Polygon code: sky <--> pix and other functions use
@@ -418,26 +500,20 @@ class KeplerFov():
 
     def plotPointing(self, maptype=None, colour='b', mod3='r', showOuts=True, **kwargs):
         """Plot the FOV
-        mod3 is for mod 3 and mod 7
         """
 
         if maptype is None:
             maptype=self.defaultMap
 
-        #self.plotSpacecraftYAxis(maptype=maptype)
-
         radec = self.currentRaDec
-        mods = self.mods
         for ch in radec[:,2][::4]:
 
             idx = np.where(radec[:,2].astype(np.int) == ch)[0]
             idx = np.append(idx, idx[0])  #% points to draw a box
 
             c = colour
-            #mod3 variable now include mod 3 and mod 7
-            if ch in [5,6,7,8,17,18,19,20]:
+            if ch in self.brokenChannels:
                 c = mod3
-
             maptype.plot(radec[idx, 3], radec[idx, 4], '-', color=c, **kwargs)
             #Show the origin of the col and row coords for this ch
             if showOuts:
@@ -461,23 +537,15 @@ class KeplerFov():
             xarr.append(x)
             yarr.append(y)
 
-
-        #maptype.plot(alpha, delta, '-', color=colour, **kwargs)
-
         verts = np.empty( (len(xarr), 2))
         verts[:,0] = xarr
         verts[:,1] = yarr
-        p = matplotlib.patches.Polygon(verts, fill=True, ec="none", fc=colour)
+
+        #There are two ways to specify line colour
+        ec = kwargs.pop('ec', "none")
+        ec = kwargs.pop('edgecolor', ec)
+        p = matplotlib.patches.Polygon(verts, fill=True, ec=ec, fc=colour, **kwargs)
         mp.gca().add_patch(p)
-
-        #for i in range(len(alpha)):
-            #verts[i, 0, :] = [alpha[i], delta[i]]
-
-        #from matplotlib.collections import PolyCollection
-        #coll = PolyCollection(verts, facecolor=colour)
-        #ax = mp.gca()
-        #ax.add_collection(coll)
-        #import pdb; pdb.set_trace()
 
 
     def plotSpacecraftYAxis(self, maptype=None):
@@ -629,9 +697,9 @@ class KeplerModOut(Polygon):
 
         if modout:
             modout = modOutFromChannel(self.channel)
-            mp.text(x, y, "%i-%i" %(modout[0], modout[1]))
+            mp.text(x, y, "%i-%i" %(modout[0], modout[1]), fontsize=8, ha="center", clip_on=True)
         else:
-            mp.text(x,y, "%i" %(self.channel))
+            mp.text(x,y, "%i" %(self.channel), fontsize=8, ha="center", clip_on=True)
 
 
 

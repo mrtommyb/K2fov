@@ -9,7 +9,7 @@ Ported into Python from explanations at http://www.movable-type.co.uk/scripts/gi
 """
 
 __version__ = "$Id: greatcircle.py 33 2013-12-19 22:13:23Z fergalm $"
-__URL__ = "$URL: http://svn.code.sf.net/p/keplertwowheel/code/py/greatcircle.py $"
+__URL__ = "$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/greatcircle.py $"
 
 
 def sphericalAngSep(ra0, dec0, ra1, dec1, radians=False):
@@ -123,8 +123,6 @@ def sphericalAngDestination(ra0_deg, dec0_deg, bearing_deg, dist_deg):
 
     a = sin(theta)*sin(d)*cos(phi1)
     b = cos(d) - sin(phi1)*sin(phi2)
-    #print "A=%.7f b=%.7f" %(a,b)
-    #import pdb; pdb.set_trace()
     lambda2 = lambda1 + atan2(a,b)
 
     ra2_deg = np.degrees(lambda2)
