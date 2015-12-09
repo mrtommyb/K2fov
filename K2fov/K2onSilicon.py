@@ -201,7 +201,11 @@ def K2onSilicon(infile, fieldnum):
         almost_black = '#262626'
         light_grey = np.array([float(248)/float(255)]*3)
         ph = proj.PlateCaree()
+<<<<<<< HEAD
         k.plotPointing(ph, showOuts=False)
+=======
+        k.plotPointing(ph, showOuts=False, plot_degrees=False)
+>>>>>>> 0463f4d1bef0738fa324d6fe9a5e28d646232b49
         targets = ph.skyToPix(ra_sources_deg, dec_sources_deg)
         targets = np.array(targets)
         fig = plt.gcf()
