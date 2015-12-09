@@ -77,19 +77,10 @@ def parse_file(infile):
 
 
 def onSiliconCheck(ra_deg, dec_deg, FovObj):
-    try:
-        dist = angSepVincenty(FovObj.ra0_deg, FovObj.dec0_deg, ra_deg, dec_deg)
-        if dist >= 90.:
-            return False
-        ch = FovObj.pickAChannel(ra_deg, dec_deg)
-        ch, col, row = FovObj.getChannelColRow(ra_deg, dec_deg)
-        # exclude modules 3 and 7
-        if ch in [5, 6, 7, 8, 17, 18, 19, 20]:
-            return False
-        # return (ch,col,row)
-        return True
-    except ValueError:
+    dist = angSepVincenty(FovObj.ra0_deg, FovObj.dec0_deg, ra_deg, dec_deg)
+    if dist >= 90.:
         return False
+    return FovObj.isOnSilicon(ra_deg, dec_deg)
 
 
 def nearSiliconCheck(ra_deg, dec_deg, FovObj, max_sep=8.2):
