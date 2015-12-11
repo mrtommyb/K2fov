@@ -13,6 +13,8 @@ from . import rotate2 as r
 from . import greatcircle as gcircle
 from . import definefov
 
+from . import DEFAULT_PADDING
+
 
 __version__ = "$Id: fov.py 60 2014-08-15 20:56:20Z fergalm $"
 __URL__ = "$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/fov.py $"
@@ -224,7 +226,7 @@ class KeplerFov():
     # Sky -> pixel code
     ###
 
-    def isOnSilicon(self, ra_deg, dec_deg, padding_pix=10):
+    def isOnSilicon(self, ra_deg, dec_deg, padding_pix=DEFAULT_PADDING):
         """Returns true if the specifed location is observable with
         a science CCD
 
@@ -319,7 +321,7 @@ class KeplerFov():
 
         return (col, row)
 
-    def colRowIsOnSciencePixel(self, col, row, padding=10):
+    def colRowIsOnSciencePixel(self, col, row, padding=DEFAULT_PADDING):
         """Is col row on a science pixel?
 
         Ranges taken from Fig 25 or Instrument Handbook (p50)

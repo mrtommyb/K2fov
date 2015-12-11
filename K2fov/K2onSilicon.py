@@ -24,6 +24,7 @@ except ImportError:
 
 from . import projection as proj
 from . import fov
+from . import DEFAULT_PADDING
 
 
 params = {
@@ -78,11 +79,13 @@ def parse_file(infile):
     return a, b, mag
 
 
-def onSiliconCheck(ra_deg, dec_deg, FovObj):
+def onSiliconCheck(ra_deg, dec_deg, FovObj, padding_pix=DEFAULT_PADDING):
     dist = angSepVincenty(FovObj.ra0_deg, FovObj.dec0_deg, ra_deg, dec_deg)
     if dist >= 90.:
         return False
-    return FovObj.isOnSilicon(ra_deg, dec_deg)
+    # padding_pix=3 means that objects less than 3 pixels off the edge of
+    # a channel are counted inside, to account for inaccuracies in K2fov.
+    return FovObj.isOnSilicon(ra_deg, dec_deg, padding_pix=padding_pix)
 
 
 def nearSiliconCheck(ra_deg, dec_deg, FovObj, max_sep=8.2):
