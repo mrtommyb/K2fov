@@ -7,6 +7,8 @@ import sys
 import json
 import logging
 
+log = logging.getLogger()
+
 try:
     import numpy as np
 except ImportError:
@@ -115,12 +117,12 @@ def getFieldInfo(fieldnum):
         info = CAMPAIGN_DICT["c{0}".format(fieldnum)]
         # Print warning messages if necessary
         if fieldnum == 100:
-            logging.warning("You are using the K2 first light field, "
-                            "you almost certainly do not want to do this")
+            log.warning("Warning: you are using the K2 first light field, "
+                        "you almost certainly do not want to do this")
         elif "preliminary" in info and info["preliminary"] == "True":
-            logging.warning("The field you are searching is not yet fixed "
-                            "and is only the proposed position. "
-                            "Do not use this position for target selection.")
+            log.warning("Warning: the field you are searching is not yet fixed "
+                        "and is only the proposed position. "
+                        "Do not use this position for target selection.")
         return info
     except KeyError:
         raise ValueError("Field {0} not set in this version "
@@ -161,8 +163,8 @@ def K2onSilicon(infile, fieldnum):
     ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
 
     if np.shape(ra_sources_deg)[0] > 500:
-        logging.warning("There are {0} sources in your target list, "
-                        "this could take some time".format(np.shape(ra_sources_deg)[0]))
+        log.warning("Warning: there are {0} sources in your target list, "
+                    "this could take some time".format(np.shape(ra_sources_deg)[0]))
 
     ra_deg, dec_deg, scRoll_deg = getRaDecRollFromFieldnum(fieldnum)
 
