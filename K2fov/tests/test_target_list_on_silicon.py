@@ -2,7 +2,7 @@
 import os
 import numpy as np
 
-from K2fov.K2onSilicon import getKeplerFov, onSiliconCheck
+from ..K2onSilicon import getKeplerFov, onSiliconCheck
 
 # Where is this test script located?
 TESTDIR = os.path.dirname(os.path.abspath(__file__))

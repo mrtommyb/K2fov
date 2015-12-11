@@ -6,10 +6,10 @@ To run these tests, simply run "py.test" in the K2fov source tree.
 """
 import json
 
-import K2fov
-from K2fov.K2onSilicon import getRaDecRollFromFieldnum
+from .. import CAMPAIGN_DICT_FILE
+from ..K2onSilicon import getRaDecRollFromFieldnum
 
-CAMPAIGN_DICT = json.load(open(K2fov.CAMPAIGN_DICT_FILE))
+CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
 
 
 def old_getRaDecRollFromFieldnum(fieldnum):
