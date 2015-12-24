@@ -58,7 +58,7 @@ def angSepVincenty(ra1, dec1, ra2, dec2):
     diffpos = np.arctan2(np.sqrt((cos_dec2 * sin_delta_ra) ** 2 +
                          (cos_dec1 * sin_dec2 -
                           sin_dec1 * cos_dec2 * cos_delta_ra) ** 2),
-                         sin_dec1 * sin_dec2 + cos_dec1 * cos_dec2 * cos_delta_ra)
+                          sin_dec1 * sin_dec2 + cos_dec1 * cos_dec2 * cos_delta_ra)
 
     return np.degrees(diffpos)
 
@@ -94,6 +94,19 @@ def nearSiliconCheck(ra_deg, dec_deg, FovObj, max_sep=8.2):
         return True
     else:
         return False
+
+
+def getFieldNumbers():
+    """Returns all the field numbers of campaigns defined so far.
+
+    Returns
+    -------
+    numbers : list
+        Valid field numbers, e.g. [0, 1, 2, ..., 17, 18]
+    """
+    from . import CAMPAIGN_DICT_FILE
+    CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
+    return CAMPAIGN_DICT["field_numbers"]
 
 
 def getFieldInfo(fieldnum):

@@ -7,7 +7,7 @@ To run these tests, simply run "py.test" in the K2fov source tree.
 import json
 
 from .. import CAMPAIGN_DICT_FILE
-from ..K2onSilicon import getRaDecRollFromFieldnum
+from ..K2onSilicon import getRaDecRollFromFieldnum, getFieldNumbers, getFieldInfo
 
 CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
 
@@ -123,6 +123,23 @@ def test_coordinates_function():
         assert(ra == test_ra)
         assert(dec == test_dec)
         assert(roll == test_roll)
+
+
+def test_meta_data():
+    """Are all the expected meta data fields configured for each campaign?"""
+    for fieldnum in getFieldNumbers():
+        info = getFieldInfo(fieldnum)
+        for key in ["ra", "dec", "roll", "start", "stop"]:
+            assert(key in info)
+        assert(info["campaign"] == fieldnum)
+
+
+def test_field_numbers():
+    """Is the list of field numbers present and complete?"""
+    field_numbers = getFieldNumbers()
+    # At the time of writing the test, fields 0 through 18 were defined
+    for campaign in range(0, 19):
+        assert(campaign in field_numbers)
 
 
 if __name__ == "__main__":
