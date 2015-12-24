@@ -1,4 +1,4 @@
-
+"""This file defines the projection classes."""
 try:
     import matplotlib.pyplot as mp
 except ImportError:
@@ -6,9 +6,6 @@ except ImportError:
 
 import numpy as np
 from . import rotate
-
-__version__ = "$Id: projection.py 58 2014-07-30 18:52:27Z fergalm $"
-__URL__ = "$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/projection.py $"
 
 
 class Projection():
@@ -270,7 +267,6 @@ class Projection():
         mp.plot(x,y, *args, **kwargs)
 
 
-
 class PlateCaree(Projection):
     """Synonym for the base class"""
     pass
@@ -294,8 +290,6 @@ class HammerAitoff(Projection):
         Rdec = rotate.declinationRotationMatrix(-self.dec0_deg)
         Rra = rotate.rightAscensionRotationMatrix(-self.ra0_deg)
         self.Rmatrix = np.dot(Rra, Rdec)
-
-
 
     def skyToPix(self, ra_deg, dec_deg, **kwargs):
         sin = np.sin
@@ -325,16 +319,12 @@ class HammerAitoff(Projection):
 
         return x, y
 
-
     def pixToSky(self, x, y):
         raise NotImplementedError("pixToSky not defined!")
-
 
     def labelAxes(self, nLabel=5):
         """Put labels on axes"""
         raise NotImplementedError("Axis labels not available in HA yet")
-
-
 
 
 class Gnomic(Projection):
@@ -355,7 +345,6 @@ class Gnomic(Projection):
         assert( np.fabs(origin[0] -1 ) < 1e-9)
         assert( np.fabs(origin[1]) < 1e-9)
         assert( np.fabs(origin[2]) < 1e-9)
-
 
     def skyToPix(self, ra_deg, dec_deg, catchInvalid=True):
         ra_deg, dec_deg = self.parseInputs(ra_deg, dec_deg)
@@ -410,7 +399,6 @@ class Gnomic(Projection):
 
         return x, y
 
-
     def pixToSky(self, x, y):
         x, y = self.parseInputs(x, y)
 
@@ -438,7 +426,6 @@ class Gnomic(Projection):
         return ra_deg, dec_deg
 
 
-
 class Cylindrical(Projection):
     """Stunted cyclindical projection that assumes
     projection point is always at sky point 0,0
@@ -446,7 +433,6 @@ class Cylindrical(Projection):
     def __init__(self):
         self.ra0_deg = 0
         self.dec0_deg = 0
-
 
     def skyToPix(self, ra_deg, dec_deg, **kwargs):
         x = np.radians(ra_deg)
@@ -459,7 +445,6 @@ class Cylindrical(Projection):
         return ra, dec
 
 
-
 class Cylindrical2(Projection):
     """Stunted cyclindical projection that hacks at changing ra0
     but insists in dec0 being fixed.
@@ -470,7 +455,6 @@ class Cylindrical2(Projection):
     def __init__(self, ra0_deg):
         self.ra0_deg = ra0_deg
         self.dec0_deg = 0
-
 
     def skyToPix(self, ra_deg, dec_deg, **kwargs):
         #Cast as nd array
@@ -490,14 +474,3 @@ class Cylindrical2(Projection):
         #ra = np.degrees(x)
         #dec = np.degrees(np.arcsin(y))
         #return ra, dec
-
-
-##############################################################3
-
-##############################################################3
-
-##############################################################3
-
-##############################################################3
-
-

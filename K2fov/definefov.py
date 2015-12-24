@@ -1,15 +1,11 @@
-from __future__ import print_function
-
-import numpy as np
-
-__version__ = "$Id: definefov.py 32 2013-12-19 22:13:00Z fergalm $"
-__URL__ = "$URL: http://svn.code.sf.net/p/keplertwowheel/code/py/definefov.py $"
-
-
 """
 Code to create, and load, unit vectors representing the
 channel corners in the field of view
 """
+from __future__ import print_function
+
+import numpy as np
+
 
 def generateVectors():
     """Convert the known ra/decs of the channel corners

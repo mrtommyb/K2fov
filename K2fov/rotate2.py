@@ -1,10 +1,3 @@
-import numpy as np
-
-#Coordinate transformations in radec space
-__version__ = "$Id: rotate2.py 53 2014-03-06 22:42:13Z fergalm $"
-__URL__ = "$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/rotate2.py $"
-
-
 """
 Construct various rotation matrices.
 
@@ -36,6 +29,7 @@ then you need to post multiply the matrix
 vDash = np.dot(v, R), where vDash is the vector in the rotated
 coord system.
 """
+import numpy as np
 
 
 def getAngleBetweenVectors(a, b, degrees=True):
@@ -44,12 +38,10 @@ def getAngleBetweenVectors(a, b, degrees=True):
     cost = np.dot(a, b)
     cost /= norm(a) * norm(b)
 
-    angle   = np.arccos(cost)   #In radians
+    angle = np.arccos(cost)   # In radians
     if degrees:
         angle *= 180/np.pi
     return angle
-
-
 
 
 def declinationRotationMatrix(theta_deg):
@@ -65,7 +57,6 @@ def declinationRotationMatrix(theta_deg):
     To rotate a vector, premultiply by this matrix.
     To rotate the coord sys underneath the vector, post multiply
     """
-
     return pitchUpMat(theta_deg)
 
 
@@ -86,8 +77,6 @@ def rightAscensionRotationMatrix(theta_deg):
     return yawLeftMat(theta_deg)
 
 
-
-
 def yawLeftMat(theta_deg):
     """Thin wrapper to rotateInZ with a human readable name
 
@@ -101,7 +90,6 @@ def yawLeftMat(theta_deg):
     To rotate a vector, premultiply by this matrix.
     To rotate the coord sys underneath the vector, post multiply
     """
-
     return rotateInZMat(theta_deg)
 
 
@@ -137,9 +125,6 @@ def rollClockwiseMat(theta_deg):
     return rotateInXMat(theta_deg)
 
 
-
-
-
 def rotateAboutVectorMatrix(vec, theta_deg):
     """Construct the matrix that rotates vector a about
     vector vec by an angle of theta_deg degrees
@@ -158,15 +143,14 @@ def rotateAboutVectorMatrix(vec, theta_deg):
     To rotate the coord sys underneath the vector, post multiply
 
     """
-
     ct = np.cos(np.radians(theta_deg))
     st = np.sin(np.radians(theta_deg))
 
-    #Ensure vector has normal length
+    # Ensure vector has normal length
     vec /= np.linalg.norm(vec)
     assert( np.all( np.isfinite(vec)))
 
-    #compute the three terms
+    # compute the three terms
     term1 = ct * np.eye(3)
 
     ucross = np.zeros( (3,3))
@@ -213,14 +197,12 @@ def rotateInZMat(theta_deg):
 
     ct = np.cos( np.radians(theta_deg))
     st = np.sin( np.radians(theta_deg))
-    rMat = np.array([  [ ct, -st, 0], \
-                       [ st,  ct, 0], \
-                       [  0,   0, 1], \
-                   ])
+    rMat = np.array([  [ ct, -st, 0],
+                       [ st,  ct, 0],
+                       [  0,   0, 1],
+                    ])
 
     return rMat
-
-
 
 
 def rotateInYMat(theta_deg):
@@ -246,16 +228,13 @@ def rotateInYMat(theta_deg):
     To rotate the coord sys underneath the vector, post multiply
 
     """
-
     ct = np.cos( np.radians(theta_deg))
     st = np.sin( np.radians(theta_deg))
 
-
-    rMat = np.array([  [ ct,  0,  st], \
-                       [  0,  1,   0], \
-                       [-st,  0,  ct], \
-                   ])
-
+    rMat = np.array([  [ ct,  0,  st],
+                       [  0,  1,   0],
+                       [-st,  0,  ct],
+                    ])
     return rMat
 
 
@@ -282,25 +261,18 @@ def rotateInXMat(theta_deg):
     To rotate a vector, premultiply by this matrix.
     To rotate the coord sys underneath the vector, post multiply
     """
-
     ct = np.cos( np.radians(theta_deg))
     st = np.sin( np.radians(theta_deg))
 
-
-    rMat = np.array([  [  1,   0,  0], \
-                       [  0,  ct,  -st], \
-                       [  0, st,  ct], \
-                   ])
-
+    rMat = np.array([  [  1,   0,  0],
+                       [  0,  ct,  -st],
+                       [  0, st,  ct],
+                    ])
     return rMat
 
 
-
-
-
-
 def vecFromRaDec(ra_deg, dec_deg):
-    v =np.zeros( (3,))
+    v = np.zeros((3,))
 
     ra_rad = np.radians(ra_deg)
     dec_rad = np.radians(dec_deg)
@@ -327,14 +299,13 @@ def raDecFromVec(v):
 
     @TODO: Rigourously test this against spice.recrad()
     """
-
-    #Ensure v is a normal vector
+    # Ensure v is a normal vector
     v /= np.linalg.norm(v)
 
-    ra_deg=0    #otherwise not in namespace0
+    ra_deg = 0    # otherwise not in namespace0
     dec_rad = np.arcsin(v[2])
     s = np.hypot(v[0], v[1])
-    if s ==0:
+    if s == 0:
         ra_rad = 0
     else:
         ra_rad = np.arcsin(v[1]/s)
@@ -352,10 +323,3 @@ def raDecFromVec(v):
 
     raDec = ra_deg, np.degrees(dec_rad)
     return np.array(raDec)
-
-
-
-
-
-
-

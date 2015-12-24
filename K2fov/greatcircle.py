@@ -1,15 +1,10 @@
-import numpy as np
-
-
 """
 A set of functions to calculate properties of great circle lines on a
 unit sphere, including, angular separation, bearing, etc.
 
 Ported into Python from explanations at http://www.movable-type.co.uk/scripts/gis-faq-5.1.html
 """
-
-__version__ = "$Id: greatcircle.py 33 2013-12-19 22:13:23Z fergalm $"
-__URL__ = "$URL: svn+ssh://fergalm@svn.code.sf.net/p/keplertwowheel/code/py/greatcircle.py $"
+import numpy as np
 
 
 def sphericalAngSep(ra0, dec0, ra1, dec1, radians=False):
@@ -74,6 +69,7 @@ def sphericalAngSepFast(ra0, dec0, ra1, dec1, radians=False):
 
     return val
 
+
 def haversine(x):
     """Return the haversine of an angle
 
@@ -128,6 +124,3 @@ def sphericalAngDestination(ra0_deg, dec0_deg, bearing_deg, dist_deg):
     ra2_deg = np.degrees(lambda2)
     dec2_deg = np.degrees(phi2)
     return ra2_deg, dec2_deg
-
-
-
