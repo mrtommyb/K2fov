@@ -25,8 +25,8 @@ def test_targetlists():
             assert(onSiliconCheck(ra[idx], dec[idx], fov))
             assert(not onSiliconCheck(ra[idx] + 20, dec[idx], fov))
 
-    # We chose three random campaigns to test:
-    for campaign in [0, 1, 2, 3, 4, 5, 6, 7]:
+    # We test all the target lists available at the time of writing this test
+    for campaign in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
         run_test(campaign)
 
 
