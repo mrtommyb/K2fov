@@ -4,28 +4,20 @@ where RA and Dec are in decimal degrees
 """
 from __future__ import division, print_function
 import sys
-import json
+
 from . import logger
 
+# Try importing numpy
 try:
     import numpy as np
 except ImportError:
     logger.error('You need numpy installed')
     sys.exit(1)
 
+# Try importing matplotlib
 try:
     import matplotlib.pyplot as plt
     got_mpl = True
-except ImportError:
-    logger.warning('You need matplotlib installed to get a plot')
-    got_mpl = False
-
-from . import projection as proj
-from . import fov
-from . import DEFAULT_PADDING
-
-
-if got_mpl:
     params = {
                 'axes.linewidth': 1.5,
                 'axes.labelsize': 24,
@@ -37,6 +29,13 @@ if got_mpl:
                 'text.usetex': False,
              }
     plt.rcParams.update(params)
+except ImportError:
+    logger.warning('You need matplotlib installed to get a plot')
+    got_mpl = False
+
+from . import fields
+from . import projection as proj
+from . import DEFAULT_PADDING
 
 
 def angSepVincenty(ra1, dec1, ra2, dec2):
@@ -96,83 +95,13 @@ def nearSiliconCheck(ra_deg, dec_deg, FovObj, max_sep=8.2):
         return False
 
 
-def getFieldNumbers():
-    """Returns all the field numbers of campaigns defined so far.
-
-    Returns
-    -------
-    numbers : list
-        Valid field numbers, e.g. [0, 1, 2, ..., 17, 18]
-    """
-    from . import CAMPAIGN_DICT_FILE
-    CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
-    return CAMPAIGN_DICT["field_numbers"]
-
-
-def getFieldInfo(fieldnum):
-    """Returns a dictionary containing the metadata of a K2 Campaign field.
-
-    Raises a ValueError if the field number is unknown.
-
-    Parameters
-    ----------
-    fieldnum : int
-        Campaign field number (e.g. 0, 1, 2, ...)
-
-    Returns
-    -------
-    field : dict
-        The dictionary contains the keys
-        'ra', 'dec', 'roll' (floats in decimal degrees),
-        'start', 'stop', (strings in YYYY-MM-DD format)
-        and 'comments' (free text).
-    """
-    try:
-        from . import CAMPAIGN_DICT_FILE
-        CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
-        info = CAMPAIGN_DICT["c{0}".format(fieldnum)]
-        # Print warning messages if necessary
-        if fieldnum == 100:
-            logger.warning("Warning: you are using the K2 first light field, "
-                           "you almost certainly do not want to do this")
-        elif "preliminary" in info and info["preliminary"] == "True":
-            logger.warning("Warning: the position of field {0} is preliminary."
-                           "Do not use this position for your final "
-                           "target selection!".format(fieldnum))
-        return info
-    except KeyError:
-        raise ValueError("Field {0} not set in this version "
-                         "of the code".format(fieldnum))
-
-
 def getRaDecRollFromFieldnum(fieldnum):
     """Returns ra, dec, and roll for a campaign.
 
     All values returned are in decimal degrees.
     """
-    info = getFieldInfo(fieldnum)
+    info = fields.getFieldInfo(fieldnum)
     return (info["ra"], info["dec"], info["roll"])
-
-
-def getKeplerFov(fieldnum):
-    """Returns a `fov.KeplerFov` object for a given campaign.
-
-    Parameters
-    ----------
-    fieldnum : int
-        K2 Campaign number.
-
-    Returns
-    -------
-    fovobj : `fov.KeplerFov` object
-        Details the footprint of the requested K2 campaign.
-    """
-    ra, dec, scRoll = getRaDecRollFromFieldnum(fieldnum)
-    # convert from SC roll to FOV coordinates
-    # do not use the fovRoll coords anywhere else
-    # they are internal to this script only
-    fovRoll = fov.getFovAngleFromSpacecraftRoll(scRoll)
-    return fov.KeplerFov(ra, dec, fovRoll)
 
 
 def K2onSilicon(infile, fieldnum):
@@ -195,7 +124,7 @@ def K2onSilicon(infile, fieldnum):
         logger.warning("Warning: there are {0} sources in your target list, "
                        "this could take some time".format(n_sources))
 
-    k = getKeplerFov(fieldnum)
+    k = fields.getKeplerFov(fieldnum)
     raDec = k.getCoordsOfChannelCorners()
 
     onSilicon = list(

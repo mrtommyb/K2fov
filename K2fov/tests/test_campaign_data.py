@@ -7,9 +7,8 @@ To run these tests, simply run "py.test" in the K2fov source tree.
 import json
 
 from .. import CAMPAIGN_DICT_FILE
-from ..K2onSilicon import getRaDecRollFromFieldnum, getFieldNumbers, getFieldInfo
-
-CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
+from .. import getFieldNumbers, getFieldInfo
+from ..K2onSilicon import getRaDecRollFromFieldnum
 
 
 def old_getRaDecRollFromFieldnum(fieldnum):
@@ -104,6 +103,7 @@ def old_getRaDecRollFromFieldnum(fieldnum):
 def test_coordinates_file():
     """Are the coordinates in the "k2-campaigns.json" file identical
     to those that were hardcoded in v1.9.2?"""
+    CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
     campaigns = [100] + list(range(0, 19))
     for c in campaigns:
         test_ra, test_dec, test_roll = old_getRaDecRollFromFieldnum(c)
