@@ -37,3 +37,7 @@ nosetests.xml
 
 .cache
 sandbox
+# Ignore the png and csv that K2onSilicon produces
+targets_fov.png
+targets_siliconFlag.csv
+
