@@ -1,6 +1,6 @@
 """This file defines a representation of the Kepler Field of View, `KeplerFov`.
 """
-from __future__ import print_function
+import numpy as np
 
 try:
     import matplotlib.pyplot as mp
@@ -8,9 +8,8 @@ try:
 except ImportError:
     pass
 
-
+from . import logging
 from . import projection as proj
-import numpy as np
 from . import rotate2 as r
 from . import greatcircle as gcircle
 from . import definefov
@@ -51,7 +50,7 @@ def getFovAngleFromSpacecraftRoll(yaxis_deg):
    This function converts from angles relative to spacecraft y-axis
    to angles relative to the FOV
    """
-    return yaxis_deg + 13.0 + 180 -90
+    return yaxis_deg + 13.0 + 180 - 90
 
 
 def getSpacecraftRollAngleFromFovAngle(fovAngle_deg):
@@ -106,14 +105,12 @@ class KeplerFov():
         # The ra and decs of the corners of the modules.
         self.origin = definefov.loadOriginVectors()
 
-
         self.ra0_deg = ra_deg
         self.dec0_deg = dec_deg
         self.roll0_deg = roll_deg
 
         self.currentRaDec = None
         self.setPointing(ra_deg, dec_deg, roll_deg)
-
 
     ###
     # Code related to pointing the spacecraft
@@ -140,8 +137,6 @@ class KeplerFov():
             out = self.getRaDecs(out)
         return out
 
-
-
     def setPointing(self, ra_deg, dec_deg, roll_deg):
         t = self.computePointing(ra_deg, dec_deg, roll_deg)
         self.currentRaDec = t
@@ -151,10 +146,8 @@ class KeplerFov():
         self.dec0_deg = dec_deg
         self.roll0_deg = roll_deg
 
-
     def computePointing(self, ra_deg, dec_deg, roll_deg, cartesian=False):
         """Compute a pointing model without changing the internal object pointing"""
-
         # Roll FOV
         Rrotate = r.rotateInXMat(roll_deg)  # Roll
 
@@ -216,35 +209,42 @@ class KeplerFov():
     ###
 
     def isOnSilicon(self, ra_deg, dec_deg, padding_pix=DEFAULT_PADDING):
-        """Returns true if the specifed location is observable with
-        a science CCD
+        """Returns True if the given location is observable with a science CCD.
 
-        Inputs:
-        ra_deg  (float)
-        dec_deg (float)
-        padding (float) Objects <=  this many pixels off the edge
-                of a channel are counted as inside.
+        Parameters
+        ----------
+        ra_deg : float
+            Right Ascension (J2000) in decimal degrees.
+
+        dec_deg : float
+            Declination (J2000) in decimal degrees.
+
+        padding : float
+            Objects <=  this many pixels off the edge of a channel are counted
+            as inside.  This allows one to compensate for the slight
+            inaccuracy in `K2fov` that results from e.g. the lack of optical
+            distortion modeling.
         """
-
         ch, col, row = self.getChannelColRow(ra_deg, dec_deg)
-
-        # Mod 3 and 7 are no longer operational
+        # Modules 3 and 7 are no longer operational
         if ch in self.brokenChannels:
             return False
-
-        # Is on FGS.
+        # K2fov encodes the Fine Guidance Sensors (FGS) as
+        # "channel" numbers 85-88; they are not science CCDs.
         if ch > 84:
             return False
-
         return self.colRowIsOnSciencePixel(col, row, padding_pix)
-
 
     def getChannelColRow(self, ra, dec, wantZeroOffset=False,
                          allowIllegalReturnValues=True):
+        """Returns (channel, column, row) given an (ra, dec) coordinate.
+
+        Returns (0, 0, 0) or a ValueError if the coordinate is not on silicon.
+        """
         try:
             ch = self.pickAChannel(ra, dec)
         except ValueError:
-            print("WARN: %.7f %.7f not on any channel" % (ra, dec))
+            logger.warning("WARN: %.7f %.7f not on any channel" % (ra, dec))
             return (0, 0, 0)
 
         col, row = self.getColRowWithinChannel(ra, dec, ch, wantZeroOffset,
@@ -252,9 +252,11 @@ class KeplerFov():
         return (ch, col, row)
 
     def pickAChannel(self, ra_deg, dec_deg):
+        """Returns the channel number closest to a given (ra, dec) coordinate.
+        """
         # Could improve speed by doing this in the projection plane
         # instead of sky coords
-        cRa  = self.currentRaDec[:, 3]  # Ra of each channel corner
+        cRa = self.currentRaDec[:, 3]  # Ra of each channel corner
         cDec = self.currentRaDec[:, 4]  # dec of each channel corner
 
         dist = cRa * 0
@@ -266,8 +268,9 @@ class KeplerFov():
 
     def getColRowWithinChannel(self, ra, dec, ch, wantZeroOffset=False,
                                allowIllegalReturnValues=True):
-        """How close is a given ra/dec to the origin of a KeplerModule?
+        """Returns (col, row) given a (ra, dec) coordinate and channel number.
         """
+        # How close is a given ra/dec to the origin of a KeplerModule?
         x, y = self.defaultMap.skyToPix(ra, dec)
         kepModule = self.getChannelAsPolygon(ch)
         r = np.array([x[0],y[0]]) - kepModule.polygon[0, :]

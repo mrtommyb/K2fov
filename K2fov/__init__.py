@@ -1,9 +1,11 @@
 from __future__ import (division, absolute_import)
 
-# Where are the K2 Campaign parameters stored?
 import os
-PACKAGEDIR = os.path.dirname(os.path.abspath(__file__))
+import logging
+logger = logging.getLogger(__name__)
 
+# Where are the K2 Campaign parameters stored?
+PACKAGEDIR = os.path.dirname(os.path.abspath(__file__))
 # The pointing parameters and dates of each campaign are stored in a JSON file
 CAMPAIGN_DICT_FILE = os.path.join(PACKAGEDIR, "data",
                                   "k2-campaign-parameters.json")
@@ -14,4 +16,5 @@ CAMPAIGN_DICT_FILE = os.path.join(PACKAGEDIR, "data",
 # be considered on silicon.
 DEFAULT_PADDING = 3  # pixels
 
+# Add the K2onSilicon() function to the root namespace
 from .K2onSilicon import K2onSilicon

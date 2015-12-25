@@ -5,21 +5,19 @@ where RA and Dec are in decimal degrees
 from __future__ import division, print_function
 import sys
 import json
-import logging
-
-log = logging.getLogger()
+from . import logger
 
 try:
     import numpy as np
 except ImportError:
-    print('You need numpy installed')
+    logger.error('You need numpy installed')
     sys.exit(1)
 
 try:
     import matplotlib.pyplot as plt
     got_mpl = True
 except ImportError:
-    print('You need matplotlib installed to get a plot')
+    logger.warning('You need matplotlib installed to get a plot')
     got_mpl = False
 
 from . import projection as proj
@@ -27,17 +25,17 @@ from . import fov
 from . import DEFAULT_PADDING
 
 
-params = {
-            'axes.linewidth': 1.5,
-            'axes.labelsize': 24,
-            'font.family': 'sans-serif',
-            'font.size': 22,
-            'legend.fontsize': 14,
-            'xtick.labelsize': 16,
-            'ytick.labelsize': 16,
-            'text.usetex': False,
-         }
 if got_mpl:
+    params = {
+                'axes.linewidth': 1.5,
+                'axes.labelsize': 24,
+                'font.family': 'sans-serif',
+                'font.size': 22,
+                'legend.fontsize': 14,
+                'xtick.labelsize': 16,
+                'ytick.labelsize': 16,
+                'text.usetex': False,
+             }
     plt.rcParams.update(params)
 
 
@@ -73,8 +71,10 @@ def parse_file(infile):
                                         )
                     ).T
     except IOError:
-        print('There seems to be a problem with the input file, the format should be: RA_degrees (J2000), \
-            Dec_degrees (J2000), Magnitude. There should be no header, columns should be seperated by a comma')
+        logger.error("There seems to be a problem with the input file, "
+                     "the format should be: RA_degrees (J2000), Dec_degrees (J2000), "
+                     "Magnitude. There should be no header, columns should be "
+                     "separated by a comma")
         sys.exit(1)
     return a, b, mag
 
@@ -133,12 +133,12 @@ def getFieldInfo(fieldnum):
         info = CAMPAIGN_DICT["c{0}".format(fieldnum)]
         # Print warning messages if necessary
         if fieldnum == 100:
-            log.warning("Warning: you are using the K2 first light field, "
-                        "you almost certainly do not want to do this")
+            logger.warning("Warning: you are using the K2 first light field, "
+                           "you almost certainly do not want to do this")
         elif "preliminary" in info and info["preliminary"] == "True":
-            log.warning("Warning: the field you are searching is not yet fixed "
-                        "and is only the proposed position. "
-                        "Do not use this position for target selection.")
+            logger.warning("Warning: the position of field {0} is preliminary."
+                           "Do not use this position for your final "
+                           "target selection!".format(fieldnum))
         return info
     except KeyError:
         raise ValueError("Field {0} not set in this version "
@@ -176,22 +176,26 @@ def getKeplerFov(fieldnum):
 
 
 def K2onSilicon(infile, fieldnum):
+    """Checks whether targets are on silicon during a given campaign.
+
+    This function will write a csv table called targets_siliconFlag.csv,
+    which details the silicon status for each target listed in `infile`.
+
+    Parameters
+    ----------
+    infile : str
+        Path to a csv table with columns ra_deg,dec_deg,magnitude (no header).
+
+    fieldnum : int
+        K2 Campaign number.
+    """
     ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
+    n_sources = np.shape(ra_sources_deg)[0]
+    if n_sources > 500:
+        logger.warning("Warning: there are {0} sources in your target list, "
+                       "this could take some time".format(n_sources))
 
-    if np.shape(ra_sources_deg)[0] > 500:
-        log.warning("Warning: there are {0} sources in your target list, "
-                    "this could take some time".format(np.shape(ra_sources_deg)[0]))
-
-    ra_deg, dec_deg, scRoll_deg = getRaDecRollFromFieldnum(fieldnum)
-
-    # convert from SC roll to FOV coordinates
-    # do not use the fovRoll coords anywhere else
-    # they are internal to this script only
-    fovRoll_deg = fov.getFovAngleFromSpacecraftRoll(scRoll_deg)
-
-    # initialize class
-    k = fov.KeplerFov(ra_deg, dec_deg, fovRoll_deg)
-
+    k = getKeplerFov(fieldnum)
     raDec = k.getCoordsOfChannelCorners()
 
     onSilicon = list(
