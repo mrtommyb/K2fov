@@ -1,12 +1,16 @@
 """Functions to expose the details of the different K2 Campaign Fields.
 """
+import os
 import json
 
-from . import CAMPAIGN_DICT_FILE
-from . import logger
+from . import PACKAGEDIR, logger
 from . import fov
 
 __all__ = ['getFieldNumbers', 'getFieldInfo', 'getKeplerFov']
+
+# The pointing parameters and dates of each campaign are stored in a JSON file
+CAMPAIGN_DICT_FILE = os.path.join(PACKAGEDIR, "data",
+                                  "k2-campaign-parameters.json")
 
 
 def getFieldNumbers():
