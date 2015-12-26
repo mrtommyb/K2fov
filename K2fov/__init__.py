@@ -16,6 +16,6 @@ CAMPAIGN_DICT_FILE = os.path.join(PACKAGEDIR, "data",
 # be considered on silicon.
 DEFAULT_PADDING = 3  # pixels
 
-# Add fields.* and K2onSilicon() to the root namespace
+# Add fields.* and K2onSilicon.K2onSilicon to the root namespace
 from .fields import *
 from .K2onSilicon import K2onSilicon

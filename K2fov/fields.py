@@ -2,8 +2,11 @@
 """
 import json
 
+from . import CAMPAIGN_DICT_FILE
 from . import logger
 from . import fov
+
+__all__ = ['getFieldNumbers', 'getFieldInfo', 'getKeplerFov']
 
 
 def getFieldNumbers():
@@ -14,7 +17,6 @@ def getFieldNumbers():
     numbers : list
         Valid field numbers, e.g. [0, 1, 2, ..., 17, 18]
     """
-    from . import CAMPAIGN_DICT_FILE
     CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
     return CAMPAIGN_DICT["field_numbers"]
 
@@ -38,7 +40,6 @@ def getFieldInfo(fieldnum):
         and 'comments' (free text).
     """
     try:
-        from . import CAMPAIGN_DICT_FILE
         CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
         info = CAMPAIGN_DICT["c{0}".format(fieldnum)]
         # Print warning messages if necessary
