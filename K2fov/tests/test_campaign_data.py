@@ -8,7 +8,7 @@ import json
 
 from .. import getFieldNumbers, getFieldInfo
 from ..K2onSilicon import getRaDecRollFromFieldnum
-from ..fields import CAMPAIGN_DICT_FILE
+from ..fields import _getCampaignDict
 
 
 def old_getRaDecRollFromFieldnum(fieldnum):
@@ -103,11 +103,11 @@ def old_getRaDecRollFromFieldnum(fieldnum):
 def test_coordinates_file():
     """Are the coordinates in the "k2-campaigns.json" file identical
     to those that were hardcoded in v1.9.2?"""
-    CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
+    campaign_dict = _getCampaignDict()
     campaigns = [100] + list(range(0, 19))
     for c in campaigns:
         test_ra, test_dec, test_roll = old_getRaDecRollFromFieldnum(c)
-        jsoninfo = CAMPAIGN_DICT["c{0}".format(c)]
+        jsoninfo = campaign_dict["c{0}".format(c)]
         assert(jsoninfo['ra'] == test_ra)
         assert(jsoninfo['dec'] == test_dec)
         assert(jsoninfo['roll'] == test_roll)
