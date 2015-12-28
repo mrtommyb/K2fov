@@ -104,11 +104,12 @@ def getRaDecRollFromFieldnum(fieldnum):
     return (info["ra"], info["dec"], info["roll"])
 
 
-def K2onSilicon(infile, fieldnum):
+def K2onSilicon(infile, fieldnum, do_nearSiliconCheck=False):
     """Checks whether targets are on silicon during a given campaign.
 
     This function will write a csv table called targets_siliconFlag.csv,
-    which details the silicon status for each target listed in `infile`.
+    which details the silicon status for each target listed in `infile`
+    (0 = not on silicon, 2 = on silion).
 
     Parameters
     ----------
@@ -117,6 +118,9 @@ def K2onSilicon(infile, fieldnum):
 
     fieldnum : int
         K2 Campaign number.
+
+    do_nearSiliconCheck : bool
+        If `True`, targets near (but not on) silicon are flagged with a "1".
     """
     ra_sources_deg, dec_sources_deg, mag = parse_file(infile)
     n_sources = np.shape(ra_sources_deg)[0]
@@ -135,18 +139,18 @@ def K2onSilicon(infile, fieldnum):
                         np.repeat(k, len(ra_sources_deg))
                         )
                     )
-
-    nearSilicon = list(
-                    map(
-                        nearSiliconCheck,
-                        ra_sources_deg,
-                        dec_sources_deg,
-                        np.repeat(k, len(ra_sources_deg))
-                        )
-                    )
-
     onSilicon = np.array(onSilicon, dtype=bool)
-    nearSilicon = np.array(nearSilicon, dtype=bool)
+
+    if do_nearSiliconCheck:
+        nearSilicon = list(
+                        map(
+                            nearSiliconCheck,
+                            ra_sources_deg,
+                            dec_sources_deg,
+                            np.repeat(k, len(ra_sources_deg))
+                            )
+                        )
+        nearSilicon = np.array(nearSilicon, dtype=bool)
 
     if got_mpl:
         almost_black = '#262626'
@@ -176,10 +180,12 @@ def K2onSilicon(infile, fieldnum):
         fig.savefig('targets_fov.png', dpi=300)
         plt.close('all')
 
+    # prints zero if target is not on silicon
     siliconFlag = np.zeros_like(ra_sources_deg)
 
-    # prints zero if target is not on silicon
-    siliconFlag = np.where(nearSilicon, 0, siliconFlag)
+    # print a 1 if target is near but not on silicon
+    if do_nearSiliconCheck:
+        siliconFlag = np.where(nearSilicon, 1, siliconFlag)
 
     # prints a 2 if target is on silicon
     siliconFlag = np.where(onSilicon, 2, siliconFlag)
