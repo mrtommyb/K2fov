@@ -103,3 +103,67 @@ def isPointInsidePolygon(x, y, vertices_x, vertices_y):
             if (y < (x - vertices_x[i]) * (vertices_y[i] - vertices_y[j]) / (vertices_x[i] - vertices_x[j]) + vertices_y[i]):
                 inside = not inside
     return inside
+
+
+class C9FootprintPlot(object):
+    """Create a plot showing the C9 footprint and superstamp.
+    """
+    def __init__(self, axes=None):
+        if axes is None:
+            import matplotlib.pyplot as pl
+            params = {
+                        'axes.linewidth': 1.,
+                        'axes.labelsize': 20,
+                        'font.family': 'sans-serif',
+                        'font.size': 22,
+                        'legend.fontsize': 14,
+                        'xtick.labelsize': 16,
+                        'ytick.labelsize': 16,
+                        'text.usetex': False,
+                     }
+            pl.rcParams.update(params)
+            self.fig = pl.figure(figsize=(8, 6))
+            self.ax = self.fig.add_subplot(111)
+        else:
+            self.ax = axes
+
+        self.ax.set_ylim([-30, -14])
+        self.ax.set_xlim([280, 260])
+        self.ax.set_xlabel("RA [deg]")
+        self.ax.set_ylabel("Dec [deg]")
+
+    def plot_outline(self):
+        """Plots the coverage of both the channels and the C9 superstamp."""
+        fov = getKeplerFov(9)
+        # Plot the superstamp
+        for ch in SUPERSTAMP["channels"]:
+            v_col = SUPERSTAMP["channels"][ch]["vertices_col"]
+            v_row = SUPERSTAMP["channels"][ch]["vertices_row"]
+            radec = np.array([
+                                fov.getRaDecForChannelColRow(int(ch),
+                                                             v_col[idx],
+                                                             v_row[idx])
+                                for idx in range(len(v_col))
+                              ])
+            self.ax.fill(radec[:, 0], radec[:, 1],
+                         lw=0, facecolor="#ff1111", zorder=100)
+
+        # Plot all channel outlines
+        corners = fov.getCoordsOfChannelCorners()
+        for ch in np.arange(1, 85, dtype=int):
+            if ch in fov.brokenChannels:
+                continue  # certain channel are no longer used
+            idx = np.where(corners[::, 2] == ch)
+            mdl = int(corners[idx, 0][0][0])
+            out = int(corners[idx, 1][0][0])
+            ra = corners[idx, 3][0]
+            dec = corners[idx, 4][0]
+            self.ax.fill(np.concatenate((ra, ra[:1])), np.concatenate((dec, dec[:1])),
+                         lw=0, facecolor="#bbbbbb", zorder=90)
+
+
+def plot_c9(output_fn="c9.png"):
+    p = C9FootprintPlot()
+    p.plot_outline()
+    p.fig.tight_layout()
+    p.fig.savefig(output_fn)
