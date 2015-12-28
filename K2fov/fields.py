@@ -8,9 +8,18 @@ from . import fov
 
 __all__ = ['getFieldNumbers', 'getFieldInfo', 'getKeplerFov']
 
-# The pointing parameters and dates of each campaign are stored in a JSON file
-CAMPAIGN_DICT_FILE = os.path.join(PACKAGEDIR, "data",
-                                  "k2-campaign-parameters.json")
+
+_campaign_dict_cache = None
+
+
+def _getCampaignDict():
+    """Returns a dictionary specifying the details of all campaigns."""
+    global _campaign_dict_cache
+    if _campaign_dict_cache is None:
+        # All pointing parameters and dates are stored in a JSON file
+        fn = os.path.join(PACKAGEDIR, "data", "k2-campaign-parameters.json")
+        _campaign_dict_cache = json.load(open(fn))
+    return _campaign_dict_cache
 
 
 def getFieldNumbers():
@@ -21,8 +30,7 @@ def getFieldNumbers():
     numbers : list
         Valid field numbers, e.g. [0, 1, 2, ..., 17, 18]
     """
-    CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
-    return CAMPAIGN_DICT["field_numbers"]
+    return _getCampaignDict()["field_numbers"]
 
 
 def getFieldInfo(fieldnum):
@@ -44,14 +52,13 @@ def getFieldInfo(fieldnum):
         and 'comments' (free text).
     """
     try:
-        CAMPAIGN_DICT = json.load(open(CAMPAIGN_DICT_FILE))
-        info = CAMPAIGN_DICT["c{0}".format(fieldnum)]
+        info = _getCampaignDict()["c{0}".format(fieldnum)]
         # Print warning messages if necessary
         if fieldnum == 100:
             logger.warning("Warning: you are using the K2 first light field, "
                            "you almost certainly do not want to do this")
         elif "preliminary" in info and info["preliminary"] == "True":
-            logger.warning("Warning: the position of field {0} is preliminary."
+            logger.warning("Warning: the position of field {0} is preliminary. "
                            "Do not use this position for your final "
                            "target selection!".format(fieldnum))
         return info
