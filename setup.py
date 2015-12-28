@@ -18,6 +18,8 @@ except ImportError:
 entry_points = {'console_scripts': [
     'K2onSilicon = K2fov.K2onSilicon:K2onSilicon_main',
     'K2inMicrolensRegion = K2fov.c9:inMicrolensRegion_main'
+    'K2findCampaigns = K2fov.K2findCampaigns:K2findCampaigns_main',
+    'K2findCampaigns-csv = K2fov.K2findCampaigns:K2findCampaigns_csv_main'
 ]}
 
 setup(name='K2fov',
