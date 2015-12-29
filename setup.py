@@ -16,7 +16,8 @@ except ImportError:
 
 # Command-line tools
 entry_points = {'console_scripts': [
-    'K2onSilicon = K2fov.K2onSilicon:K2onSilicon_main'
+    'K2onSilicon = K2fov.K2onSilicon:K2onSilicon_main',
+    'K2inMicrolensRegion = K2fov.c9:inMicrolensRegion_main'
 ]}
 
 setup(name='K2fov',
