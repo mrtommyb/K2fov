@@ -23,7 +23,7 @@ entry_points = {'console_scripts': [
 ]}
 
 setup(name='K2fov',
-      version='3.0.0',
+      version='3.1.dev',
       description='Find which targets are in the field of view of K2',
       author='Tom Barclay',
       author_email='tom@tombarclay.com',
@@ -32,4 +32,12 @@ setup(name='K2fov',
       package_data={'K2fov': ['data/*.json']},
       install_requires=["numpy>=1.8"],
       entry_points=entry_points,
+      classifiers=[
+          "Development Status :: 5 - Production/Stable",
+          "License :: OSI Approved :: MIT License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python",
+          "Intended Audience :: Science/Research",
+          "Topic :: Scientific/Engineering :: Astronomy",
+          ],
       )
