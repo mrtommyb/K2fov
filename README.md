@@ -22,28 +22,15 @@ pip install K2fov --upgrade
 It is important to upgrade frequently to ensure that you are using the most
 up to date K2 field parameters.
 
-## Usage: command line tools
+## Usage
 
 ### K2onSilicon
 
 Installing `K2fov` will automatically add a command line tool 
-to your path called `K2onSilicon`.
-You can see a description of its use by executing `K2onSilicon --help`:
-```
-$ K2onSilicon --help
-usage: K2onSilicon [-h] csv_file campaign
-
-Run K2onSilicon to find which targets in a list call on active silicon for a
-given K2 campaign.
-
-positional arguments:
-  csv_file    Name of input csv file with targets, column are Ra_degrees,
-              Dec_degrees, Kepmag
-  campaign    K2 Campaign number
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
+to your path called `K2onSilicon`, which takes a list of targets
+as input and writes a new list that indicates the "silicon status"
+of each target, i.e. whether or not it falls on one of the
+detectors of the spacecraft's focal plane.
 
 **Example**
 
@@ -71,14 +58,44 @@ Running the code will output a file with the three input columns and an addition
 
 The code will also write an image, called `targets_fov.png`, showing where the targets fall.
 
+Execute `K2onSilicon --help` to be reminded of its usage:
+```
+$ K2onSilicon --help
+usage: K2onSilicon [-h] csv_file campaign
+
+Run K2onSilicon to find which targets in a list call on active silicon for a
+given K2 campaign.
+
+positional arguments:
+  csv_file    Name of input csv file with targets, column are Ra_degrees,
+              Dec_degrees, Kepmag
+  campaign    K2 Campaign number
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
 
 ### K2findCampaigns
 
 If instead of checking the targets in a single campaign,
-you want to understand whether a target is visible iny *any* past or
+you want to understand whether a target is visible in *any* past or
 future K2 Campaign, you can use a different tool called `K2findCampaigns`.
 
-You can see a detailed help message by executing `K2findCampaigns --help`:
+**Example**
+
+For example, to verify whether J2000 coordinate
+(ra, dec) = (269.5, -28.5) degrees is visible at any point
+during the K2 mission, type:
+```
+$ K2findCampaigns 269.5 -28.5
+Success! The target is on silicon during K2 campaigns [9].
+```
+
+You can also check a list of targets using an alternative
+tool called `K2findCampaigns-csv`.
+
+Execute `K2findCampaigns --help` or `K2findCampaigns-csv --help`
+to be reminded of the use:
 ```
 $ K2findCampaigns --help
 usage: K2findCampaigns [-h] ra dec
@@ -92,19 +109,25 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
-  ```
-
-**Example**
-
-For example, to verify whether J2000 coordinate
-(ra, dec) = (269.5, -28.5) degrees is visible at any point
-during the K2 mission, type:
 ```
-$ K2findCampaigns 269.5 -28.5
-Success! The target is on silicon during K2 campaigns [9].
+
+```
+$ K2findCampaigns-csv --help
+usage: K2findCampaigns-csv [-h] input_filename
+
+Check which objects listed in a CSV table are (or were) observable by NASA's
+K2 mission.
+
+positional arguments:
+  input_filename  Path to a comma-separated table containing columns
+                  'ra,dec,kepmag' with ra and dec in decimal degrees.
+
+optional arguments:
+  -h, --help      show this help message and exit
 ```
 
 ## Authors
+
 `K2fov` was created by Fergal Mullally, Thomas Barclay, and Geert Barentsen
 on behalf of the Kepler/K2 Guest Observer Office at NASA Ames.
-Please consider citing this tool in your publications.
+Please cite this tool in your publications.
