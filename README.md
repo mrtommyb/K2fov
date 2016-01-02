@@ -75,6 +75,7 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
+
 ### K2findCampaigns
 
 If instead of checking the targets in a single campaign,
@@ -125,6 +126,28 @@ positional arguments:
 optional arguments:
   -h, --help      show this help message and exit
 ```
+
+
+### K2inMicrolensRegion
+
+Finally, this package adds the `K2inMicrolensRegion` tool to check if a
+celestial coordinate is inside the 3-megapixel superstamp region
+that has been allocated to the [Campaign 9 microlensing experiment](http://keplerscience.arc.nasa.gov/k2-c9.html).
+The stamp covers a large, ~contiguous region towards the Galactic Bulge.
+```
+$ K2inMicrolensRegion --help
+usage: K2inMicrolensRegion [-h] ra dec
+
+Check if a celestial coordinate is inside the K2C9 microlensing superstamp.
+
+positional arguments:
+  ra          Right Ascension in decimal degrees (J2000).
+  dec         Declination in decimal degrees (J2000).
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
 
 ## Authors
 
