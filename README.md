@@ -1,12 +1,10 @@
 # K2fov [![PyPI](http://img.shields.io/pypi/v/K2fov.svg)](https://pypi.python.org/pypi/K2fov/)  [![PyPI](http://img.shields.io/pypi/dm/K2fov.svg)](https://pypi.python.org/pypi/K2fov/) [![Travis status](https://travis-ci.org/KeplerGO/K2fov.svg)](https://travis-ci.org/KeplerGO/K2fov)
 ***Check whether targets are in the field of view of NASA's K2 mission.***
 
-The `K2fov` package allows users to check whether a target
-is in the field of view of K2. 
-In particular, the package adds the `K2onSilicon` and `K2findCampaigns`
-tools to the command line, which allow the visibility of targets
-to be checked during one (`K2onSilicon`) or all (`K2findCampaigns`) campaigns,
-respectively.
+The `K2fov` Python package allows users to check whether a target is in the field of view of K2. 
+In particular, the package adds the `K2onSilicon` and `K2findCampaigns` tools
+to the command line, which allow the visibility of targets to be checked
+during one (`K2onSilicon`) or all (`K2findCampaigns`) campaigns, respectively.
 The usage of these tools is explained below.
 
 ## Installation
