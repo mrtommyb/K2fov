@@ -23,11 +23,11 @@ entry_points = {'console_scripts': [
 ]}
 
 setup(name='K2fov',
-      version='3.1.dev',
+      version='3.0.1',
       description='Find which targets are in the field of view of K2',
-      author='Tom Barclay',
+      author='Fergal Mullally, Tom Barclay, Geert Barentsen',
       author_email='tom@tombarclay.com',
-      url='https://github.com/mrtommyb/K2fov',
+      url='https://github.com/KeplerGO/K2fov',
       packages=['K2fov'],
       package_data={'K2fov': ['data/*.json']},
       install_requires=["numpy>=1.8"],
