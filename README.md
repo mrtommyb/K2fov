@@ -5,7 +5,9 @@ The `K2fov` package allows users to check whether a target
 is in the field of view of K2. 
 In particular, the package adds the `K2onSilicon` and `K2findCampaigns`
 tools to the command line, which allow the visibility of targets
-to be checked. The usage of these tools is explained below.
+to be checked during one (`K2onSilicon`) or all (`K2findCampaigns`) campaigns,
+respectively.
+The usage of these tools is explained below.
 
 ## Installation
 
