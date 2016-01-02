@@ -44,6 +44,10 @@ the following rows:
 178.19284, 1.01924, 13.2
 171.14213, 5.314616, 11.3
 ```
+The format for the target list is very strict -- you need three
+columns: RA in degrees, Declination in degrees and Kepler
+magnitude. Headers or other additional columns will cause an execution
+failure.
 
 You can then check whether each object in the file falls on silicon
 by calling `K2onSilicon` from the command line:
@@ -52,7 +56,7 @@ K2onSilicon mytargetlist.csv 1
 ```
 Where `mytargetlist.csv` is your CSV file and `1` is the K2 Campaign number.
 
-Running the code will output a file with the three input columns and an additional column containing either a "0" or "2".<br>
+Running the code will output an updated target list containing the three input columns and an extra column containing either a "0" or "2".<br>
 0 = Not observable<br>
 2 = Target is in the K2 field of view and on silicon<br>
 
@@ -151,6 +155,5 @@ optional arguments:
 
 ## Authors
 
-`K2fov` was created by Fergal Mullally, Thomas Barclay, and Geert Barentsen
-on behalf of the Kepler/K2 Guest Observer Office at NASA Ames.
+`K2fov` was created by Fergal Mullally, Thomas Barclay, and Geert Barentsen.
 Please cite this tool in your publications.
