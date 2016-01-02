@@ -96,11 +96,23 @@ $ K2findCampaigns 269.5 -28.5
 Success! The target is on silicon during K2 campaigns [9].
 ```
 
-You can also check a list of targets using an alternative
-tool called `K2findCampaigns-csv`.
+You can also search by name.
+For example, to check whether *T Tauri* is visible, type:
+```
+$ K2findCampaigns-byname "T Tauri"
+Success! T Tauri is on silicon during K2 campaigns [4].
+```
 
-Execute `K2findCampaigns --help` or `K2findCampaigns-csv --help`
-to be reminded of the use:
+Finally, you can check a list of targets (either using their coordinates or names), using `K2findCampaigns-csv`.
+For example:
+```
+$ K2findCampaigns-csv targets.csv
+Writing targets.csv-K2findCampaigns.csv.
+```
+
+**More information**
+
+Execute `K2findCampaigns --help`, `K2findCampaigns-byname --help` or `K2findCampaigns-csv --help` to be reminded of the use:
 ```
 $ K2findCampaigns --help
 usage: K2findCampaigns [-h] ra dec
@@ -117,6 +129,21 @@ optional arguments:
 ```
 
 ```
+K2findCampaigns-byname --help
+usage: K2findCampaigns-byname [-h] name
+
+Check if a target is (or was) observable by any past or future observing
+campaign of NASA's K2 mission.
+
+positional arguments:
+  name        Name of the object. This will be passed on to the CDS name
+              resolver to retrieve coordinate information.
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+```
 $ K2findCampaigns-csv --help
 usage: K2findCampaigns-csv [-h] input_filename
 
@@ -125,7 +152,7 @@ K2 mission.
 
 positional arguments:
   input_filename  Path to a comma-separated table containing columns
-                  'ra,dec,kepmag' with ra and dec in decimal degrees.
+                  'ra,dec,kepmag' (decimal degrees) or 'name'.
 
 optional arguments:
   -h, --help      show this help message and exit

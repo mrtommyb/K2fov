@@ -19,11 +19,12 @@ entry_points = {'console_scripts': [
     'K2onSilicon = K2fov.K2onSilicon:K2onSilicon_main',
     'K2inMicrolensRegion = K2fov.c9:inMicrolensRegion_main',
     'K2findCampaigns = K2fov.K2findCampaigns:K2findCampaigns_main',
+    'K2findCampaigns-byname = K2fov.K2findCampaigns:K2findCampaigns_byname_main',
     'K2findCampaigns-csv = K2fov.K2findCampaigns:K2findCampaigns_csv_main'
 ]}
 
 setup(name='K2fov',
-      version='3.0.1',
+      version='3.1.dev',
       description='Find which targets are in the field of view of K2',
       author='Fergal Mullally, Tom Barclay, Geert Barentsen',
       author_email='tom@tombarclay.com',

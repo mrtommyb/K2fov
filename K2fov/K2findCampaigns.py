@@ -14,7 +14,18 @@ from .K2onSilicon import (parse_file, onSiliconCheck)
 
 
 def findCampaigns(ra, dec):
-    """Returns a list of the campaigns that cover a given position."""
+    """Returns a list of the campaigns that cover a given position.
+
+    Parameters
+    ----------
+    ra, dec : float, float
+        Position in decimal degrees (J2000).
+
+    Returns
+    -------
+    campaigns : list of int
+        A list of the campaigns that cover the given position.
+    """
     # Temporary disable the logger to avoid the preliminary field warnings
     logger.disabled = True
     campaigns_visible = []
@@ -25,6 +36,41 @@ def findCampaigns(ra, dec):
     # Re-enable the logger
     logger.disabled = True
     return campaigns_visible
+
+
+def findCampaignsByName(target):
+    """Returns a list of the campaigns that cover a given target.
+
+    Parameters
+    ----------
+    target : str
+        Name of the celestial object.
+
+    Returns
+    -------
+    campaigns : list of int
+        A list of the campaigns that cover the given target name.
+
+    Exceptions
+    ----------
+    Raises an ImportError if AstroPy is not installed.
+    Raises a ValueError if `name` cannot be resolved to coordinates.
+    """
+    # Is AstroPy (optional dependency) installed?
+    try:
+        from astropy.coordinates import SkyCoord
+        from astropy.coordinates.name_resolve import NameResolveError
+    except ImportError:
+        logger.error('AstroPy needs to be installed for this feature.')
+        sys.exit(1)
+    # Translate the target name into celestial coordinates
+    try:
+        crd = SkyCoord.from_name(target)
+    except NameResolveError:
+        raise ValueError('Could not find coordinates '
+                         'for target "{0}".'.format(target))
+    # Find the campaigns with visibility
+    return findCampaigns(crd.ra.deg, crd.dec.deg)
 
 
 def K2findCampaigns_main(args=None):
@@ -52,22 +98,62 @@ def K2findCampaigns_main(args=None):
     # if args.plot:
 
 
+def K2findCampaigns_byname_main(args=None):
+    """Exposes K2findCampaigns to the command line."""
+    parser = argparse.ArgumentParser(
+                    description="Check if a target is "
+                                "(or was) observable by any past or future "
+                                "observing campaign of NASA's K2 mission.")
+    parser.add_argument('name', nargs=1, type=str,
+                        help="Name of the object.  This will be passed on "
+                             "to the CDS name resolver "
+                             "to retrieve coordinate information.")
+    args = parser.parse_args(args)
+    target = args.name[0]
+    campaigns = findCampaignsByName(target)
+    # Print the result
+    if len(campaigns):
+        print(Highlight.GREEN + "Success! {0} is on silicon "
+              "during K2 campaigns {1}.".format(target, campaigns) + Highlight.END)
+    else:
+        print(Highlight.RED + "Sorry, {} is not on silicon "
+              "during any K2 campaign.".format(target) + Highlight.END)
+
+
 def K2findCampaigns_csv_main(args=None):
     """Exposes K2findCampaigns-csv to the command line."""
     parser = argparse.ArgumentParser(
                     description="Check which objects listed in a CSV table "
                                 "are (or were) observable by NASA's K2 mission.")
     parser.add_argument('input_filename', nargs=1, type=str,
-                        help="Path to a comma-separated table containing columns 'ra,dec,kepmag' with ra and dec in decimal degrees.")
+                        help="Path to a comma-separated table containing "
+                              "columns 'ra,dec,kepmag' (decimal degrees) or 'name'.")
     #parser.add_argument('-p', '--plot', nargs=1, metavar="filename",
     #                    help="Produce a plot showing the target positions "
     #                         "with respect to all K2 campaigns.")
     args = parser.parse_args(args)
-    ra, dec, kepmag = parse_file(args.input_filename[0])
-    campaigns = np.array([findCampaigns(ra[idx], dec[idx])
-                          for idx in range(len(ra))])
-    output = np.array([ra, dec, kepmag, campaigns])
-    output_fn = 'K2findCampaigns-output.csv'
-    logger.info("Writing {0}.".format(output_fn))
-    np.savetxt(output_fn, output.T, delimiter=', ',
-               fmt=['%10.10f', '%10.10f', '%10.2f', '%s'])
+    input_fn = args.input_filename[0]
+    output_fn = input_fn + '-K2findCampaigns.csv'
+    # First, try assuming the file has the classic "ra,dec,kepmag" format
+    try:
+        ra, dec, kepmag = parse_file(input_fn, exit_on_error=False)
+        campaigns = np.array([findCampaigns(ra[idx], dec[idx])
+                              for idx in range(len(ra))])
+        output = np.array([ra, dec, kepmag, campaigns])
+        print("Writing {0}.".format(output_fn))
+        np.savetxt(output_fn, output.T, delimiter=', ',
+                   fmt=['%10.10f', '%10.10f', '%10.2f', '%s'])
+    # If this fails, assume the file has a single "name" column
+    except ValueError:
+        names = [name.strip() for name in open(input_fn, "r").readlines()
+                 if len(name.strip()) > 0]
+        print("Writing {0}.".format(output_fn))
+        output = open(output_fn, "w")
+        for target in names:
+            try:
+                campaigns = findCampaignsByName(target)
+            except ValueError:
+                campaigns = []
+            output.write("{0}, {1}\n".format(target, campaigns))
+            output.flush()
+        output.close()
