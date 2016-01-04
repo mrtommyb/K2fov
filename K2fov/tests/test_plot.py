@@ -1,6 +1,6 @@
 """Tests K2fov.plot"""
 
-from .. import plot
+# from .. import plot
 
 """
 def test_basics():
