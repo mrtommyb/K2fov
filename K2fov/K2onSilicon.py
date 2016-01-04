@@ -16,7 +16,7 @@ except ImportError:
 
 # Try importing matplotlib
 try:
-    import matplotlib.pyplot as plt
+    import matplotlib.pyplot as pl
     got_mpl = True
     params = {
                 'axes.linewidth': 1.5,
@@ -28,7 +28,7 @@ try:
                 'ytick.labelsize': 16,
                 'text.usetex': False,
              }
-    plt.rcParams.update(params)
+    pl.rcParams.update(params)
 except ImportError:
     logger.warning('You need matplotlib installed to get a plot')
     got_mpl = False
@@ -164,7 +164,7 @@ def K2onSilicon(infile, fieldnum, do_nearSiliconCheck=False):
         k.plotPointing(ph, showOuts=False)
         targets = ph.skyToPix(ra_sources_deg, dec_sources_deg)
         targets = np.array(targets)
-        fig = plt.gcf()
+        fig = pl.gcf()
         ax = fig.gca()
         ax = fig.add_subplot(111)
         ax.scatter(*targets, color='#fc8d62', s=7, label='not on silicon')
@@ -183,7 +183,7 @@ def K2onSilicon(infile, fieldnum, do_nearSiliconCheck=False):
         for t in texts:
             t.set_color(almost_black)
         fig.savefig('targets_fov.png', dpi=300)
-        plt.close('all')
+        pl.close('all')
 
     # prints zero if target is not on silicon
     siliconFlag = np.zeros_like(ra_sources_deg)

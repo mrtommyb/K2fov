@@ -1,6 +1,6 @@
-"""Implements the K2findCampaigns tool.
+"""Implements the `K2findCampaigns` tools.
 
-The tool allows to check whether a position or object is visible in any
+These tools allow to check whether a position or object is visible in any
 campaign.  This complements K2onSilicon, which only determines whether an
 object is on silicon for a single campaign.
 """
@@ -51,6 +51,9 @@ def findCampaignsByName(target):
     campaigns : list of int
         A list of the campaigns that cover the given target name.
 
+    ra, dec : float, float
+        Resolved coordinates in decimal degrees (J2000).
+
     Exceptions
     ----------
     Raises an ImportError if AstroPy is not installed.
@@ -70,7 +73,20 @@ def findCampaignsByName(target):
         raise ValueError('Could not find coordinates '
                          'for target "{0}".'.format(target))
     # Find the campaigns with visibility
-    return findCampaigns(crd.ra.deg, crd.dec.deg)
+    return findCampaigns(crd.ra.deg, crd.dec.deg), crd.ra.deg, crd.dec.deg
+
+
+def save_context_plots(ra, dec, targetname=""):
+    from . import plot
+    output_fn = "K2findCampaigns.png"
+    print("Writing {0}".format(output_fn))
+    myplot = plot.create_context_plot(ra, dec, name=targetname)
+    myplot.fig.savefig(output_fn, dpi=300)
+
+    output_fn = "K2findCampaigns-zoom.png"
+    print("Writing {0}".format(output_fn))
+    myplot = plot.create_context_plot_zoomed(ra, dec, name=targetname)
+    myplot.fig.savefig(output_fn, dpi=300)
 
 
 def K2findCampaigns_main(args=None):
@@ -83,11 +99,12 @@ def K2findCampaigns_main(args=None):
                         help="Right Ascension in decimal degrees (J2000).")
     parser.add_argument('dec', nargs=1, type=float,
                         help="Declination in decimal degrees (J2000).")
-    # parser.add_argument('-p', '--plot', action='store_true',
-    #                    help="Produce a plot showing the target position "
-    #                         "with respect to all K2 campaigns. ")
+    parser.add_argument('-p', '--plot', action='store_true',
+                        help="Produce a plot showing the target position "
+                             "with respect to all K2 campaigns.")
     args = parser.parse_args(args)
-    campaigns = findCampaigns(args.ra, args.dec)
+    ra, dec = args.ra[0], args.dec[0]
+    campaigns = findCampaigns(ra, dec)
     # Print the result
     if len(campaigns):
         print(Highlight.GREEN + "Success! The target is on silicon "
@@ -95,7 +112,9 @@ def K2findCampaigns_main(args=None):
     else:
         print(Highlight.RED + "Sorry, the target is not on silicon "
               "during any K2 campaign." + Highlight.END)
-    # if args.plot:
+    # Make a context plot if the user requested so
+    if args.plot:
+        save_context_plots(ra, dec, "Your object")
 
 
 def K2findCampaigns_byname_main(args=None):
@@ -108,16 +127,24 @@ def K2findCampaigns_byname_main(args=None):
                         help="Name of the object.  This will be passed on "
                              "to the CDS name resolver "
                              "to retrieve coordinate information.")
+    parser.add_argument('-p', '--plot', action='store_true',
+                        help="Produce a plot showing the target position "
+                             "with respect to all K2 campaigns.")
     args = parser.parse_args(args)
-    target = args.name[0]
-    campaigns = findCampaignsByName(target)
+    targetname = args.name[0]
+    campaigns, ra, dec = findCampaignsByName(targetname)
     # Print the result
     if len(campaigns):
-        print(Highlight.GREEN + "Success! {0} is on silicon "
-              "during K2 campaigns {1}.".format(target, campaigns) + Highlight.END)
+        print(Highlight.GREEN +
+              "Success! {0} is on silicon " +
+              "during K2 campaigns {1}.".format(targetname, campaigns) +
+              Highlight.END)
     else:
         print(Highlight.RED + "Sorry, {} is not on silicon "
-              "during any K2 campaign.".format(target) + Highlight.END)
+              "during any K2 campaign.".format(targetname) + Highlight.END)
+    # Make a context plot if the user requested so
+    if args.plot:
+        save_context_plots(ra, dec, targetname=targetname)
 
 
 def K2findCampaigns_csv_main(args=None):
@@ -127,10 +154,8 @@ def K2findCampaigns_csv_main(args=None):
                                 "are (or were) observable by NASA's K2 mission.")
     parser.add_argument('input_filename', nargs=1, type=str,
                         help="Path to a comma-separated table containing "
-                              "columns 'ra,dec,kepmag' (decimal degrees) or 'name'.")
-    #parser.add_argument('-p', '--plot', nargs=1, metavar="filename",
-    #                    help="Produce a plot showing the target positions "
-    #                         "with respect to all K2 campaigns.")
+                             "columns 'ra,dec,kepmag' (decimal degrees) "
+                             "or 'name'.")
     args = parser.parse_args(args)
     input_fn = args.input_filename[0]
     output_fn = input_fn + '-K2findCampaigns.csv'
@@ -151,7 +176,7 @@ def K2findCampaigns_csv_main(args=None):
         output = open(output_fn, "w")
         for target in names:
             try:
-                campaigns = findCampaignsByName(target)
+                campaigns, ra, dec = findCampaignsByName(target)
             except ValueError:
                 campaigns = []
             output.write("{0}, {1}\n".format(target, campaigns))

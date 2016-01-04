@@ -6,8 +6,7 @@ Alternative plotting routines from Fergal are available.
 import sys
 import numpy as np
 
-print("WARNING: make the import below relative")
-from K2fov import getKeplerFov, logger
+from . import getKeplerFov, logger
 
 # Now try loading matplotlib
 try:
@@ -97,20 +96,28 @@ class K2FootprintPlot(object):
                          np.concatenate((dec, dec[:1])),
                          lw=0, facecolor="#bbbbbb", zorder=90)
             if annotate_channels:
-                self.ax.text(np.mean(ra), np.mean(dec),
-                             "K2C{0}\n{1}.{2}\n#{3}".format(campaign, mdl, out, ch),
+                txt = "K2C{0}\n{1}.{2}\n#{3}".format(campaign, mdl, out, ch)
+                self.ax.text(np.mean(ra), np.mean(dec), txt,
                              ha="center", va="center",
                              zorder=91, fontsize=10,
                              color="#666666", clip_on=True)
 
     def plot_ecliptic(self, size=100):
-        from astropy.coordinates import SkyCoord
+        try:
+            from astropy.coordinates import SkyCoord
+        except ImportError:
+            logger.error("You need to install AstroPy for this feature.")
+            return None
         icrs = SkyCoord(np.linspace(0, 359, num=size), 0,
                         unit="deg", frame="barycentrictrueecliptic").icrs
         self.ax.plot(icrs.ra, icrs.dec, lw=2, color="#666666")
 
     def plot_galactic(self, size=150, color="#bbbbbb", textcolor="#777777"):
-        from astropy.coordinates import SkyCoord
+        try:
+            from astropy.coordinates import SkyCoord
+        except ImportError:
+            logger.error("You need to install AstroPy for this feature.")
+            return None
         icrs = SkyCoord(np.linspace(0, 359, num=size), 0,
                         unit="deg", frame="galactic").icrs
         self.ax.plot(icrs.ra, icrs.dec, lw=20, color=color)
@@ -133,20 +140,20 @@ def create_context_plot(ra, dec, name="Your object"):
         plot.plot_campaign_outline(c, facecolor="#666666")
     for c in [11, 12, 13, 14, 15, 16, 17, 18]:
         plot.plot_campaign_outline(c, facecolor="green")
-    plot.ax.scatter(ra, dec, marker='x', s=250, lw=4, color="red", zorder=500)
+    plot.ax.scatter(ra, dec, marker='x', s=250, lw=3, color="red", zorder=500)
     plot.ax.text(ra, dec - 2, name,
                  ha="center", va="top", color="red",
                  fontsize=20, fontweight='bold', zorder=501)
     return plot
 
 
-def create_context_plot_zoomed(ra, dec, name="Your object", size=8):
+def create_context_plot_zoomed(ra, dec, name="Your object", size=3):
     """Creates a K2FootprintPlot showing a given position in context
     with respect to the campaigns."""
     plot = K2FootprintPlot(figsize=(8, 8))
     for c in range(0, 19):
         plot.plot_campaign(c)
-    plot.ax.scatter(ra, dec, marker='x', s=250, lw=4, color="red", zorder=500)
+    plot.ax.scatter(ra, dec, marker='x', s=250, lw=3, color="red", zorder=500)
     plot.ax.text(ra, dec - 0.05*size, name,
                  ha="center", va="top", color="red",
                  fontsize=20, fontweight='bold', zorder=501)
@@ -156,21 +163,13 @@ def create_context_plot_zoomed(ra, dec, name="Your object", size=8):
 
 
 if __name__ == "__main__":
-    """
     plot = K2FootprintPlot()
-    for c in range(0, 19):
-        plot.plot_campaign(c)
-    """
-    """
     plot.plot_galactic()
     plot.plot_ecliptic()
-
     for c in range(0, 9):
         plot.plot_campaign_outline(c, facecolor="#666666")
     for c in [9, 10]:
         plot.plot_campaign_outline(c, facecolor="red")
     for c in [11, 12, 13, 14, 15, 16, 17, 18]:
         plot.plot_campaign_outline(c, facecolor="green")
-    """
-    plot = create_context_plot_zoomed(20, 20)
     plot.fig.show()
