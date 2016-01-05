@@ -1,4 +1,4 @@
-# K2fov [![PyPI](http://img.shields.io/pypi/v/K2fov.svg)](https://pypi.python.org/pypi/K2fov/)  [![PyPI](http://img.shields.io/pypi/dm/K2fov.svg)](https://pypi.python.org/pypi/K2fov/) [![Travis status](https://travis-ci.org/KeplerGO/K2fov.svg)](https://travis-ci.org/KeplerGO/K2fov)
+# K2fov [![PyPI](http://img.shields.io/pypi/v/K2fov.svg)](https://pypi.python.org/pypi/K2fov/)  [![PyPI](http://img.shields.io/pypi/dm/K2fov.svg)](https://pypi.python.org/pypi/K2fov/) [![Travis status](https://travis-ci.org/KeplerGO/K2fov.svg)](https://travis-ci.org/KeplerGO/K2fov) [![DOI](https://zenodo.org/badge/10301/KeplerGO/K2fov.svg)](https://zenodo.org/badge/latestdoi/10301/KeplerGO/K2fov)
 ***Check whether targets are in the field of view of NASA's K2 mission.***
 
 The `K2fov` Python package allows users to check whether a target is in the field of view of K2. 
@@ -180,7 +180,20 @@ optional arguments:
 ```
 
 
-## Authors
+## Attribution
 
-`K2fov` was created by Fergal Mullally, Thomas Barclay, and Geert Barentsen.
-Please cite this tool in your publications.
+`K2fov` was created by Fergal Mullally, Thomas Barclay, and Geert Barentsen
+for NASA's Kepler/K2 Guest Observer Office.
+If this tool aided your research, please cite it using the [DOI identifier](https://zenodo.org/record/44283) or the following BibTeX entry:
+```
+@misc{fergal_mullally_2016_44283,
+  author       = {Fergal Mullally and
+                  Thomas Barclay and
+                  Geert Barentsen},
+  title        = {v3.0.1},
+  month        = jan,
+  year         = 2016,
+  doi          = {10.5281/zenodo.44283},
+  url          = {http://dx.doi.org/10.5281/zenodo.44283}
+}
+```
