@@ -136,8 +136,8 @@ def K2findCampaigns_byname_main(args=None):
     # Print the result
     if len(campaigns):
         print(Highlight.GREEN +
-              "Success! {0} is on silicon " +
-              "during K2 campaigns {1}.".format(targetname, campaigns) +
+              "Success! {0} is on silicon ".format(targetname) +
+              "during K2 campaigns {0}.".format(campaigns) +
               Highlight.END)
     else:
         print(Highlight.RED + "Sorry, {} is not on silicon "
