@@ -17,7 +17,7 @@ except ImportError:
 # Command-line tools
 entry_points = {'console_scripts': [
     'K2onSilicon = K2fov.K2onSilicon:K2onSilicon_main',
-    'k2onsilicon = K2fov.K2onSilicon:K2onSilicon_main',
+    'k2onsilicon = K2 fov.K2onSilicon:K2onSilicon_main',
     'K2inMicrolensRegion = K2fov.c9:inMicrolensRegion_main',
     'k2inmicrolensregion = K2fov.c9:inMicrolensRegion_main',
     'K2findCampaigns = K2fov.K2findCampaigns:K2findCampaigns_main',

@@ -2,9 +2,9 @@
 ***Check whether targets are in the field of view of NASA's K2 mission.***
 
 The `K2fov` Python package allows users to check whether a target is in the field of view of K2. 
-In particular, the package adds the `K2onSilicon` and `K2findCampaigns` tools
+In particular, the package adds the `k2onsilicon` and `k2findcampaigns` tools
 to the command line, which allow the visibility of targets to be checked
-during one (`K2onSilicon`) or all (`K2findCampaigns`) campaigns, respectively.
+during one (`k2onsilicon`) or all (`k2findcampaigns`) campaigns, respectively.
 The usage of these tools is explained below.
 
 ## Installation
@@ -24,10 +24,10 @@ up to date K2 field parameters.
 
 ## Usage
 
-### K2onSilicon
+### k2onsilicon
 
 Installing `K2fov` will automatically add a command line tool 
-to your path called `K2onSilicon`, which takes a list of targets
+to your path called `k2onsilicon`, which takes a list of targets
 as input and writes a new list that indicates the "silicon status"
 of each target, i.e. whether or not it falls on one of the
 detectors of the spacecraft's focal plane.
@@ -50,9 +50,9 @@ magnitude. Headers or other additional columns will cause an execution
 failure.
 
 You can then check whether each object in the file falls on silicon
-by calling `K2onSilicon` from the command line:
+by calling `k2onsilicon` from the command line:
 ```bash
-K2onSilicon mytargetlist.csv 1
+k2onsilicon mytargetlist.csv 1
 ```
 Where `mytargetlist.csv` is your CSV file and `1` is the K2 Campaign number.
 
@@ -62,12 +62,12 @@ Running the code will output an updated target list containing the three input c
 
 The code will also write an image, called `targets_fov.png`, showing where the targets fall.
 
-Execute `K2onSilicon --help` to be reminded of its usage:
+Execute `k2onsilicon --help` to be reminded of its usage:
 ```
-$ K2onSilicon --help
-usage: K2onSilicon [-h] csv_file campaign
+$ k2onsilicon --help
+usage: k2onsilicon [-h] csv_file campaign
 
-Run K2onSilicon to find which targets in a list call on active silicon for a
+Run k2onsilicon to find which targets in a list call on active silicon for a
 given K2 campaign.
 
 positional arguments:
@@ -80,11 +80,11 @@ optional arguments:
 ```
 
 
-### K2findCampaigns
+### k2findcampaigns
 
 If instead of checking the targets in a single campaign,
 you want to understand whether a target is visible in *any* past or
-future K2 Campaign, you can use a different tool called `K2findCampaigns`.
+future K2 Campaign, you can use a different tool called `k2findcampaigns`.
 
 **Example**
 
@@ -92,30 +92,30 @@ For example, to verify whether J2000 coordinate
 (ra, dec) = (269.5, -28.5) degrees is visible at any point
 during the K2 mission, type:
 ```
-$ K2findCampaigns 269.5 -28.5
+$ k2findcampaigns 269.5 -28.5
 Success! The target is on silicon during K2 campaigns [9].
 ```
 
 You can also search by name.
 For example, to check whether *T Tauri* is visible, type:
 ```
-$ K2findCampaigns-byname "T Tauri"
+$ k2findcampaigns-byname "T Tauri"
 Success! T Tauri is on silicon during K2 campaigns [4].
 ```
 
-Finally, you can check a list of targets (either using their coordinates or names), using `K2findCampaigns-csv`.
+Finally, you can check a list of targets (either using their coordinates or names), using `k2findcampaigns-csv`.
 For example:
 ```
-$ K2findCampaigns-csv targets.csv
-Writing targets.csv-K2findCampaigns.csv.
+$ k2findcampaigns-csv targets.csv
+Writing targets.csv-k2findcampaigns.csv.
 ```
 
 **More information**
 
-Execute `K2findCampaigns --help`, `K2findCampaigns-byname --help` or `K2findCampaigns-csv --help` to be reminded of the use:
+Execute `k2findcampaigns --help`, `k2findcampaigns-byname --help` or `k2findcampaigns-csv --help` to be reminded of the use:
 ```
-$ K2findCampaigns --help
-usage: K2findCampaigns [-h] ra dec
+$ k2findcampaigns --help
+usage: k2findcampaigns [-h] ra dec
 
 Check if a celestial coordinate is (or was) observable by any past or future
 observing campaign of NASA's K2 mission.
@@ -129,8 +129,8 @@ optional arguments:
 ```
 
 ```
-K2findCampaigns-byname --help
-usage: K2findCampaigns-byname [-h] name
+k2findcampaigns-byname --help
+usage: k2findcampaigns-byname [-h] name
 
 Check if a target is (or was) observable by any past or future observing
 campaign of NASA's K2 mission.
@@ -144,8 +144,8 @@ optional arguments:
 ```
 
 ```
-$ K2findCampaigns-csv --help
-usage: K2findCampaigns-csv [-h] input_filename
+$ k2findcampaigns-csv --help
+usage: k2findcampaigns-csv [-h] input_filename
 
 Check which objects listed in a CSV table are (or were) observable by NASA's
 K2 mission.
