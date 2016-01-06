@@ -115,7 +115,7 @@ Writing targets.csv-k2findcampaigns.csv.
 Execute `k2findcampaigns --help`, `k2findcampaigns-byname --help` or `k2findcampaigns-csv --help` to be reminded of the use:
 ```
 $ k2findcampaigns --help
-usage: k2findcampaigns [-h] ra dec
+usage: k2findcampaigns [-h] [-p] ra dec
 
 Check if a celestial coordinate is (or was) observable by any past or future
 observing campaign of NASA's K2 mission.
@@ -126,11 +126,13 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
+  -p, --plot  Produce a plot showing the target position with respect to all
+              K2 campaigns.
 ```
 
 ```
 k2findcampaigns-byname --help
-usage: k2findcampaigns-byname [-h] name
+usage: k2findcampaigns-byname [-h] [-p] name
 
 Check if a target is (or was) observable by any past or future observing
 campaign of NASA's K2 mission.
@@ -141,6 +143,8 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
+  -p, --plot  Produce a plot showing the target position with respect to all
+              K2 campaigns.
 ```
 
 ```
