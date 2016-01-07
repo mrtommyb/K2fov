@@ -1,0 +1,6 @@
+#! /usr/bin/env python
+import sys
+from K2fov.K2findCampaigns import K2findCampaigns_byname_main
+
+if __name__ == '__main__':
+    sys.exit(K2findCampaigns_byname_main())
