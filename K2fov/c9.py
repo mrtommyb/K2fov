@@ -100,7 +100,10 @@ def isPointInsidePolygon(x, y, vertices_x, vertices_y):
     for i in range(len(vertices_x)):
         j = i - 1
         if ((vertices_x[i] > x) != (vertices_x[j] > x)):
-            if (y < (x - vertices_x[i]) * (vertices_y[i] - vertices_y[j]) / (vertices_x[i] - vertices_x[j]) + vertices_y[i]):
+            if (y < (x - vertices_x[i]) *
+                    (vertices_y[i] - vertices_y[j]) /
+                    (vertices_x[i] - vertices_x[j]) +
+                    vertices_y[i]):
                 inside = not inside
     return inside
 
@@ -136,6 +139,7 @@ class C9FootprintPlot(object):
         """Plots the coverage of both the channels and the C9 superstamp."""
         fov = getKeplerFov(9)
         # Plot the superstamp
+        superstamp_patches = []
         for ch in SUPERSTAMP["channels"]:
             v_col = SUPERSTAMP["channels"][ch]["vertices_col"]
             v_row = SUPERSTAMP["channels"][ch]["vertices_row"]
@@ -145,10 +149,12 @@ class C9FootprintPlot(object):
                                                              v_row[idx])
                                 for idx in range(len(v_col))
                               ])
-            self.ax.fill(radec[:, 0], radec[:, 1],
-                         lw=0, facecolor="#ff1111", zorder=100)
+            patch = self.ax.fill(radec[:, 0], radec[:, 1],
+                                 lw=0, facecolor="#27ae60", zorder=100)
+            superstamp_patches.append(patch)
 
         # Plot all channel outlines
+        channel_patches = []
         corners = fov.getCoordsOfChannelCorners()
         for ch in np.arange(1, 85, dtype=int):
             if ch in fov.brokenChannels:
@@ -158,8 +164,11 @@ class C9FootprintPlot(object):
             out = int(corners[idx, 1][0][0])
             ra = corners[idx, 3][0]
             dec = corners[idx, 4][0]
-            self.ax.fill(np.concatenate((ra, ra[:1])), np.concatenate((dec, dec[:1])),
-                         lw=0, facecolor="#bbbbbb", zorder=90)
+            patch = self.ax.fill(np.concatenate((ra, ra[:1])),
+                                 np.concatenate((dec, dec[:1])),
+                                 lw=0, facecolor="#bdc3c7", zorder=90)
+            channel_patches.append(patch)
+        return superstamp_patches, channel_patches
 
 
 def plot_c9(output_fn="c9.png"):

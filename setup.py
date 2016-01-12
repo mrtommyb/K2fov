@@ -21,7 +21,7 @@ scripts = ['scripts/K2onSilicon',
            'scripts/K2findCampaigns-csv']
 
 setup(name='K2fov',
-      version='3.0.3',
+      version='3.1.dev',
       description='Find which targets are in the field of view of K2',
       author='Fergal Mullally, Tom Barclay, Geert Barentsen',
       author_email='tom@tombarclay.com',
