@@ -63,6 +63,8 @@ def findCampaignsByName(target):
     try:
         from astropy.coordinates import SkyCoord
         from astropy.coordinates.name_resolve import NameResolveError
+        from astropy.utils.data import conf
+        conf.remote_timeout = 90
     except ImportError:
         logger.error('AstroPy needs to be installed for this feature.')
         sys.exit(1)
