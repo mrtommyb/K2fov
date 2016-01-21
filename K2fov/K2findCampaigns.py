@@ -4,13 +4,14 @@ These tools allow to check whether a position or object is visible in any
 campaign.  This complements K2onSilicon, which only determines whether an
 object is on silicon for a single campaign.
 """
+import sys
 import argparse
 import numpy as np
 
 from . import fields
 from . import logger
 from . import Highlight
-from .K2onSilicon import (parse_file, onSiliconCheck)
+from .K2onSilicon import parse_file, onSiliconCheck
 
 
 def findCampaigns(ra, dec):
@@ -134,7 +135,13 @@ def K2findCampaigns_byname_main(args=None):
                              "with respect to all K2 campaigns.")
     args = parser.parse_args(args)
     targetname = args.name[0]
-    campaigns, ra, dec = findCampaignsByName(targetname)
+    try:
+        campaigns, ra, dec = findCampaignsByName(targetname)
+    except ValueError:
+        print("Error: could not retrieve coordinates for {0}.".format(targetname))
+        print("The target may be unknown or there may be a problem "
+              "connecting to the coordinate server.")
+        sys.exit(1)
     # Print the result
     if len(campaigns):
         print(Highlight.GREEN +
