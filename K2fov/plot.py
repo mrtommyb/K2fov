@@ -108,9 +108,14 @@ class K2FootprintPlot(object):
         except ImportError:
             logger.error("You need to install AstroPy for this feature.")
             return None
-        icrs = SkyCoord(np.linspace(0, 359, num=size), 0,
-                        unit="deg", frame="barycentrictrueecliptic").icrs
-        self.ax.plot(icrs.ra, icrs.dec, lw=2, color="#666666")
+        try:
+            icrs = SkyCoord(np.linspace(0, 359, num=size), 0,
+                            unit="deg", frame="barycentrictrueecliptic").icrs
+            self.ax.plot(icrs.ra, icrs.dec, lw=2, color="#666666")
+        except ValueError:
+            # only AstroPy 1.1 and up support ecliptic coordinates;
+            # avoid crashing if an older version of AstroPy is at play
+            pass
 
     def plot_galactic(self, size=150, color="#bbbbbb", textcolor="#777777"):
         try:
