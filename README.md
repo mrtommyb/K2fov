@@ -188,16 +188,23 @@ optional arguments:
 
 `K2fov` was created by Fergal Mullally, Thomas Barclay, and Geert Barentsen
 for NASA's Kepler/K2 Guest Observer Office.
-If this tool aided your research, please cite it using the [DOI identifier](https://zenodo.org/record/44283) or the following BibTeX entry:
+If this tool aided your research, please cite it using the ADS bibcode
+([2016ascl.soft01009M](http://adsabs.harvard.edu/abs/2016ascl.soft01009M))
+and its DOI identifier ([10.5281/zenodo.44283](https://zenodo.org/record/44283)).
+
+The BibTeX entry is as follows:
 ```
-@misc{fergal_mullally_2016_44283,
-  author       = {Fergal Mullally and
-                  Thomas Barclay and
-                  Geert Barentsen},
-  title        = {v3.0.1},
-  month        = jan,
-  year         = 2016,
-  doi          = {10.5281/zenodo.44283},
-  url          = {http://dx.doi.org/10.5281/zenodo.44283}
+@MISC{2016ascl.soft01009M,
+  author        = {{Mullally}, Fergal; {Barclay}, Thomas; {Barentsen}, Geert},
+  title         = "{K2fov: Field of view software for NASA's K2 mission}",
+  howpublished  = {Astrophysics Source Code Library},
+  year          = 2016,
+  month         = jan,
+  archivePrefix = "ascl",
+  eprint        = {1601.009},
+  adsurl        = {http://adsabs.harvard.edu/abs/2016ascl.soft01009M},
+  adsnote       = {Provided by the SAO/NASA Astrophysics Data System},
+  doi           = {10.5281/zenodo.44283},
+  url           = {http://dx.doi.org/10.5281/zenodo.44283}
 }
 ```
