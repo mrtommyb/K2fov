@@ -18,7 +18,8 @@ except ImportError:
 scripts = ['scripts/K2onSilicon',
            'scripts/K2findCampaigns',
            'scripts/K2findCampaigns-byname',
-           'scripts/K2findCampaigns-csv']
+           'scripts/K2findCampaigns-csv',
+           'scripts/K2inMicrolensRegion']
 
 setup(name='K2fov',
       version='3.1.dev',

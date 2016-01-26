@@ -1,0 +1,6 @@
+#! /usr/bin/env python
+import sys
+from K2fov.c9 import inMicrolensRegion_main
+
+if __name__ == '__main__':
+    sys.exit(inMicrolensRegion_main())
