@@ -13,7 +13,8 @@ PACKAGEDIR = os.path.dirname(os.path.abspath(__file__))
 # be considered on silicon.
 DEFAULT_PADDING = 3  # pixels
 
-# Add fields.* and K2onSilicon.K2onSilicon to the root namespace
+# Add __version__, fields.* and K2onSilicon.K2onSilicon to the root namespace
+from .version import __version__
 from .fields import *
 from .K2onSilicon import K2onSilicon
 
