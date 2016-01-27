@@ -32,7 +32,7 @@ def inMicrolensRegion_main(args=None):
         print("Sorry, the coordinate is NOT inside the K2C9 superstamp.")
 
 
-def inMicrolensRegion(ra_deg, dec_deg):
+def inMicrolensRegion(ra_deg, dec_deg, padding=0):
     """Returns `True` if the given sky oordinate falls on the K2C9 superstamp.
 
     Parameters
@@ -43,6 +43,11 @@ def inMicrolensRegion(ra_deg, dec_deg):
     dec_deg : float
         Declination (J2000) in decimal degrees.
 
+    padding : float
+        Target must be at least `padding` pixels away from the edge of the
+        superstamp. (Note that CCD boundaries are not considered as edges
+        in this case.)
+
     Returns
     -------
     onMicrolensRegion : bool
@@ -52,7 +57,7 @@ def inMicrolensRegion(ra_deg, dec_deg):
     try:
         ch, col, row = fov.getChannelColRow(ra_deg, dec_deg,
                                             allowIllegalReturnValues=False)
-        return pixelInMicrolensRegion(ch, col, row)
+        return maskInMicrolensRegion(ch, col, row, padding=padding)
     except ValueError:
         return False
 
@@ -73,6 +78,37 @@ def pixelInMicrolensRegion(ch, col, row):
     inside = isPointInsidePolygon(col, row, vertices_col, vertices_row)
     return inside
 
+
+def maskInMicrolensRegion(ch, col, row, padding=0):
+    """Is a target in the K2C9 superstamp, including padding?
+
+    This function is identicall to pixelInMicrolensRegion, except it takes
+    the extra `padding` argument. The coordinate must be within the K2C9
+    superstamp by at least `padding` number of pixels on either side of the
+    coordinate.  (Nota that this function does not check whether something is
+    close to the CCD boundaries, it only checks whether something is close
+    to the edge of stamp.)
+    """
+    if padding == 0:
+        return pixelInMicrolensRegion(ch, col, row)
+
+    combinations = [[col - padding, row],
+                    [col + padding, row],
+                    [col, row - padding],
+                    [col, row + padding]]
+    for col, row in combinations:
+        # Science pixels occupy columns 12 - 1111, rows 20 - 1043
+        if col < 12:
+            col = 12
+        if col > 1111:
+            col = 1111
+        if row < 20:
+            row = 20
+        if row > 1043:
+            row = 1043
+        if not pixelInMicrolensRegion(ch, col, row):
+            return False
+    return True
 
 def isPointInsidePolygon(x, y, vertices_x, vertices_y):
     """Check if a given point is inside a polygon.
