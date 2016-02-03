@@ -22,6 +22,16 @@ pip install K2fov --upgrade
 It is important to upgrade frequently to ensure that you are using the most
 up to date K2 field parameters.
 
+If you require to install the latest development version,
+e.g. to test a bugfix, then you can install
+the package straight from the git repository as follows:
+```
+$ git clone https://github.com/KeplerGO/K2fov.git
+$ cd K2fov
+$ python setup.py install
+```
+
+
 ## Usage
 
 ### K2onSilicon
