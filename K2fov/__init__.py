@@ -2,7 +2,12 @@ from __future__ import (division, absolute_import)
 
 import os
 import logging
+logging.basicConfig()  # Avoid "No handlers could be found for logger" warning
 logger = logging.getLogger(__name__)
+
+# Suppress FutureWarnings from older versions of matplotlib, cf. issue #14
+import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 # Where are the K2 Campaign parameters stored?
 PACKAGEDIR = os.path.dirname(os.path.abspath(__file__))
