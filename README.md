@@ -26,9 +26,9 @@ If you require to install the latest development version,
 e.g. to test a bugfix, then you can install
 the package straight from the git repository as follows:
 ```
-$ git clone https://github.com/KeplerGO/K2fov.git
-$ cd K2fov
-$ python setup.py install
+git clone https://github.com/KeplerGO/K2fov.git
+cd K2fov
+python setup.py install
 ```
 
 
