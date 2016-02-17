@@ -207,8 +207,6 @@ class Projection():
 
         ra0, dec0 = self.pixToSky(x1, y1)
         ra1, dec1 = self.pixToSky(x2, y2)
-        raMid = .5*(ra0+ra1)
-        decMid = .5*(dec0+dec1)
 
         #Deal with the case where ra range straddles 0.
         #Different code for case where ra increases left to right, or decreases.
@@ -218,6 +216,9 @@ class Projection():
         else:
             if ra0 < ra1:
                 ra0 += 360
+
+        raMid = .5*(ra0+ra1)
+        decMid = .5*(dec0+dec1)
 
 
         xNum, yNum = numLines
@@ -229,13 +230,11 @@ class Projection():
 
         raStart = np.round(raMid - rangeX/2.)
         decStart = np.round(decMid - rangeY/2.)
-        #raStart = np.round(ra0)
-        #decStart = np.round(dec0)
 
         raRange = np.arange(raStart, raStart + stepX*xNum, stepX)
         decRange = np.arange(decStart, decStart + stepY*yNum, stepY)
-
         raRange = np.fmod(raRange, 360.)
+
         return raRange, decRange
 
 
