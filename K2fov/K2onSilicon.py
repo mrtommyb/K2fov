@@ -10,7 +10,7 @@ from . import logger
 # Try importing numpy
 try:
     import numpy as np
-except ImportError:
+except Exception:
     logger.error('You need numpy installed')
     sys.exit(1)
 
@@ -29,7 +29,7 @@ try:
                 'text.usetex': False,
              }
     pl.rcParams.update(params)
-except ImportError:
+except Exception:
     logger.warning('You need matplotlib installed to get a plot')
     got_mpl = False
 
