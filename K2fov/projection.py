@@ -1,7 +1,7 @@
 """This file defines the projection classes."""
 try:
     import matplotlib.pyplot as mp
-except ImportError:
+except Exception:
     pass
 
 import numpy as np

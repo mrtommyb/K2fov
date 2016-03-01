@@ -22,7 +22,7 @@ try:
                 'text.usetex': False,
              }
     pl.rcParams.update(params)
-except ImportError:
+except Exception:
     logger.error('This feature requires matplotlib to be installed.')
     sys.exit(1)
 
