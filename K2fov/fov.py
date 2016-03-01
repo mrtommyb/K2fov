@@ -8,7 +8,6 @@ try:
 except ImportError:
     pass
 
-from . import logging
 from . import projection as proj
 from . import rotate2 as r
 from . import greatcircle as gcircle
@@ -592,8 +591,10 @@ class KeplerFov():
 class Polygon():
     def __init__(self, x=None, y=None, pointList=None):
         """
+        An abstract class to represent a polygon in space
 
-        Input
+        Input:
+        ------------
         pointList   A list of (x,y) pairs. Eg
                     [ (0,0), (1,0), (0,1), (1.1)]
 
@@ -619,18 +620,18 @@ class Polygon():
     def __repr__(self):
         return self.polygon.__repr__()
 
+
     def isPointInside(self, xp, yp):
         """Is the given point inside the polygon?
 
         Input:
-        polygon (nx2 numpy array). polygon[i] = [x, y] coords of
-                a vertex of a polygon
-        point   (1x2) numpy array) x,y coords of the point we wish
-                to determine if it's in the polygon or not.
-
-        Returns true/ false
-        Does this work in >2 dimensions? Probably, with a little bit
-        of work
+        ------------
+        xp, yp
+            (floats) Coordinates of point in same units that
+            array vertices are specified when object created.
+        Returns:
+        -----------
+        **True** / **False**
         """
 
         point = np.array([xp, yp]).transpose()
@@ -649,6 +650,17 @@ class Polygon():
         return False
 
     def draw(self, **kwargs):
+        """Draw the polygon
+
+        Optional Inputs:
+        ------------
+        All optional inputs are passed to ``matplotlib.patches.Polygon``
+
+        Notes:
+        ---------
+        Does not accept maptype as an argument.
+        """
+
         ax = mp.gca()
         shape = matplotlib.patches.Polygon(self.polygon, **kwargs)
         ax.add_artist(shape)
@@ -656,6 +668,7 @@ class Polygon():
 
 class KeplerModOut(Polygon):
     def __init__(self, channel, x=None, y=None, pointList=None):
+        """A Polygon with a channel identification attached to it"""
         Polygon.__init__(self, x,y,pointList)
         self.channel = channel
 
@@ -663,14 +676,44 @@ class KeplerModOut(Polygon):
         return self.channel
 
 
-    def identifyModule(self, modout=False):
+    def identifyModule(self, modout=False, maptype=mp):
+        """Write the name of a channel/modout on a plot
+
+        Optional Inputs:
+        -----------
+        modout
+            (boolean). If True, write module and output. Otherwise
+            write channel number
+
+        maptype
+            (Projection) What maptype to use. Default is to
+            use no maptype, just plot at the coordinates of the
+            vertices.
+
+        Returns:
+        ------------
+        **None**
+
+        Output:
+        -----------
+        Channel numbers are written to the current axis.
+
+        Notes:
+        ---------
+        This method assumes the object has been initialised with
+        the vertices in right ascension and declination. Unxpected
+        behaviour may result if this is not true, and a maptype
+        is supplied.
+        """
         x,y = np.mean(self.polygon, 0)
 
         if modout:
             modout = modOutFromChannel(self.channel)
-            mp.text(x, y, "%i-%i" %(modout[0], modout[1]), fontsize=8, ha="center", clip_on=True)
+            maptype.text(x, y, "%i-%i" %(modout[0], modout[1]), fontsize=8, \
+                ha="center", clip_on=True)
         else:
-            mp.text(x,y, "%i" %(self.channel), fontsize=8, ha="center", clip_on=True)
+            maptype.text(x,y, "%i" %(self.channel), fontsize=8, \
+                ha="center", clip_on=True)
 
 
 
