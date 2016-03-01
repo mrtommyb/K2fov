@@ -541,13 +541,22 @@ class KeplerFov():
 
 
     def plotChIds(self, maptype=None, modout=False):
-        """Print the channel numbers on the plotting display"""
+        """Print the channel numbers on the plotting display
+
+        Note:
+        ---------
+        This method will behave poorly if you are plotting in
+        mixed projections. Because the channel vertex polygons
+        are already projected using self.defaultMap, applying
+        this function when plotting in a different reference frame
+        may cause trouble.
+        """
         if maptype is None:
             maptype = self.defaultMap
 
         polyList = self.getAllChannelsAsPolygons(maptype)
         for p in polyList:
-            p.identifyModule(modout=modout, maptype=maptype)
+            p.identifyModule(modout=modout)
 
 
     def getWcsForChannel1(self, ch):
@@ -676,7 +685,7 @@ class KeplerModOut(Polygon):
         return self.channel
 
 
-    def identifyModule(self, modout=False, maptype=mp):
+    def identifyModule(self, modout=False):
         """Write the name of a channel/modout on a plot
 
         Optional Inputs:
@@ -684,11 +693,6 @@ class KeplerModOut(Polygon):
         modout
             (boolean). If True, write module and output. Otherwise
             write channel number
-
-        maptype
-            (Projection) What maptype to use. Default is to
-            use no maptype, just plot at the coordinates of the
-            vertices.
 
         Returns:
         ------------
@@ -698,21 +702,15 @@ class KeplerModOut(Polygon):
         -----------
         Channel numbers are written to the current axis.
 
-        Notes:
-        ---------
-        This method assumes the object has been initialised with
-        the vertices in right ascension and declination. Unxpected
-        behaviour may result if this is not true, and a maptype
-        is supplied.
         """
         x,y = np.mean(self.polygon, 0)
 
         if modout:
             modout = modOutFromChannel(self.channel)
-            maptype.text(x, y, "%i-%i" %(modout[0], modout[1]), fontsize=8, \
+            mp.text(x, y, "%i-%i" %(modout[0], modout[1]), fontsize=8, \
                 ha="center", clip_on=True)
         else:
-            maptype.text(x,y, "%i" %(self.channel), fontsize=8, \
+            mp.text(x,y, "%i" %(self.channel), fontsize=8, \
                 ha="center", clip_on=True)
 
 
