@@ -14,6 +14,10 @@ __all__ = ['inMicrolensRegion', 'pixelInMicrolensRegion']
 SUPERSTAMP_FN = os.path.join(PACKAGEDIR, "data", "k2-c9-microlens-region.json")
 SUPERSTAMP = json.load(open(SUPERSTAMP_FN))
 
+# Late targets
+LATE_TARGETS_FN = os.path.join(PACKAGEDIR, "data", "k2-c9a-late-targets.json")
+LATE_TARGETS = json.load(open(LATE_TARGETS_FN))
+
 
 def inMicrolensRegion_main(args=None):
     """Exposes K2visible to the command line."""
@@ -68,24 +72,35 @@ def pixelInMicrolensRegion(ch, col, row):
     The superstamp is used for microlensing experiment and is an almost
     contiguous area of 2.8e6 pixels.
     """
+    # First try the superstamp
     try:
         vertices_col = SUPERSTAMP["channels"][str(int(ch))]["vertices_col"]
         vertices_row = SUPERSTAMP["channels"][str(int(ch))]["vertices_row"]
+        # The point is in one of 5 channels which constitute the superstamp
+        # so check if it falls inside the polygon for this channel
+        if isPointInsidePolygon(col, row, vertices_col, vertices_row):
+            return True
     except KeyError:  # Channel does not appear in file
-        return False
-    # The point is in one of 5 channels which constitute the superstamp
-    # so check if it falls inside the polygon for this channel
-    inside = isPointInsidePolygon(col, row, vertices_col, vertices_row)
-    return inside
+        pass
+
+    # Then try the late target masks
+    for mask in LATE_TARGETS["masks"]:
+        if mask["channel"] == ch:
+            vertices_col = mask["vertices_col"]
+            vertices_row = mask["vertices_row"]
+            if isPointInsidePolygon(col, row, vertices_col, vertices_row):
+                return True
+
+    return False
 
 
 def maskInMicrolensRegion(ch, col, row, padding=0):
     """Is a target in the K2C9 superstamp, including padding?
 
-    This function is identicall to pixelInMicrolensRegion, except it takes
+    This function is identical to pixelInMicrolensRegion, except it takes
     the extra `padding` argument. The coordinate must be within the K2C9
     superstamp by at least `padding` number of pixels on either side of the
-    coordinate.  (Nota that this function does not check whether something is
+    coordinate.  (Note that this function does not check whether something is
     close to the CCD boundaries, it only checks whether something is close
     to the edge of stamp.)
     """
@@ -169,7 +184,7 @@ class C9FootprintPlot(object):
         self.ax.set_xlabel("RA [deg]")
         self.ax.set_ylabel("Dec [deg]")
 
-    def plot_outline(self):
+    def plot_outline(self, annotate_late_targets=False, annotate_channels=False):
         """Plots the coverage of both the channels and the C9 superstamp."""
         fov = getKeplerFov(9)
         # Plot the superstamp
@@ -187,6 +202,27 @@ class C9FootprintPlot(object):
                                  lw=0, facecolor="#27ae60", zorder=100)
             superstamp_patches.append(patch)
 
+        # Plot the late target masks
+        late_target_patches = []
+        for mask in LATE_TARGETS["masks"]:
+            ch = mask["channel"]
+            v_col = mask["vertices_col"]
+            v_row = mask["vertices_row"]
+            radec = np.array([
+                                fov.getRaDecForChannelColRow(int(ch),
+                                                             v_col[idx],
+                                                             v_row[idx])
+                                for idx in range(len(v_col))
+                              ])
+            patch = self.ax.fill(radec[:, 0], radec[:, 1],
+                                 lw=0, facecolor="#27ae60", zorder=201)
+            late_target_patches.append(patch)
+            if annotate_late_targets and 'context' not in mask["name"]:
+                self.ax.text(np.mean(radec[:, 0]), np.mean(radec[:, 1]), '  ' + mask["name"],
+                             ha="left", va="center",
+                             zorder=950, fontsize=10,
+                             color="#c0392b", clip_on=True)
+
         # Plot all channel outlines
         channel_patches = []
         corners = fov.getCoordsOfChannelCorners()
@@ -200,13 +236,20 @@ class C9FootprintPlot(object):
             dec = corners[idx, 4][0]
             patch = self.ax.fill(np.concatenate((ra, ra[:1])),
                                  np.concatenate((dec, dec[:1])),
-                                 lw=0, facecolor="#bdc3c7", zorder=90)
+                                 lw=0, facecolor="#bdc3c7", zorder=-90)
             channel_patches.append(patch)
+            if annotate_channels:
+                txt = "K2C9\n{}.{}\n#{}".format(mdl, out, ch)
+                self.ax.text(np.mean(ra), np.mean(dec), txt,
+                             ha="center", va="center",
+                             zorder=900, fontsize=10,
+                             color="#666666", clip_on=True)
         return superstamp_patches, channel_patches
 
 
 def plot_c9(output_fn="c9.png"):
     p = C9FootprintPlot()
-    p.plot_outline()
+    p.plot_outline(annotate_channels=True, annotate_late_targets=True)
     p.fig.tight_layout()
     p.fig.savefig(output_fn)
+    p.fig.show()
