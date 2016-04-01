@@ -12,11 +12,11 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 # Where are the K2 Campaign parameters stored?
 PACKAGEDIR = os.path.dirname(os.path.abspath(__file__))
 
-# Optical distortions can cause the results from K2fov to be off by a bit.
+# Optical distortions can cause the results from K2fov to be off (cf issue #15).
 # The padding parameter compensates for this; setting padding > 0 means
 # that objects that are computed to lie a small amount off silicon will
 # be considered on silicon.
-DEFAULT_PADDING = 3  # pixels
+DEFAULT_PADDING = 6  # pixels
 
 # Add __version__, fields.* and K2onSilicon.K2onSilicon to the root namespace
 from .version import __version__
