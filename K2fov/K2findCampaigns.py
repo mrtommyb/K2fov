@@ -14,6 +14,13 @@ from . import Highlight
 from .K2onSilicon import parse_file, onSiliconCheck
 
 
+def printChannelColRow(campaign, ra, dec):
+    """Prints the channel, col, row for a given campaign and coordinate."""
+    fovobj = fields.getKeplerFov(campaign)
+    ch, col, row = fovobj.getChannelColRow(ra, dec)
+    print("Position in C{}: channel {}, col {:.0f}, row {:.0f}.".format(campaign, int(ch), col, row))
+
+
 def findCampaigns(ra, dec):
     """Returns a list of the campaigns that cover a given position.
 
@@ -115,6 +122,9 @@ def K2findCampaigns_main(args=None):
     else:
         print(Highlight.RED + "Sorry, the target is not on silicon "
               "during any K2 campaign." + Highlight.END)
+    # Print the pixel positions
+    for c in campaigns:
+        printChannelColRow(c, ra, dec)
     # Make a context plot if the user requested so
     if args.plot:
         save_context_plots(ra, dec, "Your object")
@@ -151,6 +161,9 @@ def K2findCampaigns_byname_main(args=None):
     else:
         print(Highlight.RED + "Sorry, {} is not on silicon "
               "during any K2 campaign.".format(targetname) + Highlight.END)
+    # Print the pixel positions
+    for c in campaigns:
+        printChannelColRow(c, ra, dec)
     # Make a context plot if the user requested so
     if args.plot:
         save_context_plots(ra, dec, targetname=targetname)

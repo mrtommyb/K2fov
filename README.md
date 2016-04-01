@@ -104,6 +104,7 @@ during the K2 mission, type:
 ```
 $ K2findCampaigns 269.5 -28.5
 Success! The target is on silicon during K2 campaigns [9].
+Position in C9: channel 31, col 613, row 491.
 ```
 
 You can also search by name.
@@ -111,6 +112,7 @@ For example, to check whether *T Tauri* is visible, type:
 ```
 $ K2findCampaigns-byname "T Tauri"
 Success! T Tauri is on silicon during K2 campaigns [4].
+Position in C4: channel 3, col 62, row 921.
 ```
 
 Finally, you can check a list of targets (either using their coordinates or names), using `K2findCampaigns-csv`.
