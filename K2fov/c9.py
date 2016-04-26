@@ -15,7 +15,7 @@ SUPERSTAMP_FN = os.path.join(PACKAGEDIR, "data", "k2-c9-microlens-region.json")
 SUPERSTAMP = json.load(open(SUPERSTAMP_FN))
 
 # Late targets
-LATE_TARGETS_FN = os.path.join(PACKAGEDIR, "data", "k2-c9a-late-targets.json")
+LATE_TARGETS_FN = os.path.join(PACKAGEDIR, "data", "k2-c9b-late-targets.json")
 LATE_TARGETS = json.load(open(LATE_TARGETS_FN))
 
 
@@ -236,7 +236,7 @@ class C9FootprintPlot(object):
             dec = corners[idx, 4][0]
             patch = self.ax.fill(np.concatenate((ra, ra[:1])),
                                  np.concatenate((dec, dec[:1])),
-                                 lw=0, facecolor="#bdc3c7", zorder=-90)
+                                 lw=0, facecolor="#ecf0f1", zorder=-90)
             channel_patches.append(patch)
             if annotate_channels:
                 txt = "K2C9\n{}.{}\n#{}".format(mdl, out, ch)
