@@ -56,10 +56,9 @@ def raDecFromVec(v):
 
 
 def getAngleBetweenVectors(a, b, degrees=True):
-    norm = np.linalg.norm
 
     cost = np.dot(a, b)
-    cost /= np.norm(a) * np.norm(b)
+    cost /= np.linalg.norm(a) * np.linalg.norm(b)
 
     angle   = np.arccos(cost)   #In radians
     if degrees:
