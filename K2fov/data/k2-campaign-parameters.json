@@ -136,33 +136,30 @@
   },
   "c14": {
     "campaign": 14,
-    "ra": 159.9670000,
-    "dec": 7.1323713,
-    "roll": 159.022,
-    "start": "2017-05-30",
-    "stop": "2017-08-28",
-    "comments": "Proposed - position not final",
-    "preliminary": "True"
+    "ra": 160.6821210,
+    "dec": 6.8515964,
+    "roll": 159.0776640,
+    "start": "2017-05-31",
+    "stop": "2017-08-19",
+    "comments": "North Galactic Cap, Wolf 359, WASP-104"
   },
   "c15": {
     "campaign": 15,
-    "ra": 231.6012920,
-    "dec": -19.6081960,
-    "roll": 166.296,
-    "start": "2017-08-21",
-    "stop": "2017-11-18",
-    "comments": "Proposed - position not final",
-    "preliminary": "True"
+    "ra": 233.6174183,
+    "dec": -20.0788662,
+    "roll": 167.0976871,
+    "start": "2017-08-23",
+    "stop": "2017-11-15",
+    "comments": "Upper Sco, GW Lib, Hp Lib"
   },
   "c16": {
     "campaign": 16,
-    "ra": 320.9966284,
-    "dec": -16.4559528,
-    "roll": -161.897,
-    "start": "2017-11-20",
+    "ra": 320.4927498,
+    "dec": -16.6083745,
+    "roll": -161.8683708,
+    "start": "2017-11-19",
     "stop": "2018-02-09",
-    "comments": "Proposed - position not final",
-    "preliminary": "True"
+    "comments": "Comet 29P, WASP-70, WASP-89"
   },
   "c17": {
     "campaign": 17,
