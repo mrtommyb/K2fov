@@ -17,6 +17,8 @@ def test_targetlists():
         targetlist_fn = os.path.join(TESTDIR,
                                      "data",
                                      "K2Campaign{0}targets.csv".format(campaign))
+        if campaign == 9:
+            targetlist_fn = targetlist_fn.replace('9', '9a')
         targetlist = np.genfromtxt(targetlist_fn,
                                    delimiter=",", dtype=None, names=True)
         ra, dec = targetlist["RA_J2000_deg"], targetlist["Dec_J2000_deg"]
@@ -27,7 +29,7 @@ def test_targetlists():
             assert(not onSiliconCheck(ra[idx] + 20, dec[idx], fov))
 
     # We test all the target lists available at the time of writing this test
-    for campaign in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+    for campaign in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
         run_test(campaign)
 
 
