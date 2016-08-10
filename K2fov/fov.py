@@ -90,7 +90,7 @@ class KeplerFov():
         # the boresight
         self.defaultMap = None
 
-        self.brokenChannels = [5,6,7,8, 17,18,19,20]
+        self.brokenChannels = [5,6,7,8, 17,18,19,20, 9,10,11,12]  # Mod 3, 7, 4
         self.plateScale_arcsecPerPix = 3.98
 
         self.mods = list(range(1, 25))
