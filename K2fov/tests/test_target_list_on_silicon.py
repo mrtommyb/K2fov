@@ -14,6 +14,10 @@ def test_targetlists():
     def run_test(campaign):
         """Are entries in the target list of a given campaign on silicon?"""
         fov = getKeplerFov(campaign)
+        if campaign < 11:
+            # Module 4 didn't break until Campaign 10,
+            # whereas Modules 3 and 7 failed before Campaign 0.
+            fov.brokenChannels = [5, 6, 7, 8, 17, 18, 19, 20]
         targetlist_fn = os.path.join(TESTDIR,
                                      "data",
                                      "K2Campaign{0}targets.csv".format(campaign))
