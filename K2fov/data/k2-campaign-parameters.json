@@ -159,7 +159,8 @@
     "roll": -161.8683708,
     "start": "2017-11-19",
     "stop": "2018-01-28",
-    "comments": "Comet 29P, WASP-70, WASP-89"
+    "comments": "Comet 29P, WASP-70, WASP-89",
+    "preliminary": "True"
   },
   "c17": {
     "campaign": 17,
