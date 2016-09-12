@@ -265,6 +265,7 @@ class KeplerFov():
         i = np.argmin(dist)
         return self.currentRaDec[i, 2]
 
+
     def getColRowWithinChannel(self, ra, dec, ch, wantZeroOffset=False,
                                allowIllegalReturnValues=True):
         """Returns (col, row) given a (ra, dec) coordinate and channel number.
@@ -408,6 +409,7 @@ class KeplerFov():
         # Call pixToSky
         x, y = projectionXy
         a, d = self.defaultMap.pixToSky(x, y)
+
         return [a[0], d[0]]
 
     def getRaDecForFgsChannelColRow(self, ch, col, row, oneOffsetPixels=True):
@@ -560,6 +562,7 @@ class KeplerFov():
 
 
     def getWcsForChannel1(self, ch):
+        raise NotImplementedError("getWcsForChannel doesn't work")
         crpix =np.array( [500, 500])    #Rough guess at centre
         a,d = self.getRaDecForChannelColRow(ch, crpix[0], crpix[1])
         crval = np.array([a,d])
