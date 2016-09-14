@@ -33,7 +33,7 @@ def test_targetlists():
             assert(not onSiliconCheck(ra[idx] + 20, dec[idx], fov))
 
     # We test all the target lists available at the time of writing this test
-    for campaign in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
+    for campaign in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]:
         run_test(campaign)
 
 
