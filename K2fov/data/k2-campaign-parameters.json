@@ -154,11 +154,11 @@
   },
   "c16": {
     "campaign": 16,
-    "ra": 133.4283433,
-    "dec": 18.5994508,
-    "roll": -14.7770255,
-    "start": "2017-11-25",
-    "stop": "2018-01-28",
+    "ra": 133.7099689,
+    "dec": 18.5253931,
+    "roll": -14.8605959,
+    "start": "2017-12-05",
+    "stop": "2018-02-01",
     "comments": "Proposed - position not final, forward-facing",
     "preliminary": "True"
   },
