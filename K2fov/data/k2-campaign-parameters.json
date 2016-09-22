@@ -118,9 +118,9 @@
   },
   "c12": {
     "campaign": 12,
-    "ra": 351.6775319,
-    "dec": -5.0956501,
-    "roll": -156.6003397,
+    "ra": 351.673793,
+    "dec": -5.097212,
+    "roll": -156.600583,
     "start": "2016-12-15",
     "stop": "2017-03-04",
     "comments": "South Galactic Cap, Chiron, Mars"
@@ -149,18 +149,17 @@
     "dec": -20.0788662,
     "roll": 167.0976871,
     "start": "2017-08-23",
-    "stop": "2017-11-15",
+    "stop": "2017-11-20",
     "comments": "Upper Sco, GW Lib, HP Lib"
   },
   "c16": {
     "campaign": 16,
     "ra": 133.7099689,
     "dec": 18.5253931,
-    "roll": -14.8605959,
-    "start": "2017-12-05",
-    "stop": "2018-02-01",
-    "comments": "Proposed - position not final, forward-facing",
-    "preliminary": "True"
+    "roll": -15.0205959,
+    "start": "2017-12-07",
+    "stop": "2018-02-25",
+    "comments": "Galaxies, M44 (Beehive), M67. Forward-facing to enable simultaneous ground-based observations.",
   },
   "c17": {
     "campaign": 17,
