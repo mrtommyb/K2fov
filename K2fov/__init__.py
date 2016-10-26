@@ -16,7 +16,7 @@ PACKAGEDIR = os.path.dirname(os.path.abspath(__file__))
 # The padding parameter compensates for this; setting padding > 0 means
 # that objects that are computed to lie a small amount off silicon will
 # be considered on silicon.
-DEFAULT_PADDING = 6  # pixels
+DEFAULT_PADDING = 35  # pixels
 
 # Add __version__, fields.* and K2onSilicon.K2onSilicon to the root namespace
 from .version import __version__
