@@ -123,31 +123,31 @@
     "roll": -156.8808419,
     "start": "2016-12-15",
     "stop": "2017-03-04",
-    "comments": "South Galactic Cap, Chiron, Mars"
+    "comments": "South Galactic Cap, Chiron, Mars, Trappist-1"
   },
   "c13": {
     "campaign": 13,
-    "ra": 72.7968465,
-    "dec": 20.7863018,
-    "roll": -172.4784788,
+    "ra": 72.7971166,
+    "dec": 20.7870759,
+    "roll": -172.7995758,
     "start": "2017-03-08",
     "stop": "2017-05-27",
     "comments": "Hyades, Taurus"
   },
   "c14": {
     "campaign": 14,
-    "ra": 160.6821210,
-    "dec": 6.8515964,
-    "roll": 159.0776640,
+    "ra": 160.6824762,
+    "dec": 6.8509316,
+    "roll": 158.7573464,
     "start": "2017-05-31",
     "stop": "2017-08-19",
     "comments": "North Galactic Cap, Wolf 359, WASP-104"
   },
   "c15": {
     "campaign": 15,
-    "ra": 233.6174183,
-    "dec": -20.0788662,
-    "roll": 167.0976871,
+    "ra": 233.6175730,
+    "dec": -20.0792397,
+    "roll": 166.7780778,
     "start": "2017-08-23",
     "stop": "2017-11-20",
     "comments": "Upper Sco, GW Lib, HP Lib"
