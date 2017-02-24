@@ -7,6 +7,8 @@ try:
     import matplotlib
 except ImportError:
     pass
+from astropy.coordinates import SkyCoord
+from astropy import units as u
 
 from . import projection as proj
 from . import rotate2 as r
@@ -211,6 +213,85 @@ class KeplerFov():
     ###
     # Sky -> pixel code
     ###
+
+    def isOnSiliconList(self, ra_deg, dec_deg, padding_pix=DEFAULT_PADDING):
+        """similar to isOnSilicon() but takes lists as input"""
+        ch, col, row = self.getChannelColRowList(ra_deg, dec_deg)
+        out = np.zeros(len(ch), dtype=bool)
+        for channel in set(ch):
+            mask = (ch == channel)
+            if channel in self.brokenChannels:
+                continue
+            if channel > 84:
+                continue
+            out[mask] = self.colRowIsOnSciencePixelList(col[mask], row[mask], padding_pix)
+        return out
+        
+    def getChannelColRowList(self, ra, dec, wantZeroOffset=False,
+                         allowIllegalReturnValues=True):
+        """similar to getChannelColRow() but takes lists as input"""
+        try:
+            ch = self.pickAChannelList(ra, dec)
+        except ValueError:
+            logger.warning("WARN: %.7f %.7f not on any channel" % (ra, dec))
+            return (0, 0, 0)
+        
+        col = np.zeros(len(ch))
+        row = np.zeros(len(ch))
+        for channel in set(ch):
+            mask = (ch == channel)
+            col[mask], row[mask] = self.getColRowWithinChannelList(ra[mask], dec[mask], channel, 
+                                                        wantZeroOffset, allowIllegalReturnValues)
+        return (ch, col, row)        
+
+    def pickAChannelList(self, ra_deg, dec_deg):
+        """similar to pickAChannel() but takes lists as input"""
+        cRa = self.currentRaDec[:, 3]  # Ra of each channel corner
+        cDec = self.currentRaDec[:, 4]  # dec of each channel corner
+        catalog = SkyCoord(cRa*u.deg, cDec*u.deg)
+        position = SkyCoord(ra_deg*u.deg, dec_deg*u.deg)
+        idx, _, _ = position.match_to_catalog_sky(catalog)
+        return self.currentRaDec[idx, 2]
+
+    def getColRowWithinChannelList(self, ra, dec, ch, wantZeroOffset=False,
+                               allowIllegalReturnValues=True):
+        """similar to getColRowWithinChannel() but takes lists as input"""
+        x, y = self.defaultMap.skyToPix(ra, dec)
+        kepModule = self.getChannelAsPolygon(ch)
+        r = np.array(zip(x, y)) - kepModule.polygon[0, :]
+
+        v1 = kepModule.polygon[1, :] - kepModule.polygon[0, :]
+        v3 = kepModule.polygon[3, :] - kepModule.polygon[0, :]
+
+        colFrac = np.dot(r, v1) / np.linalg.norm(v1)**2
+        rowFrac = np.dot(r, v3) / np.linalg.norm(v3)**2
+
+        col = colFrac*(1106-17) + 17
+        row = rowFrac*(1038-25) + 25
+
+        if not allowIllegalReturnValues:
+            if not self.colRowIsOnSciencePixel(col, row):
+                msg = "Request position %7f %.7f " % (ra, dec)
+                msg += "does not lie on science pixels for channel %i " % (ch)
+                msg += "[ %.1f %.1f]" % (col, row)
+                raise ValueError(msg)
+
+        if not wantZeroOffset:
+            col += 1
+            row += 1
+
+        return (col, row)
+
+    def colRowIsOnSciencePixelList(self, col, row, padding=DEFAULT_PADDING):
+        """similar to colRowIsOnSciencePixelList() but takes lists as input"""
+        out = np.ones(len(col), dtype=bool)
+        col_arr = np.array(col)
+        row_arr = np.array(row)
+        mask = np.bitwise_or(col_arr < 12. - padding, col_arr > 1111 + padding)
+        out[mask] = False
+        mask = np.bitwise_or(row_arr < 20. - padding, row_arr > 1043 + padding)
+        out[mask] = False
+        return out
 
     def isOnSilicon(self, ra_deg, dec_deg, padding_pix=DEFAULT_PADDING):
         """Returns True if the given location is observable with a science CCD.

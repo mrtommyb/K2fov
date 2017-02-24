@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 from .. import getKeplerFov
-from ..K2onSilicon import onSiliconCheck
+from ..K2onSilicon import onSiliconCheck, onSiliconCheckList
 
 # Where is this test script located?
 TESTDIR = os.path.dirname(os.path.abspath(__file__))
@@ -27,10 +27,19 @@ def test_targetlists():
                                    delimiter=",", dtype=None, names=True)
         ra, dec = targetlist["RA_J2000_deg"], targetlist["Dec_J2000_deg"]
         mask = ~np.isnan(ra) & ~np.isnan(dec)
+        
         for idx in np.where(mask)[0][::500]:  # Speed-up: check every 500th
             # All the sources in the target list should be on silicon
             assert(onSiliconCheck(ra[idx], dec[idx], fov))
             assert(not onSiliconCheck(ra[idx] + 20, dec[idx], fov))
+            
+        idx = np.where(mask)[0][::500]
+        
+        out = onSiliconCheckList(ra[idx], dec[idx], fov)
+        assert(np.all(out))
+        
+        out = onSiliconCheckList(ra[idx] + 20, dec[idx], fov)
+        assert(np.all(~out))
 
     # We test all the target lists available at the time of writing this test
     for campaign in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]:
