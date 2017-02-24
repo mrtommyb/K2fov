@@ -27,22 +27,19 @@ def test_targetlists():
                                    delimiter=",", dtype=None, names=True)
         ra, dec = targetlist["RA_J2000_deg"], targetlist["Dec_J2000_deg"]
         mask = ~np.isnan(ra) & ~np.isnan(dec)
-        
+
         for idx in np.where(mask)[0][::500]:  # Speed-up: check every 500th
             # All the sources in the target list should be on silicon
             assert(onSiliconCheck(ra[idx], dec[idx], fov))
             assert(not onSiliconCheck(ra[idx] + 20, dec[idx], fov))
-            
+
+        # Also check whether the list-checking function works correctly
         idx = np.where(mask)[0][::500]
-        
-        out = onSiliconCheckList(ra[idx], dec[idx], fov)
-        assert(np.all(out))
-        
-        out = onSiliconCheckList(ra[idx] + 20, dec[idx], fov)
-        assert(np.all(~out))
+        assert(np.all(onSiliconCheckList(ra[idx], dec[idx], fov)))
+        assert(np.all(~onSiliconCheckList(ra[idx] + 20, dec[idx], fov)))
 
     # We test all the target lists available at the time of writing this test
-    for campaign in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]:
+    for campaign in range(14):
         run_test(campaign)
 
 
