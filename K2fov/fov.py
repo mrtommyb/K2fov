@@ -226,7 +226,7 @@ class KeplerFov():
                 continue
             out[mask] = self.colRowIsOnSciencePixelList(col[mask], row[mask], padding_pix)
         return out
-        
+
     def getChannelColRowList(self, ra, dec, wantZeroOffset=False,
                          allowIllegalReturnValues=True):
         """similar to getChannelColRow() but takes lists as input"""
@@ -235,14 +235,14 @@ class KeplerFov():
         except ValueError:
             logger.warning("WARN: %.7f %.7f not on any channel" % (ra, dec))
             return (0, 0, 0)
-        
+
         col = np.zeros(len(ch))
         row = np.zeros(len(ch))
         for channel in set(ch):
             mask = (ch == channel)
             col[mask], row[mask] = self.getColRowWithinChannelList(ra[mask], dec[mask], channel, 
                                                         wantZeroOffset, allowIllegalReturnValues)
-        return (ch, col, row)        
+        return (ch, col, row)
 
     def pickAChannelList(self, ra_deg, dec_deg):
         """similar to pickAChannel() but takes lists as input"""
@@ -258,7 +258,7 @@ class KeplerFov():
         """similar to getColRowWithinChannel() but takes lists as input"""
         x, y = self.defaultMap.skyToPix(ra, dec)
         kepModule = self.getChannelAsPolygon(ch)
-        r = np.array(zip(x, y)) - kepModule.polygon[0, :]
+        r = np.array(list(zip(x, y))) - kepModule.polygon[0, :]
 
         v1 = kepModule.polygon[1, :] - kepModule.polygon[0, :]
         v3 = kepModule.polygon[3, :] - kepModule.polygon[0, :]
