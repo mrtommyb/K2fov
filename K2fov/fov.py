@@ -59,7 +59,8 @@ def getSpacecraftRollAngleFromFovAngle(fovAngle_deg):
 
 
 class KeplerFov():
-    def __init__(self, ra_deg, dec_deg, roll_deg):
+    def __init__(self, ra_deg, dec_deg, roll_deg,
+                 brokenChannels=[5, 6, 7, 8,  17, 18, 19, 20,  9, 10, 11, 12]):
         """
         A representation of the Kepler Field of View designed
         for planning target observations.
@@ -77,6 +78,10 @@ class KeplerFov():
                         Use getFovAngleFromSpacecraftRoll()
                         to convert from spacecraft roll values
 
+        brokenChannels  Numbers of the CCD channels which are no longer
+                        functioning.  Defaults to the channels that make up
+                        Modules 3, 7, and 4.
+
 
         Values for the prime mission are:
         ra_deg = 290.66666667
@@ -89,7 +94,7 @@ class KeplerFov():
         # the boresight
         self.defaultMap = None
 
-        self.brokenChannels = [5,6,7,8, 17,18,19,20, 9,10,11,12]  # Mod 3, 7, 4
+        self.brokenChannels = brokenChannels
         self.plateScale_arcsecPerPix = 3.98
 
         self.mods = list(range(1, 25))
