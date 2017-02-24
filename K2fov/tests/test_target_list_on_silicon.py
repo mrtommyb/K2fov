@@ -34,9 +34,12 @@ def test_targetlists():
             assert(not onSiliconCheck(ra[idx] + 20, dec[idx], fov))
 
         # Also check whether the list-checking function works correctly
-        idx = np.where(mask)[0][::500]
-        assert(np.all(onSiliconCheckList(ra[idx], dec[idx], fov)))
-        assert(np.all(~onSiliconCheckList(ra[idx] + 20, dec[idx], fov)))
+        try:
+            idx = np.where(mask)[0][::500]
+            assert(np.all(onSiliconCheckList(ra[idx], dec[idx], fov)))
+            assert(np.all(~onSiliconCheckList(ra[idx] + 20, dec[idx], fov)))
+        except ImportError:
+            pass  # This feature requires AstroPy, which is an opional requirement
 
     # We test all the target lists available at the time of writing this test
     for campaign in range(14):

@@ -7,8 +7,6 @@ try:
     import matplotlib
 except ImportError:
     pass
-from astropy.coordinates import SkyCoord
-from astropy import units as u
 
 from . import projection as proj
 from . import rotate2 as r
@@ -245,7 +243,15 @@ class KeplerFov():
         return (ch, col, row)
 
     def pickAChannelList(self, ra_deg, dec_deg):
-        """similar to pickAChannel() but takes lists as input"""
+        """Similar to pickAChannel() but takes lists as input.
+
+        This will require AstroPy to be installed.
+        """
+        try:
+            from astropy.coordinates import SkyCoord
+            from astropy import units as u
+        except ImportError:
+            raise ImportError("AstroPy needs to be installed to use this feature.")
         cRa = self.currentRaDec[:, 3]  # Ra of each channel corner
         cDec = self.currentRaDec[:, 4]  # dec of each channel corner
         catalog = SkyCoord(cRa*u.deg, cDec*u.deg)
