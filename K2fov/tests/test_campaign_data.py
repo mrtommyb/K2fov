@@ -4,8 +4,6 @@ into K2fov in version 1.9.2 is consistent with the info provided by the
 
 To run these tests, simply run "py.test" in the K2fov source tree.
 """
-import json
-
 from .. import getFieldNumbers, getFieldInfo
 from ..K2onSilicon import getRaDecRollFromFieldnum
 from ..fields import _getCampaignDict
@@ -14,11 +12,7 @@ from ..fields import _getCampaignDict
 def old_getRaDecRollFromFieldnum(fieldnum):
     """The code below is copied from K2fov v1.9.2,
     i.e. before the JSON file was added."""
-    if fieldnum == 100:
-        ra_deg = 290.6820
-        dec_deg = -22.6664
-        scRoll_deg = -171.8067
-    elif fieldnum == 0:
+    if fieldnum == 0:
         ra_deg = 98.2964079
         dec_deg = 21.5878901
         scRoll_deg = 177.4810830
@@ -72,7 +66,7 @@ def test_coordinates_file():
     """Are the coordinates in the "k2-campaigns.json" file identical
     to those that were hardcoded in v1.9.2?"""
     campaign_dict = _getCampaignDict()
-    campaigns = [100] + list(range(0, 11))
+    campaigns = list(range(0, 11))
     for c in campaigns:
         test_ra, test_dec, test_roll = old_getRaDecRollFromFieldnum(c)
         jsoninfo = campaign_dict["c{0}".format(c)]
@@ -84,7 +78,7 @@ def test_coordinates_file():
 def test_coordinates_function():
     """Are the coordinates in the "k2-campaigns.json" file identical
     to those that were hardcoded in v1.9.2?"""
-    campaigns = [100] + list(range(0, 11))
+    campaigns = list(range(0, 11))
     for c in campaigns:
         test_ra, test_dec, test_roll = old_getRaDecRollFromFieldnum(c)
         ra, dec, roll = getRaDecRollFromFieldnum(c)
@@ -105,8 +99,8 @@ def test_meta_data():
 def test_field_numbers():
     """Is the list of field numbers present and complete?"""
     field_numbers = getFieldNumbers()
-    # At the time of writing the test, fields 0 through 18 were defined
-    for campaign in range(0, 19):
+    # At the time of writing the test, fields 0 through 16 were defined
+    for campaign in range(0, 17):
         assert(campaign in field_numbers)
 
 

@@ -6,7 +6,7 @@ from .. import K2findCampaigns
 
 def test_find_campaigns_basics():
     campaigns = K2findCampaigns.findCampaigns(269.5, -28.5)
-    assert(campaigns == [9])
+    assert(9 in campaigns)
     campaigns = K2findCampaigns.findCampaigns(0, 0)
     assert(campaigns == [])
 

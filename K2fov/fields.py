@@ -54,10 +54,7 @@ def getFieldInfo(fieldnum):
     try:
         info = _getCampaignDict()["c{0}".format(fieldnum)]
         # Print warning messages if necessary
-        if fieldnum == 100:
-            logger.warning("Warning: you are using the K2 first light field, "
-                           "you almost certainly do not want to do this")
-        elif "preliminary" in info and info["preliminary"] == "True":
+        if "preliminary" in info and info["preliminary"] == "True":
             logger.warning("Warning: the position of field {0} is preliminary. "
                            "Do not use this position for your final "
                            "target selection!".format(fieldnum))

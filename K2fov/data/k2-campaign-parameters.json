@@ -1,12 +1,33 @@
  {
   "field_numbers": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                    11, 12, 13, 14, 15, 16, 17, 18],
-  "c100": {
-    "campaign": 100,
+                    11, 12, 13, 14, 15, 16,
+                    171, 172, 173, 181, 182, 183, 184, 185, 186],
+   "c1000": {
+    "campaign": 1000,
+    "ra": 290.66666667,
+    "dec": 44.5,
+    "roll": 123.0,
+    "start": "2009-05-13",
+    "stop": "2013-05-14",
+    "comments": "Original Kepler field; roll is 33.0 + season*90",
+    "preliminary": "False"
+  },
+  "c1001": {
+    "campaign": 1001,
     "ra": 290.6820,
     "dec": -22.6664,
     "roll": -171.8067,
-    "comments": "First light field."
+    "comments": "K2 First light field."
+  },
+  "c1002": {
+    "campaign": 1002,
+    "ra": -1.3507626,
+    "dec": -2.1523890,
+    "roll": -156.4440683,
+    "start": "2014-02-04",
+    "stop": "2014-02-13",
+    "comments": "K2 Engineering test field",
+    "preliminary": "True"
   },
   "c0": {
     "campaign": 0,
@@ -161,24 +182,94 @@
     "stop": "2018-02-25",
     "comments": "Galaxies, M44 (Beehive), M67. Forward-facing to enable simultaneous ground-based observations."
   },
-  "c17": {
-    "campaign": 17,
-    "ra": 188.3497679,
-    "dec": -1.9586535,
-    "roll": -22.290,
-    "start": "2018-02-01",
-    "stop": "2018-04-22",
-    "comments": "Proposed - position not final, forward-facing",
+  "c171": {
+    "campaign": 171,
+    "ra": 184.49209899308514,
+    "dec": -0.33014807049884054,
+    "roll": -22.45927053650497,
+    "start": "TBD",
+    "stop": "TBD",
+    "comments": "C17 Option 1: forward-facing optimized for C10 overlap.",
     "preliminary": "True"
   },
-  "c18": {
-    "campaign": 18,
-    "ra": 112.6389009,
-    "dec": 20.2271914,
-    "roll": 172.044,
-    "start": "2018-04-22",
-    "stop": "2018-07-12",
-    "comments": "Proposed - position not final",
+  "c172": {
+    "campaign": 172,
+    "ra": 202.35654611448069,
+    "dec": -7.6465269145700141,
+    "roll": -20.777414651511069,
+    "start": "TBD",
+    "stop": "TBD",
+    "comments": "C17 Option 2: forward-facing optimized for C6 overlap.",
+    "preliminary": "True"
+  },
+  "c173": {
+    "campaign": 173,
+    "ra": 216.58742556153985,
+    "dec": -12.736657102237499,
+    "roll": -17.91542532222778,
+    "start": "TBD",
+    "stop": "TBD",
+    "comments": "C17 Option 3: forward-facing optimized for maximum duration.",
+    "preliminary": "True"
+  },
+  "c181": {
+    "campaign": 181,
+    "ra": 271.24188911729243,
+    "dec": -21.778072222972988,
+    "roll": 0.81552116075955239,
+    "start": "TBD",
+    "stop": "TBD",
+    "comments": "C18 Forward-Facing Option 1.",
+    "preliminary": "True"
+  },
+  "c182": {
+    "campaign": 182,
+    "ra": 292.615879317397,
+    "dec": -20.230774249910056,
+    "roll": 8.9993420178540333,
+    "start": "TBD",
+    "stop": "TBD",
+    "comments": "C18 Forward-Facing Option 2.",
+    "preliminary": "True"
+  },
+  "c183": {
+    "campaign": 183,
+    "ra": 307.1438427663042,
+    "dec": -17.546117371162477,
+    "roll": 14.035280943546411,
+    "start": "TBD",
+    "stop": "TBD",
+    "comments": "C18 Forward-Facing Option 3.",
+    "preliminary": "True"
+  },
+  "c184": {
+    "campaign": 184,
+    "ra": 116.55878778971793,
+    "dec": 19.630967049884767,
+    "roll": 170.46362928239969,
+    "start": "TBD",
+    "stop": "TBD",
+    "comments": "C18 Backward-Facing Option 1.",
+    "preliminary": "True"
+  },
+  "c185": {
+    "campaign": 185,
+    "ra": 137.34076630085062,
+    "dec": 14.906231409183862,
+    "roll": 163.77453470363236,
+    "start": "TBD",
+    "stop": "TBD",
+    "comments": "C18 Backward-Facing Option 2.",
+    "preliminary": "True"
+  },
+  "c186": {
+    "campaign": 186,
+    "ra": 150.66638786952515,
+    "dec": 10.607675774401164,
+    "roll": 160.51541576240194,
+    "start": "TBD",
+    "stop": "TBD",
+    "comments": "C18 Bacward-Facing Option 3.",
     "preliminary": "True"
   }
 }
