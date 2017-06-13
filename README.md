@@ -1,4 +1,4 @@
-# K2fov [![PyPI](http://img.shields.io/pypi/v/K2fov.svg)](https://pypi.python.org/pypi/K2fov/)  [![PyPI](http://img.shields.io/pypi/dm/K2fov.svg)](https://pypi.python.org/pypi/K2fov/) [![Travis status](https://travis-ci.org/KeplerGO/K2fov.svg)](https://travis-ci.org/KeplerGO/K2fov) [![DOI](https://zenodo.org/badge/10301/KeplerGO/K2fov.svg)](https://zenodo.org/badge/latestdoi/10301/KeplerGO/K2fov) [![ADS Bibcode](https://img.shields.io/badge/NASA%20ADS-2016ascl.soft01009M-blue.svg)](http://adsabs.harvard.edu/abs/2016ascl.soft01009M)
+# K2fov [![PyPI](http://img.shields.io/pypi/v/K2fov.svg)](https://pypi.python.org/pypi/K2fov/) [![Travis status](https://travis-ci.org/KeplerGO/K2fov.svg)](https://travis-ci.org/KeplerGO/K2fov) [![DOI](https://zenodo.org/badge/10301/KeplerGO/K2fov.svg)](https://zenodo.org/badge/latestdoi/10301/KeplerGO/K2fov) [![ADS Bibcode](https://img.shields.io/badge/NASA%20ADS-2016ascl.soft01009M-blue.svg)](http://adsabs.harvard.edu/abs/2016ascl.soft01009M)
 ***Check whether targets are in the field of view of NASA's K2 mission.***
 
 The `K2fov` Python package allows users to check whether a target is in the field of view of K2. 
