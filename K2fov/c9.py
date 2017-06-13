@@ -174,7 +174,7 @@ class C9FootprintPlot(object):
                         'text.usetex': False,
                      }
             pl.rcParams.update(params)
-            self.fig = pl.figure(figsize=(8, 6))
+            self.fig = pl.figure(figsize=(8, 4.5))
             self.ax = self.fig.add_subplot(111)
         else:
             self.ax = axes
@@ -236,14 +236,14 @@ class C9FootprintPlot(object):
             dec = corners[idx, 4][0]
             patch = self.ax.fill(np.concatenate((ra, ra[:1])),
                                  np.concatenate((dec, dec[:1])),
-                                 lw=0, facecolor="#ecf0f1", zorder=-90)
+                                 lw=0, facecolor="#cccccc", zorder=50)
             channel_patches.append(patch)
             if annotate_channels:
-                txt = "K2C9\n{}.{}\n#{}".format(mdl, out, ch)
+                txt = "{}.{}\n#{}".format(mdl, out, ch)
                 self.ax.text(np.mean(ra), np.mean(dec), txt,
                              ha="center", va="center",
-                             zorder=900, fontsize=10,
-                             color="#666666", clip_on=True)
+                             zorder=900, fontsize=14,
+                             color="#000000", clip_on=True)
         return superstamp_patches, channel_patches
 
 
