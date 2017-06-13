@@ -42,7 +42,7 @@ def test_targetlists():
             pass  # This feature requires AstroPy, which is an opional requirement
 
     # We test all the target lists available at the time of writing this test
-    for campaign in range(14):
+    for campaign in range(15):
         run_test(campaign)
 
 
