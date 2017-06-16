@@ -178,7 +178,7 @@
     "roll": -15.0205959,
     "start": "2017-12-07",
     "stop": "2018-02-25",
-    "comments": "Galaxies, M44 (Beehive), M67. Forward-facing to enable simultaneous ground-based observations."
+    "comments": "M44 (Beehive), M67. Forward-facing to enable simultaneous ground-based observations."
   },
   "c17": {
     "campaign": 17,
@@ -186,15 +186,15 @@
     "dec": -7.7210759,
     "roll": -20.7870925,
     "start": "2018-03-01",
-    "stop": "2018-05-10",
-    "comments": "Forward-facing; galaxies"
+    "stop": "2018-05-08",
+    "comments": "Forward-facing; galaxies."
   },
   "c18": {
     "campaign": 18,
     "ra": 130.1610170,
     "dec": 16.8278629,
     "roll": 165.8977388,
-    "start": "2018-05-14",
+    "start": "2018-05-12",
     "stop": "2018-08-02",
     "comments": "Backward-facing; return to M44 and M67."
   },
@@ -205,7 +205,6 @@
     "roll": 22.8818335,
     "start": "2018-08-06",
     "stop": "2018-10-10",
-    "comments": "Forward-facing; Trappist-1; Neptune.",
-    "preliminary": "True"
+    "comments": "Forward-facing; Trappist-1, Neptune."
   }
 }
