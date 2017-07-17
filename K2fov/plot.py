@@ -58,7 +58,7 @@ class K2FootprintPlot(object):
         except AttributeError:  # We didn't create a fig above
             pass
 
-    def plot_campaigns(self, campaigns=19):
+    def plot_campaigns(self, campaigns=20):
         """Plot the outlines of all campaigns."""
         for c in range(campaigns):
             self.plot_campaign_outline(c)
@@ -217,7 +217,7 @@ class K2GalacticFootprintPlot(object):
             # avoid crashing if an older version of AstroPy is at play
             pass
 
-    def plot_campaigns(self, campaigns=19):
+    def plot_campaigns(self, campaigns=20):
         """Plot the outlines of all campaigns."""
         for c in range(campaigns):
             self.plot_campaign_outline(c)
@@ -290,7 +290,7 @@ def create_context_plot(ra, dec, name="Your object"):
     plot = K2FootprintPlot()
     plot.plot_galactic()
     plot.plot_ecliptic()
-    for c in range(0, 120):
+    for c in range(0, 20):
         plot.plot_campaign_outline(c, facecolor="#666666")
     #for c in [11, 12, 13, 14, 15, 16]:
     #    plot.plot_campaign_outline(c, facecolor="green")
@@ -305,7 +305,7 @@ def create_context_plot_zoomed(ra, dec, name="Your object", size=3):
     """Creates a K2FootprintPlot showing a given position in context
     with respect to the campaigns."""
     plot = K2FootprintPlot(figsize=(8, 8))
-    for c in range(0, 19):
+    for c in range(0, 20):
         plot.plot_campaign(c)
     plot.ax.scatter(ra, dec, marker='x', s=250, lw=3, color="red", zorder=500)
     plot.ax.text(ra, dec - 0.05*size, name,
