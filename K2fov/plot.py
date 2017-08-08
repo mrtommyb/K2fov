@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Make pretty footprint plots.
 
 This file contains plotting code by Geert.
