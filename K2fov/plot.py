@@ -31,12 +31,12 @@ except Exception:
 
 def rafmt(x, pos):
     """Formatter function for Right Ascension."""
-    return "{:.0f}°".format(x)
+    return u"{:.0f}°".format(x)
 
 
 def decfmt(x, pos):
     """Formatter function for Declination."""
-    return "{:+.0f}°".format(x)
+    return u"{:+.0f}°".format(x)
 
 
 class K2FootprintPlot(object):
