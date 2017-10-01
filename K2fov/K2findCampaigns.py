@@ -187,14 +187,14 @@ def K2findCampaigns_csv_main(args=None):
         campaigns = np.array([findCampaigns(ra[idx], dec[idx])
                               for idx in range(len(ra))])
         output = np.array([ra, dec, kepmag, campaigns])
-        print("Writing {0}.".format(output_fn))
+        print("Writing {0}".format(output_fn))
         np.savetxt(output_fn, output.T, delimiter=', ',
                    fmt=['%10.10f', '%10.10f', '%10.2f', '%s'])
     # If this fails, assume the file has a single "name" column
     except ValueError:
         names = [name.strip() for name in open(input_fn, "r").readlines()
                  if len(name.strip()) > 0]
-        print("Writing {0}.".format(output_fn))
+        print("Writing {0}".format(output_fn))
         output = open(output_fn, "w")
         for target in names:
             try:
