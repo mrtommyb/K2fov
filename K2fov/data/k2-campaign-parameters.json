@@ -206,5 +206,15 @@
     "start": "2018-08-06",
     "stop": "2018-10-10",
     "comments": "Forward-facing; Trappist-1, Neptune."
+  },
+
+  "c20": {
+   "campaign": 20,
+   "ra": 71.2012890,
+   "dec": 23.1361165,
+   "roll": 7.9176424,
+   "start": "2018-10-11",
+   "stop": "2019-01-05",
+   "comments": "Taurus."
   }
 }

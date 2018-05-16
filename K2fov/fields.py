@@ -64,7 +64,7 @@ def getFieldInfo(fieldnum):
                          "of the code".format(fieldnum))
 
 
-def getKeplerFov(fieldnum):
+def getKeplerFov(fieldnum, broken=True):
     """Returns a `fov.KeplerFov` object for a given campaign.
 
     Parameters
@@ -86,9 +86,11 @@ def getKeplerFov(fieldnum):
     # KeplerFov takes a listen of broken CCD channels as optional argument;
     # these channels will be ignored during plotting and on-silicon determination.
     # Modules 3 and 7 broke prior to the start of K2:
-    brokenChannels = [5, 6, 7, 8,  17, 18, 19, 20]
-    # Module 4 failed during Campaign 10
-    if fieldnum > 10:
-        brokenChannels.extend([9, 10, 11, 12])
-
+    if broken:
+        brokenChannels = [5, 6, 7, 8, 17, 18, 19, 20]
+        # Module 4 failed during Campaign 10
+        if fieldnum > 10:
+            brokenChannels.extend([9, 10, 11, 12])
+    else:
+        brokenChannels = []
     return fov.KeplerFov(ra, dec, fovRoll, brokenChannels=brokenChannels)
