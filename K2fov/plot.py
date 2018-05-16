@@ -14,15 +14,15 @@ try:
     import matplotlib.pyplot as pl
     from matplotlib.ticker import FuncFormatter
     params = {
-                'axes.linewidth': 1.5,
-                'axes.labelsize': 24,
-                'font.family': 'sans-serif',
-                'font.size': 22,
-                'legend.fontsize': 14,
-                'xtick.labelsize': 16,
-                'ytick.labelsize': 16,
-                'text.usetex': False,
-             }
+        'axes.linewidth': 1.5,
+        'axes.labelsize': 24,
+        'font.family': 'sans-serif',
+        'font.size': 22,
+        'legend.fontsize': 14,
+        'xtick.labelsize': 16,
+        'ytick.labelsize': 16,
+        'text.usetex': False,
+    }
     pl.rcParams.update(params)
 except Exception:
     logger.error('This feature requires matplotlib to be installed.')
@@ -121,8 +121,7 @@ class K2FootprintPlot(object):
                          zorder=155)
         return myfill
 
-    def plot_campaign(self, campaign=0, annotate_channels=True, zorder=90,
-                      lw=0, edgecolor='black', facecolor="#999999"):
+    def plot_campaign(self, campaign=0, annotate_channels=True, **kwargs):
         """Plot all the active channels of a campaign."""
         fov = getKeplerFov(campaign)
         corners = fov.getCoordsOfChannelCorners()
@@ -134,13 +133,11 @@ class K2FootprintPlot(object):
             mdl = int(corners[idx, 0][0][0])
             out = int(corners[idx, 1][0][0])
             ra = corners[idx, 3][0]
-            #if np.any(ra > 340):  # Engineering test field overlaps meridian
+            # if np.any(ra > 340):  # Engineering test field overlaps meridian
             #    ra[ra > 180] -= 360
             dec = corners[idx, 4][0]
             self.ax.fill(np.concatenate((ra, ra[:1])),
-                         np.concatenate((dec, dec[:1])),
-                         lw=lw, edgecolor=edgecolor,
-                         facecolor=facecolor, zorder=zorder)
+                         np.concatenate((dec, dec[:1])), **kwargs)
             if annotate_channels:
                 txt = "K2C{0}\n{1}.{2}\n#{3}".format(campaign, mdl, out, ch)
                 txt = "{1}.{2}\n#{3}".format(campaign, mdl, out, ch)
@@ -260,7 +257,7 @@ class K2GalacticFootprintPlot(object):
                                       b + b[:1],
                                       facecolor=facecolor, zorder=151, lw=2, ls='dashed',
                                       edgecolor='white')
-                #myfill = self.ax.plot(l + l[:1],
+                # myfill = self.ax.plot(l + l[:1],
                 #                      b + b[:1],
                 #                      zorder=200, lw=2,
                 #                      ls='dotted', color='white')
@@ -293,7 +290,7 @@ def create_context_plot(ra, dec, name="Your object"):
     plot.plot_ecliptic()
     for c in range(0, 20):
         plot.plot_campaign_outline(c, facecolor="#666666")
-    #for c in [11, 12, 13, 14, 15, 16]:
+    # for c in [11, 12, 13, 14, 15, 16]:
     #    plot.plot_campaign_outline(c, facecolor="green")
     plot.ax.scatter(ra, dec, marker='x', s=250, lw=3, color="red", zorder=500)
     plot.ax.text(ra, dec - 2, name,
