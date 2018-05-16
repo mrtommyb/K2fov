@@ -2,8 +2,11 @@
 import sys
 import os
 
-if "publish" in sys.argv[-1]:
-    os.system("python setup.py sdist upload")
+# Prepare and send a new release to PyPI
+if "release" in sys.argv[-1]:
+    os.system("python setup.py sdist")
+    os.system("twine upload dist/K2fov*")
+    os.system("rm -rf dist/K2fov*")
     sys.exit()
 
 try:
@@ -27,6 +30,7 @@ scripts = ['scripts/K2onSilicon',
 setup(name='K2fov',
       version=__version__,
       description='Find which targets are in the field of view of K2',
+      long_description=open('README.md').read(),
       author='Fergal Mullally, Tom Barclay, Geert Barentsen',
       author_email='keplergo@mail.arc.nasa.gov',
       url='https://github.com/KeplerGO/K2fov',
