@@ -90,5 +90,9 @@ def getKeplerFov(fieldnum):
     # Module 4 failed during Campaign 10
     if fieldnum > 10:
         brokenChannels.extend([9, 10, 11, 12])
+    # Hack: the Kepler field is defined as "Campaign 1000"
+    # and (initially) had no broken channels
+    if fieldnum == 1000:
+        brokenChannels = []
 
     return fov.KeplerFov(ra, dec, fovRoll, brokenChannels=brokenChannels)
