@@ -64,7 +64,7 @@ def getFieldInfo(fieldnum):
                          "of the code".format(fieldnum))
 
 
-def getKeplerFov(fieldnum, broken=True):
+def getKeplerFov(fieldnum):
     """Returns a `fov.KeplerFov` object for a given campaign.
 
     Parameters
