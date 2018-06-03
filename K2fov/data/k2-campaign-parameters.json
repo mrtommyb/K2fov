@@ -1,6 +1,6 @@
  {
   "field_numbers": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-                    11, 12, 13, 14, 15, 16, 17, 18, 19],
+                    11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
    "c1000": {
     "campaign": 1000,
     "ra": 290.66666667,
@@ -207,14 +207,13 @@
     "stop": "2018-10-10",
     "comments": "Forward-facing; Trappist-1, Neptune."
   },
-
   "c20": {
    "campaign": 20,
    "ra": 68.2980074,
    "dec": 22.7617688,
    "roll": 8.9906005,
-   "start": "2018-10-15",
+   "start": "2018-10-14",
    "stop": "2019-01-05",
-   "comments": "Taurus."
+   "comments": "Forward-facing; Taurus."
   }
 }

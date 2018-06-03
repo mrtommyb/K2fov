@@ -59,7 +59,7 @@ class K2FootprintPlot(object):
         except AttributeError:  # We didn't create a fig above
             pass
 
-    def plot_campaigns(self, campaigns=20):
+    def plot_campaigns(self, campaigns=21):
         """Plot the outlines of all campaigns."""
         for c in range(campaigns):
             self.plot_campaign_outline(c)
@@ -133,8 +133,8 @@ class K2FootprintPlot(object):
             mdl = int(corners[idx, 0][0][0])
             out = int(corners[idx, 1][0][0])
             ra = corners[idx, 3][0]
-            # if np.any(ra > 340):  # Engineering test field overlaps meridian
-            #    ra[ra > 180] -= 360
+            if campaign == 1002:  # Concept Engineering Test overlapped the meridian
+                ra[ra < 180] += 360
             dec = corners[idx, 4][0]
             self.ax.fill(np.concatenate((ra, ra[:1])),
                          np.concatenate((dec, dec[:1])), **kwargs)
@@ -215,7 +215,7 @@ class K2GalacticFootprintPlot(object):
             # avoid crashing if an older version of AstroPy is at play
             pass
 
-    def plot_campaigns(self, campaigns=20):
+    def plot_campaigns(self, campaigns=21):
         """Plot the outlines of all campaigns."""
         for c in range(campaigns):
             self.plot_campaign_outline(c)
