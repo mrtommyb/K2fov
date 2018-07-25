@@ -101,12 +101,16 @@ class K2FootprintPlot(object):
         elif campaign == 12:
             ra_center += 0.5
             dec_center -= 1.7
+        elif campaign == 13:
+            dec_center -= 1.5
         elif campaign == 16:
             dec_center += 1.5
         elif campaign == 18:
             dec_center -= 1.5
         elif campaign == 19:
             dec_center += 1.7
+        elif campaign == 20:
+            dec_center += 1.5
         offsets = {5: (40, -20), 16: (-20, 40), 18: (-15, -50)}
         if campaign in [5]:
             pl.annotate(text, xy=(ra_center, dec_center),
@@ -153,7 +157,7 @@ class K2FootprintPlot(object):
             logger.error("You need to install AstroPy for this feature.")
             return None
         try:
-            icrs = SkyCoord(np.linspace(0, 359, num=size), 0,
+            icrs = SkyCoord(np.linspace(0.1, 359, num=size), 0,
                             unit="deg", frame="barycentrictrueecliptic").icrs
             self.ax.plot(icrs.ra, icrs.dec, lw=2, color="#666666")
         except ValueError:
